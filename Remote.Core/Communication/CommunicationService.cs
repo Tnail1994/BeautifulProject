@@ -13,6 +13,7 @@ namespace Remote.Core.Communication
 
 		Task<T> ReceiveAsync<T>() where T : IBaseMessage;
 		void SendAsync(object messageObj);
+		bool IsClientSet { get; }
 	}
 
 	public class CommunicationService : ICommunicationService
@@ -29,12 +30,15 @@ namespace Remote.Core.Communication
 			_transformerService = transformerService;
 		}
 
+		public bool IsClientSet => _client != null;
+
 		private IAsyncClient Client => _client ??
 		                               throw new NullReferenceException(
 			                               "Client is null. No socket for communication available.");
 
 		public void SetClient(IAsyncClient client)
 		{
+			Log.Debug($"Set client. Code: <cs_setClient>");
 			_client = client;
 		}
 
@@ -69,6 +73,7 @@ namespace Remote.Core.Communication
 			var jsonString = JsonConvert.SerializeObject(messageObj, JsonConfig.Settings);
 			Client.Send(jsonString);
 		}
+
 
 		private async Task<T> WaitForReceive<T>() where T : IBaseMessage
 		{

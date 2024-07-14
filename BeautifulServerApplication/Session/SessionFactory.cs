@@ -37,7 +37,7 @@ namespace BeautifulServerApplication.Session
 			var asyncClient = asyncClientFactory.Create(_socket);
 			var communicationService = _scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 			communicationService.SetClient(asyncClient);
-			return BeautifulServerApplication.Session.Session.Create(_scope.ServiceProvider);
+			return Session.Create(_scope.ServiceProvider);
 		}
 	}
 }

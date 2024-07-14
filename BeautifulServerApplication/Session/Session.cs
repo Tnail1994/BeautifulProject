@@ -1,6 +1,7 @@
 ﻿using CoreHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Core.Communication;
+using Serilog;
 
 namespace BeautifulServerApplication.Session
 {
@@ -36,18 +37,27 @@ namespace BeautifulServerApplication.Session
 
 		private void StartCommunicationService()
 		{
+			var communicationService = _scopedServiceProvider.GetRequiredService<ICommunicationService>();
+
 			try
 			{
-				var communicationService = _scopedServiceProvider.GetRequiredService<ICommunicationService>();
 				communicationService.Start();
 			}
 			catch (NullReferenceException nullReferenceException)
 			{
-				// When no client is set, the communication service cannot be started.
+				Log.Error($"Cannot start communication for this session: {Id}" +
+				          $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {communicationService.IsClientSet}" +
+				          $"{nullReferenceException.Message}");
+
+				if (!communicationService.IsClientSet)
+				{
+					// Todo retry to set a client
+				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				// Todo: Log exception and improve error handling.
+				Log.Fatal($"!!! Unexpected {Id}" +
+				          $"{ex.Message}");
 			}
 		}
 
