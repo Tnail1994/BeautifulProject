@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using CoreHelpers;
 using Serilog;
 
 namespace Remote.Core.Communication
@@ -20,10 +21,14 @@ namespace Remote.Core.Communication
 
 		private AsyncClient(Socket socket)
 		{
+			Id = GuidIdCreator.CreateString();
+
 			_receivingCancellationTokenSource = new CancellationTokenSource();
 
 			_socket = socket;
 		}
+
+		public string Id { get; }
 
 		public event Action<string>? MessageReceived;
 
@@ -45,18 +50,18 @@ namespace Remote.Core.Communication
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
 					if (completedTask == timeoutTask)
 					{
-						Log.Warning("Client connection timed out");
+						Log.Warning($"Client connection timed out. Id: {Id}");
 						break;
 					}
 
 					var received = await receiveTask;
 					if (received == 0)
 					{
-						Log.Warning("Client connection closed");
+						Log.Warning($"Client connection closed. Id: {Id}");
 						break;
 					}
 
-					Log.Information($"Message received: {received} bytes");
+					Log.Information($"Message received: {received} bytes. Id: {Id}");
 
 					var json = Encoding.UTF8.GetString(buffer, 0, received);
 					MessageReceived?.Invoke(json);
@@ -64,23 +69,30 @@ namespace Remote.Core.Communication
 			}
 			catch (OperationCanceledException)
 			{
-				// Erwartete Ausnahme bei Cancellation, kann ignoriert werden
+				Log.Debug("Receiving cancelled");
 			}
 			catch (SocketException ex)
 			{
-				Log.Error(ex.Message);
+				switch (ex.ErrorCode)
+				{
+					default:
+						Log.Error(ex.Message);
+						break;
+				}
 			}
 			catch (Exception ex)
 			{
-				Log.Error($"Error processing client: {ex.Message}");
+				Log.Fatal($"!!! Unexpected error receiving client. Id: {Id}" +
+				          $"{ex.Message}" +
+				          $"Stacktrace: {ex.StackTrace}.");
 			}
-			// catch all other exceptions
 		}
 
-		public void Send(string message)
+		public async void Send(string message)
 		{
 			var messageBytes = Encoding.UTF8.GetBytes(message);
-			_socket.SendAsync(messageBytes, SocketFlags.None);
+			var sendingResult = await _socket.SendAsync(messageBytes, SocketFlags.None);
+			Log.Debug($"Send {sendingResult}. Id: {Id}");
 		}
 	}
 }
