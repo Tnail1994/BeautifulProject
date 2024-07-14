@@ -59,23 +59,29 @@ internal class SessionManager : ISessionManager, IHostedService
 	private void StartNewSession(Socket socket)
 	{
 		Task.Factory.StartNew(() =>
-		{
-			var scope = _serviceProvider.CreateScope();
-			var sessionFactory = _serviceProvider.GetRequiredService<ISessionFactory>();
+			{
+				var scope = _serviceProvider.CreateScope();
+				var sessionFactory = _serviceProvider.GetRequiredService<ISessionFactory>();
 
-			sessionFactory.AddScope(scope);
-			sessionFactory.AddSocket(socket);
+				sessionFactory.AddScope(scope);
+				sessionFactory.AddSocket(socket);
 
-			var session = sessionFactory.Create();
+				var session = sessionFactory.Create();
 
-			Log.Information($"New session with Id {session.Id} created.");
+				Log.Information($"New session with Id {session.Id} created.");
 
-			_sessions.TryAdd(session.Id, session);
+				_sessions.TryAdd(session.Id, session);
 
-			session.Start();
+				session.Start();
 
-			Log.Information($"New session with Id {session.Id} started.");
-		}, _cancellationToken);
+				Log.Information($"New session with Id {session.Id} started.");
+			}, _cancellationToken)
+			.ContinueWith(t =>
+				{
+					Log.Error($"Error in session creation or starting: {t.Exception?.Message}+" +
+					          $"Stacktrace: {t.Exception?.StackTrace}");
+				},
+				TaskContinuationOptions.OnlyOnFaulted);
 	}
 
 
