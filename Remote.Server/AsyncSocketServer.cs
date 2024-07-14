@@ -1,9 +1,8 @@
-﻿using System.Collections.Concurrent;
+﻿using Remote.Server.Common.Contracts;
+using Serilog;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection.Metadata.Ecma335;
-using Remote.Server.Common.Contracts;
-using Serilog;
 
 namespace Remote.Server
 {
@@ -14,7 +13,7 @@ namespace Remote.Server
 
 	public class AsyncSocketServer : IAsyncSocketServer, IDisposable
 	{
-		private readonly Socket _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		private readonly Socket _listener = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
 		private readonly ConcurrentDictionary<string, Socket> _connectedClients = new();
@@ -54,18 +53,23 @@ namespace Remote.Server
 					Log.Information("Listening...");
 					var client = await _listener.AcceptAsync();
 					var clientId = Guid.NewGuid().ToString();
-					_connectedClients.TryAdd(clientId, client);
+					var addingResult = _connectedClients.TryAdd(clientId, client);
+
+					if (!addingResult)
+						Log.Warning($"Cannot add Id {clientId} to dictionary.");
+
 					Log.Information($"New Connection: Id = {clientId}");
 					NewConnectionOccured?.Invoke(client);
 				}
 			}
-			catch (OperationCanceledException)
+			catch (OperationCanceledException oce)
 			{
-				// Erwartete Ausnahme bei Cancellation, kann ignoriert werden
+				Log.Debug(oce.Message);
 			}
 			catch (Exception ex) when (!_cts.Token.IsCancellationRequested)
 			{
-				Log.Error($"Error in listener loop: {ex.Message}");
+				Log.Fatal($"!!! Unexpected error in listener loop: {ex.Message}+" +
+				          $"Stacktrace: {ex.StackTrace}");
 			}
 		}
 
