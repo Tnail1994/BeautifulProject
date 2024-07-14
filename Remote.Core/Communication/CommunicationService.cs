@@ -120,12 +120,16 @@ namespace Remote.Core.Communication
 					case 1:
 					case 2:
 					case 3:
+						Log.Error($"Transform error.\n" +
+						          $"{ex.Message}");
 						break;
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error(e.Message);
+				Log.Fatal($"!!! Unexpected error while OnMessageReceived event\n" +
+				          $"Message: {ex.Message}\n" +
+				          $"Stacktrace: {ex.StackTrace}\n");
 			}
 		}
 

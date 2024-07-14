@@ -21,7 +21,6 @@ namespace Remote.Core.Transformation
 			RegisterAllBaseMessages(serviceProvider);
 		}
 
-
 		private void RegisterAllBaseMessages(IServiceProvider serviceProvider)
 		{
 			var baseMessageTypes = serviceProvider.GetServices<IBaseMessage>()
@@ -29,9 +28,12 @@ namespace Remote.Core.Transformation
 				.Where(t => t.BaseType?.IsGenericType == true &&
 				            t.BaseType.GetGenericTypeDefinition() == typeof(BaseMessage<>));
 
+			Log.Debug("Registering BaseMessageTypes: **");
+
 			foreach (var type in baseMessageTypes)
 			{
 				var typeName = type.Name;
+				Log.Debug($"**Registering {typeName}");
 				_typeMap[typeName] = type;
 				var methodInfo = type.GetMethod("Transform",
 					BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
