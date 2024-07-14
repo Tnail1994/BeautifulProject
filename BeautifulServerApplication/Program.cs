@@ -1,22 +1,26 @@
 ﻿using BeautifulServerApplication.Session;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Remote.Core;
 using Remote.Core.Communication;
 using Remote.Core.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
+using Serilog;
 
 namespace BeautifulServerApplication
 {
 	internal class Program
 	{
-		private static readonly CancellationTokenSource ServerProgramCancellationTokenSource =
-			new CancellationTokenSource();
+		private static readonly CancellationTokenSource ServerProgramCancellationTokenSource = new();
 
 		static Task Main(string[] args)
 		{
-			var host = CreateHostBuilder(args).Build();
+			var host = CreateHostBuilder(args)
+				.Build();
+
 			host.RunAsync(ServerProgramCancellationTokenSource.Token);
 
 			RunConsoleInteraction();
@@ -26,7 +30,7 @@ namespace BeautifulServerApplication
 
 		private static void RunConsoleInteraction()
 		{
-			Console.WriteLine("exit - Stop the server");
+			Log.Debug("exit - Stop the server");
 			while (!ServerProgramCancellationTokenSource.IsCancellationRequested)
 			{
 				var input = Console.ReadLine();

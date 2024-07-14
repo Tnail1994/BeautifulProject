@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Remote.Server.Common.Contracts;
+using Serilog;
 
 namespace BeautifulServerApplication.Session;
 
@@ -19,7 +20,6 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private CancellationToken _cancellationToken;
 
-
 	public SessionManager(IServiceProvider serviceProvider)
 	{
 		_serviceProvider = serviceProvider;
@@ -28,9 +28,31 @@ internal class SessionManager : ISessionManager, IHostedService
 		_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 	}
 
+	public async Task StartAsync(CancellationToken cancellationToken)
+	{
+		_cancellationToken = cancellationToken;
+
+		StartServices();
+		await StartServer();
+	}
+
+	#region Start
+
+	private void StartServices()
+	{
+		Log.Information("Starting services...");
+	}
+
+	private async Task StartServer()
+	{
+		await _asyncSocketServer.StartAsync();
+	}
+
+	#endregion
+
 	private void OnNewConnectionOccured(Socket socket)
 	{
-		Console.WriteLine("Starting new session ...");
+		Log.Information("Starting new session ...");
 		StartNewSession(socket);
 	}
 
@@ -46,32 +68,14 @@ internal class SessionManager : ISessionManager, IHostedService
 
 			var session = sessionFactory.Create();
 
-			Console.WriteLine($"New session with Id {session.Id} created.");
+			Log.Information($"New session with Id {session.Id} created.");
 
 			_sessions.TryAdd(session.Id, session);
 
 			session.Start();
 
-			Console.WriteLine($"New session with Id {session.Id} started.");
+			Log.Information($"New session with Id {session.Id} started.");
 		}, _cancellationToken);
-	}
-
-	public async Task StartAsync(CancellationToken cancellationToken)
-	{
-		_cancellationToken = cancellationToken;
-
-		StartServices();
-		await StartServer();
-	}
-
-	private void StartServices()
-	{
-		Console.WriteLine("Starting services...");
-	}
-
-	private async Task StartServer()
-	{
-		await _asyncSocketServer.StartAsync();
 	}
 
 
@@ -84,13 +88,17 @@ internal class SessionManager : ISessionManager, IHostedService
 		return Task.CompletedTask;
 	}
 
+	#region Stop
+
 	private void StopServices()
 	{
-		Console.WriteLine("Stopping services...");
+		Log.Information("Stopping services...");
 	}
 
 	private void StopServer()
 	{
 		_asyncSocketServer.Stop();
 	}
+
+	#endregion
 }

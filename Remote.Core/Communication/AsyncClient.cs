@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using Serilog;
 
 namespace Remote.Core.Communication
 {
@@ -44,18 +45,18 @@ namespace Remote.Core.Communication
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
 					if (completedTask == timeoutTask)
 					{
-						Log("Client connection timed out");
+						Log.Warning("Client connection timed out");
 						break;
 					}
 
 					var received = await receiveTask;
 					if (received == 0)
 					{
-						Log("Client connection closed");
+						Log.Warning("Client connection closed");
 						break;
 					}
 
-					Log($"Message received: {received} bytes");
+					Log.Information($"Message received: {received} bytes");
 
 					var json = Encoding.UTF8.GetString(buffer, 0, received);
 					MessageReceived?.Invoke(json);
@@ -65,17 +66,15 @@ namespace Remote.Core.Communication
 			{
 				// Erwartete Ausnahme bei Cancellation, kann ignoriert werden
 			}
+			catch (SocketException ex)
+			{
+				Log.Error(ex.Message);
+			}
 			catch (Exception ex)
 			{
-				Log($"Error processing client: {ex.Message}");
+				Log.Error($"Error processing client: {ex.Message}");
 			}
-			// Todo improve socket receive error
-		}
-
-		private void Log(string logContext)
-		{
-			// Todo we cannot write on console here, because it is inside a session, which is async.
-			Console.WriteLine(logContext);
+			// catch all other exceptions
 		}
 
 		public void Send(string message)

@@ -1,7 +1,9 @@
 ﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection.Metadata.Ecma335;
 using Remote.Server.Common.Contracts;
+using Serilog;
 
 namespace Remote.Server
 {
@@ -21,39 +23,39 @@ namespace Remote.Server
 
 		public Task StartAsync(int port = 8910, int maxListener = 100)
 		{
-			Console.WriteLine("Server starting...");
+			Log.Information("Server starting...");
 
 			_listener.Bind(new IPEndPoint(IPAddress.Any, port));
 			_listener.Listen(maxListener);
 
-			Console.WriteLine("Server started.");
+			Log.Information("Server started.");
 
 			return Task.Run(ListenForClientsAsync, _cts.Token);
 		}
 
 		public void Stop()
 		{
-			Console.WriteLine("Server stopping...");
+			Log.Information("Server stopping...");
 
 			_cts.Cancel();
 			_listener.Close();
 
-			Console.WriteLine("Server stopped.");
+			Log.Information("Server stopped.");
 		}
 
 		private async Task ListenForClientsAsync()
 		{
-			Console.WriteLine("Server start listening for clients...");
+			Log.Information("Server start listening for clients...");
 
 			try
 			{
 				while (!_cts.Token.IsCancellationRequested)
 				{
-					Console.WriteLine("Listening...");
+					Log.Information("Listening...");
 					var client = await _listener.AcceptAsync();
 					var clientId = Guid.NewGuid().ToString();
 					_connectedClients.TryAdd(clientId, client);
-					Console.WriteLine($"New Connection: Id = {clientId}");
+					Log.Information($"New Connection: Id = {clientId}");
 					NewConnectionOccured?.Invoke(client);
 				}
 			}
@@ -63,7 +65,7 @@ namespace Remote.Server
 			}
 			catch (Exception ex) when (!_cts.Token.IsCancellationRequested)
 			{
-				Console.WriteLine($"Error in listener loop: {ex.Message}");
+				Log.Error($"Error in listener loop: {ex.Message}");
 			}
 		}
 

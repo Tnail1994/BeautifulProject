@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Remote.Core.Implementations;
 using Remote.Core.Transformation;
+using Serilog;
 
 namespace Remote.Core.Communication
 {
@@ -86,24 +87,41 @@ namespace Remote.Core.Communication
 
 		private void OnMessageReceived(string jsonString)
 		{
-			var transformedObject = _transformerService.Transform(jsonString);
-			AddTransformedObject(transformedObject);
-
-			var transformedObjectWaiters =
-				_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
-					.ToList();
-
-			foreach (var transformedObjectWaiter in transformedObjectWaiters)
+			try
 			{
-				transformedObjectWaiter.TaskCompletionSource.SetResult(transformedObject);
+				var transformedObject = _transformerService.Transform(jsonString);
+				AddTransformedObject(transformedObject);
 
-				if (transformedObjectWaiter.IsPermanent)
-					continue;
+				var transformedObjectWaiters =
+					_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
+						.ToList();
 
-				_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
+				foreach (var transformedObjectWaiter in transformedObjectWaiters)
+				{
+					transformedObjectWaiter.TaskCompletionSource.SetResult(transformedObject);
+
+					if (transformedObjectWaiter.IsPermanent)
+						continue;
+
+					_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
+				}
+
+				TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
 			}
-
-			TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
+			catch (TransformException ex)
+			{
+				switch (ex.ErrorCode)
+				{
+					case 1:
+					case 2:
+					case 3:
+						break;
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Error(e.Message);
+			}
 		}
 
 		private void AddTransformedObject(TransformedObject transformedObject)

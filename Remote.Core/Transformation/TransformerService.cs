@@ -1,7 +1,8 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Remote.Core.Communication;
+using System.Reflection;
+using Serilog;
 
 namespace Remote.Core.Transformation
 {
@@ -20,6 +21,7 @@ namespace Remote.Core.Transformation
 			RegisterAllBaseMessages(serviceProvider);
 		}
 
+
 		private void RegisterAllBaseMessages(IServiceProvider serviceProvider)
 		{
 			var baseMessageTypes = serviceProvider.GetServices<IBaseMessage>()
@@ -36,7 +38,7 @@ namespace Remote.Core.Transformation
 
 				if (methodInfo == null)
 				{
-					Console.WriteLine($"No methodInfo found for {typeName}");
+					Log.Error($"No methodInfo (No Transform-Method) found for {typeName}.");
 					continue;
 				}
 
@@ -46,27 +48,42 @@ namespace Remote.Core.Transformation
 
 		public TransformedObject Transform(string json)
 		{
-			Console.WriteLine("Start transforming object...");
+			Log.Information($"Start transforming object: {json}");
 
-			var jObject = JObject.Parse(json);
-			var discriminator = jObject["$type"]?.ToString().Split(',')[0].Split('.').Last();
+			var discriminator = FindDiscriminator(json);
 
 			if (string.IsNullOrEmpty(discriminator) || !_typeMap.TryGetValue(discriminator, out var type))
 			{
-				throw new InvalidOperationException($"No type registered for discriminator: {discriminator}");
+				var message = $"No type registered for discriminator: {discriminator}" +
+				              $"no discriminator: {string.IsNullOrEmpty(discriminator)}. Errorcode 1";
+				Log.Error(message);
+				throw new TransformException(message, 1);
 			}
 
 			if (!_methodCache.TryGetValue(discriminator, out var method))
 			{
-				throw new InvalidOperationException($"Transform method not found for type: {discriminator}");
+				var message = $"Transform method not found for type: {discriminator}. Errorcode 2";
+				Log.Error(message);
+				throw new TransformException(message, 2);
 			}
 
 			var invokeResult = method.Invoke(null, new object[] { json });
 
 			if (invokeResult == null)
-				throw new InvalidOperationException($"Invoke result is null for type: {discriminator}");
+			{
+				var message = $"Invoke result is null for type: {discriminator}. Errorcode 3";
+				Log.Error(message);
+				throw new TransformException(message, 3);
+			}
 
 			return TransformedObject.Create(invokeResult, discriminator);
+		}
+
+		private static string? FindDiscriminator(string json)
+		{
+			var jObject = JObject.Parse(json);
+			var discriminator = jObject["$type"]?.ToString().Split(',')[0].Split('.').Last();
+			return discriminator;
 		}
 	}
 }
