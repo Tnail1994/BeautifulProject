@@ -14,13 +14,13 @@ namespace BeautifulServerApplication.Session
 
 	internal class Session : ISession
 	{
-		private readonly IServiceProvider _scopedServiceProvider;
+		private readonly ICommunicationService _communicationService;
 
-		private Session(IServiceProvider scopedServiceProvider)
+		private Session(ICommunicationService communicationService)
 		{
 			Id = GuidIdCreator.CreateString();
 
-			_scopedServiceProvider = scopedServiceProvider;
+			_communicationService = communicationService;
 		}
 
 		public string Id { get; }
@@ -37,19 +37,17 @@ namespace BeautifulServerApplication.Session
 
 		private void StartCommunicationService()
 		{
-			var communicationService = _scopedServiceProvider.GetRequiredService<ICommunicationService>();
-
 			try
 			{
-				communicationService.Start();
+				_communicationService.Start();
 			}
 			catch (NullReferenceException nullReferenceException)
 			{
 				Log.Error($"Cannot start communication for this session: {Id}" +
-				          $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {communicationService.IsClientSet}" +
+				          $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {_communicationService.IsClientSet}" +
 				          $"{nullReferenceException.Message}");
 
-				if (!communicationService.IsClientSet)
+				if (!_communicationService.IsClientSet)
 				{
 					// Todo retry to set a client
 				}
@@ -63,9 +61,9 @@ namespace BeautifulServerApplication.Session
 
 		#region Factory
 
-		public static ISession Create(IServiceProvider scopedServiceProvider)
+		public static ISession Create(ICommunicationService communicationService)
 		{
-			return new Session(scopedServiceProvider);
+			return new Session(communicationService);
 		}
 
 		#endregion

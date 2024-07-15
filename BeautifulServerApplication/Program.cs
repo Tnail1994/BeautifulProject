@@ -1,8 +1,6 @@
 ﻿using BeautifulServerApplication.Session;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Remote.Core;
 using Remote.Core.Communication;
 using Remote.Core.Transformation;

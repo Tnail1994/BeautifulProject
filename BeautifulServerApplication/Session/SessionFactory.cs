@@ -29,15 +29,15 @@ namespace BeautifulServerApplication.Session
 		public ISession Create()
 		{
 			if (_socket == null)
-				throw new InvalidOperationException("Socket is not set.");
+				throw new InvalidOperationException("[SessionFactory] Socket is not set.");
 
 			if (_scope == null)
-				throw new InvalidOperationException("Scope is not set.");
+				throw new InvalidOperationException("[SessionFactory] Scope is not set.");
 
 			var asyncClient = asyncClientFactory.Create(_socket);
 			var communicationService = _scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 			communicationService.SetClient(asyncClient);
-			var session = Session.Create(_scope.ServiceProvider);
+			var session = Session.Create(communicationService);
 
 			Clear();
 
