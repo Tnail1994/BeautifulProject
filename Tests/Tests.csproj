@@ -22,10 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Remote\Core\Transformation\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
   </ItemGroup>
 

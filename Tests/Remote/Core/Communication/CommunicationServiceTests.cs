@@ -4,25 +4,12 @@ using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
 using Remote.Core.Implementations;
 using Remote.Core.Transformation;
-using Xunit.Sdk;
+using Tests.TestObjects;
 
 namespace Tests.Remote.Core.Communication
 {
 	public class CommunicationServiceTests
 	{
-		private class Test
-		{
-			public string MockObj { get; set; }
-		}
-
-		private class TestMessage : BaseMessage<Test>
-		{
-		}
-
-		private class OtherTestMessage : BaseMessage<Test>
-		{
-		}
-
 		private readonly ICommunicationService _communicationService;
 		private readonly ITransformerService _transformerServiceMock;
 		private readonly IAsyncClient _client;
@@ -91,8 +78,8 @@ namespace Tests.Remote.Core.Communication
 			var task = _communicationService.ReceiveAsync<OtherTestMessage>();
 
 			await Task.Delay(10);
-			SetTransformerReturningValue(CreateOtherTestMessage(), nameof(OtherTestMessage));
-			RaiseMessageReceivedEvent(CreateOtherTestMessageString());
+			SetTransformerReturningValue(OtherTestMessage.Create(), nameof(OtherTestMessage));
+			RaiseMessageReceivedEvent(OtherTestMessage.CreateString());
 			var result = await task;
 
 			Assert.NotNull(result);
@@ -104,14 +91,14 @@ namespace Tests.Remote.Core.Communication
 		{
 			SetClientToCommunicationService();
 			StartCommunicationService();
-			_communicationService.SendAsync(CreateTestMessage());
+			_communicationService.SendAsync(TestMessage.Create());
 			_client.Received(1).Send(Arg.Any<string>());
 		}
 
 		[Fact]
 		public void SendAsync_WhenNoClientSet_ShouldRaiseNullReferenceException()
 		{
-			Assert.Throws<NullReferenceException>(() => _communicationService.SendAsync(CreateTestMessage()));
+			Assert.Throws<NullReferenceException>(() => _communicationService.SendAsync(TestMessage.Create()));
 		}
 
 		[Fact]
@@ -134,7 +121,7 @@ namespace Tests.Remote.Core.Communication
 
 		private void SetTransformerReturningValue(object? testMessage = null, string? testMessageName = null)
 		{
-			testMessage ??= CreateTestMessage();
+			testMessage ??= TestMessage.Create();
 			testMessageName ??= nameof(TestMessage);
 
 			_transformerServiceMock.Transform(Arg.Any<string>())
@@ -149,35 +136,9 @@ namespace Tests.Remote.Core.Communication
 		private void RaiseMessageReceivedEvent(string testMessageString = "")
 		{
 			if (string.IsNullOrEmpty(testMessageString))
-				testMessageString = CreateTestMessageString();
+				testMessageString = TestMessage.CreateString();
 
 			_client.MessageReceived += Raise.Event<Action<string>>(testMessageString);
-		}
-
-		private static string CreateTestMessageString()
-		{
-			return JsonConvert.SerializeObject(CreateTestMessage(), JsonConfig.Settings);
-		}
-
-		private static string CreateOtherTestMessageString()
-		{
-			return JsonConvert.SerializeObject(CreateOtherTestMessage(), JsonConfig.Settings);
-		}
-
-		private static TestMessage CreateTestMessage()
-		{
-			return new TestMessage
-			{
-				MessageObject = new Test { MockObj = "MockMessage" }
-			};
-		}
-
-		private static OtherTestMessage CreateOtherTestMessage()
-		{
-			return new OtherTestMessage
-			{
-				MessageObject = new Test { MockObj = "MockMessage2" }
-			};
 		}
 
 
