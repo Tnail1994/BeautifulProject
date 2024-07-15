@@ -66,7 +66,7 @@ namespace Tests.BeautifulServerApplication.Session
 			RaiseNewConnectionEvent(dummySocket);
 
 			_scopeFactoryMock.Received(1).Create();
-			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>(), Arg.Any<IAsyncClientSettings>());
+			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>(), Arg.Any<AsyncClientSettings>());
 			session.Received(1).Start();
 		}
 
