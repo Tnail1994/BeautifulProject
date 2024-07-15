@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Hosting;
+using Remote.Core.Communication;
 using Remote.Server.Common.Contracts;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BeautifulServerApplication.Session;
 
@@ -19,13 +21,15 @@ internal class SessionManager : ISessionManager, IHostedService
 	private CancellationToken _cancellationToken;
 	private readonly ISessionFactory _sessionFactory;
 	private readonly IScopeFactory _scopeFactory;
+	private readonly IAsyncClientFactory _asyncClientFactory;
 
 	public SessionManager(IAsyncSocketServer asyncSocketServer, ISessionFactory sessionFactory,
-		IScopeFactory scopeFactory)
+		IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory)
 	{
 		_sessionFactory = sessionFactory;
 		_scopeFactory = scopeFactory;
 		_asyncSocketServer = asyncSocketServer;
+		_asyncClientFactory = asyncClientFactory;
 
 		_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 	}
@@ -62,10 +66,17 @@ internal class SessionManager : ISessionManager, IHostedService
 	{
 		var scope = _scopeFactory.Create();
 
-		_sessionFactory.AddScope(scope);
-		_sessionFactory.AddSocket(socket);
+		if (socket == null)
+			throw new InvalidOperationException("[SessionManager] Socket is not set.");
 
-		var session = _sessionFactory.Create();
+		if (scope == null)
+			throw new InvalidOperationException("[SessionManager] Scope is not set.");
+
+		var asyncClient = _asyncClientFactory.Create(socket);
+		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
+		communicationService.SetClient(asyncClient);
+
+		var session = _sessionFactory.Create(communicationService);
 
 		Log.Information($"New session with Id {session.Id} created.");
 
