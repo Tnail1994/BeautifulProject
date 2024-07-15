@@ -40,7 +40,7 @@ namespace Remote.Core.Communication.Client
 		public event Action<string>? MessageReceived;
 		public event EventHandler<string>? ConnectionLost;
 
-		public static IAsyncClient Create(IClient client, IAsyncClientSettings settings)
+		public static IAsyncClient Create(IClient client, AsyncClientSettings settings)
 		{
 			return new AsyncClient(client, settings);
 		}

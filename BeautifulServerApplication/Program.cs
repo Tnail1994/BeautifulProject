@@ -138,9 +138,9 @@ namespace BeautifulServerApplication
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 
-					services.AddSingleton<IAsyncServerSettings>(provider =>
+					services.AddSingleton<AsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
-					services.AddSingleton<IAsyncClientSettings>(provider =>
+					services.AddSingleton<AsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
 				});
 	}

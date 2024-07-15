@@ -20,7 +20,7 @@ namespace Remote.Server
 
 		public event Action<TcpClient>? NewConnectionOccured;
 
-		public AsyncServer(IAsyncServerSettings settings)
+		public AsyncServer(AsyncServerSettings settings)
 		{
 			var asyncServerSettings = settings;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
