@@ -11,6 +11,7 @@ namespace Remote.Core.Communication.Client
 	{
 		string Id { get; }
 		event Action<string> MessageReceived;
+		event EventHandler<string> ConnectionLost;
 		void StartReceivingAsync();
 		void Send(string message);
 	}
@@ -41,6 +42,7 @@ namespace Remote.Core.Communication.Client
 		public string Id { get; }
 
 		public event Action<string>? MessageReceived;
+		public event EventHandler<string>? ConnectionLost;
 
 		public static IAsyncClient Create(IClient client, IOptions<AsyncClientSettings> options)
 		{
@@ -86,20 +88,27 @@ namespace Remote.Core.Communication.Client
 				switch (ex.ErrorCode)
 				{
 					default:
-						Log.Error(ex.Message);
+						Log.Error("SocketException");
 						break;
 				}
+
+				ConnectionLost?.Invoke(this, Id);
 			}
 			catch (Exception ex)
 			{
 				Log.Fatal($"!!! Unexpected error receiving client. Id: {Id}" +
 				          $"{ex.Message}" +
 				          $"Stacktrace: {ex.StackTrace}.");
+
+				ConnectionLost?.Invoke(this, ex.Message);
 			}
 		}
 
 		public async void Send(string message)
 		{
+			//if (_client.IsNotConnected)
+			//	return;
+
 			var messageBytes = Encoding.UTF8.GetBytes(message);
 			var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
 			Log.Debug($"Send {sendingResult}. Id: {Id}");

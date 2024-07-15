@@ -4,6 +4,8 @@ namespace Remote.Core.Communication.Client
 {
 	public interface IClient : IDisposable
 	{
+		public bool Connected { get; }
+		bool IsNotConnected { get; }
 		Task<int> ReceiveAsync(byte[] buffer, SocketFlags socketFlags);
 
 		Task<int> SendAsync(byte[] buffer, SocketFlags socketFlags);
@@ -22,6 +24,10 @@ namespace Remote.Core.Communication.Client
 		{
 			return new ClientWrapper(client);
 		}
+
+		public bool Connected => _client.Connected;
+
+		public bool IsNotConnected => !Connected;
 
 		public Task<int> ReceiveAsync(byte[] buffer, SocketFlags socketFlags)
 		{

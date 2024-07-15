@@ -9,6 +9,7 @@ namespace Remote.Core.Communication
 {
 	public interface ICommunicationService : IDisposable
 	{
+		event EventHandler<string>? ConnectionLost;
 		void SetClient(IAsyncClient client);
 		void Start();
 
@@ -37,6 +38,8 @@ namespace Remote.Core.Communication
 		                               throw new NullReferenceException(
 			                               "Client is null. No socket for communication available.");
 
+		public event EventHandler<string>? ConnectionLost;
+
 		public void SetClient(IAsyncClient client)
 		{
 			if (IsClientSet)
@@ -56,6 +59,7 @@ namespace Remote.Core.Communication
 		{
 			Client.StartReceivingAsync();
 			Client.MessageReceived += OnMessageReceived;
+			Client.ConnectionLost += ConnectionLost;
 		}
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage

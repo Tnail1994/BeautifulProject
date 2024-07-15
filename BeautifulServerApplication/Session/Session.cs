@@ -6,10 +6,15 @@ namespace BeautifulServerApplication.Session
 {
 	public interface ISession
 	{
+		event EventHandler<string>? SessionOnHold;
 		string Id { get; }
 
 		void Start();
 		void Stop();
+
+#if DEBUG
+		void SendMessageToClient(object message);
+#endif
 	}
 
 	internal class Session : ISession, IDisposable
@@ -21,9 +26,11 @@ namespace BeautifulServerApplication.Session
 			Id = GuidIdCreator.CreateString();
 
 			_communicationService = communicationService;
+			_communicationService.ConnectionLost += OnConnectionLost;
 		}
 
 		public string Id { get; }
+		public event EventHandler<string>? SessionOnHold;
 
 		public void Start()
 		{
@@ -43,6 +50,7 @@ namespace BeautifulServerApplication.Session
 
 			Dispose();
 		}
+
 
 		private void StartCommunicationService()
 		{
@@ -77,9 +85,22 @@ namespace BeautifulServerApplication.Session
 
 		#endregion
 
+		private void OnConnectionLost(object? sender, string reason)
+		{
+			SessionOnHold?.Invoke(this, $"Connection lost: {reason}");
+		}
+
 		public void Dispose()
 		{
 			_communicationService.Dispose();
 		}
+
+
+#if DEBUG
+		public void SendMessageToClient(object message)
+		{
+			_communicationService.SendAsync(message);
+		}
+#endif
 	}
 }

@@ -17,6 +17,11 @@ namespace BeautifulServerApplication
 	{
 		private static readonly CancellationTokenSource ServerProgramCancellationTokenSource = new();
 
+#if DEBUG
+		private static IServiceProvider? _serviceProvider;
+		private static ISessionManager? _sessionManager;
+#endif
+
 		static Task Main(string[] args)
 		{
 			Configure();
@@ -25,6 +30,11 @@ namespace BeautifulServerApplication
 				.Build();
 
 			host.RunAsync(ServerProgramCancellationTokenSource.Token);
+
+#if DEBUG
+			_serviceProvider = host.Services;
+			_sessionManager = _serviceProvider.GetRequiredService<IHostedService>() as ISessionManager;
+#endif
 
 			RunConsoleInteraction();
 
@@ -57,16 +67,42 @@ namespace BeautifulServerApplication
 
 		private static void RunConsoleInteraction()
 		{
-			Log.Debug("exit - Stop the server");
+			PlotInfo();
+
 			while (!ServerProgramCancellationTokenSource.IsCancellationRequested)
 			{
 				var input = Console.ReadLine();
-				if (input?.ToLower() == "exit")
+				if (input == "-e")
 				{
 					ServerProgramCancellationTokenSource.Cancel();
 					break;
 				}
+#if DEBUG
+				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
+				{
+					_sessionManager.SendMessageToRandomClient(User.Create("1", "2"));
+				}
+				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
+				{
+					_sessionManager.SendMessageToAllClients(User.Create("1", "2"));
+				}
+#endif
+				else
+				{
+					PlotInfo();
+				}
 			}
+		}
+
+		private static void PlotInfo()
+		{
+			Console.WriteLine("Commands:");
+			Console.WriteLine("-i : Info");
+			Console.WriteLine("-e : Stop the server");
+#if DEBUG
+			Console.WriteLine("-sr: Send message to random client");
+			Console.WriteLine("-sa: Send message to all client");
+#endif
 		}
 
 		private static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -8,16 +8,26 @@ using Remote.Server.Common.Contracts;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
+#if DEBUG
+using CoreHelpers;
+#endif
 
 namespace BeautifulServerApplication.Session;
 
-internal interface ISessionManager;
+internal interface ISessionManager : IHostedService
+{
+#if DEBUG
+	void SendMessageToRandomClient(object messageObject);
+	void SendMessageToAllClients(object messageObject);
+#endif
+}
 
-internal class SessionManager : ISessionManager, IHostedService
+internal class SessionManager : ISessionManager
 {
 	private readonly IAsyncServer _asyncSocketServer;
 
 	private readonly ConcurrentDictionary<string, ISession> _sessions = new();
+	private readonly ConcurrentDictionary<string, ISession> _pendingSessions = new();
 
 	private readonly ISessionFactory _sessionFactory;
 	private readonly IScopeFactory _scopeFactory;
@@ -80,6 +90,7 @@ internal class SessionManager : ISessionManager, IHostedService
 		communicationService.SetClient(asyncClient);
 
 		var session = _sessionFactory.Create(communicationService);
+		session.SessionOnHold += OnSessionOnHold;
 
 		Log.Information($"New session with Id {session.Id} created.");
 
@@ -90,6 +101,34 @@ internal class SessionManager : ISessionManager, IHostedService
 		Log.Information($"New session with Id {session.Id} started.");
 	}
 
+	private void OnSessionOnHold(object? sender, string e)
+	{
+		if (sender is not ISession session)
+		{
+			Log.Fatal(
+				$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!");
+			return;
+		}
+
+		var removeResult = _sessions.TryRemove(session.Id, out var pendingSession);
+
+		if (!removeResult)
+		{
+			Log.Error($"Cannot remove session with Id {session.Id} from dictionary.");
+			return;
+		}
+
+		session.Stop();
+
+		if (pendingSession == null)
+		{
+			Log.Warning($"Cannot pend session.");
+			return;
+		}
+
+		Log.Debug($"Pending session {pendingSession.Id}, for possibly restart this session.");
+		_pendingSessions.TryAdd(pendingSession.Id, pendingSession);
+	}
 
 	public Task StopAsync(CancellationToken cancellationToken)
 	{
@@ -117,4 +156,20 @@ internal class SessionManager : ISessionManager, IHostedService
 	}
 
 	#endregion
+
+#if DEBUG
+	public void SendMessageToRandomClient(object messageObject)
+	{
+		var randomSession = _sessions.Values.MinBy(_ => GuidIdCreator.CreateString());
+		randomSession?.SendMessageToClient(messageObject);
+	}
+
+	public void SendMessageToAllClients(object messageObject)
+	{
+		foreach (var session in _sessions)
+		{
+			session.Value.SendMessageToClient(messageObject);
+		}
+	}
+#endif
 }
