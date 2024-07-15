@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CoreImplementations;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Remote.Core.Communication;
 using System.Reflection;
-using Serilog;
 
 namespace Remote.Core.Transformation
 {
@@ -28,19 +28,19 @@ namespace Remote.Core.Transformation
 				.Where(t => t.BaseType?.IsGenericType == true &&
 				            t.BaseType.GetGenericTypeDefinition() == typeof(BaseMessage<>));
 
-			Log.Debug("[TransformerService]\n Registering BaseMessageTypes: **");
+			this.Log("Registering BaseMessageTypes: **");
 
 			foreach (var type in baseMessageTypes)
 			{
 				var typeName = type.Name;
-				Log.Debug($"**Registering {typeName}");
+				this.Log($"**Registering {typeName}");
 				_typeMap[typeName] = type;
 				var methodInfo = type.GetMethod("Transform",
 					BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 
 				if (methodInfo == null)
 				{
-					Log.Error($"[TransformerService]\n No methodInfo (No Transform-Method) found for {typeName}.");
+					this.LogError($"No methodInfo (No Transform-Method) found for {typeName}.");
 					continue;
 				}
 
@@ -50,7 +50,7 @@ namespace Remote.Core.Transformation
 
 		public TransformedObject Transform(string json)
 		{
-			Log.Information($"[TransformerService]\n Start transforming object: {json}");
+			this.LogInfo($"Start transforming object: {json}");
 
 			var discriminator = FindDiscriminator(json);
 
@@ -58,14 +58,14 @@ namespace Remote.Core.Transformation
 			{
 				var message = $"No type registered for discriminator: {discriminator}" +
 				              $"no discriminator: {string.IsNullOrEmpty(discriminator)}. Errorcode 1";
-				Log.Error($"[TransformerService]\n {message}");
+				this.LogError(message);
 				throw new TransformException(message, 1);
 			}
 
 			if (!_methodCache.TryGetValue(discriminator, out var method))
 			{
 				var message = $"Transform method not found for type: {discriminator}. Errorcode 2";
-				Log.Error($"[TransformerService]\n {message}");
+				this.LogError(message);
 				throw new TransformException(message, 2);
 			}
 
@@ -74,7 +74,7 @@ namespace Remote.Core.Transformation
 			if (invokeResult == null)
 			{
 				var message = $"Invoke result is null for type: {discriminator}. Errorcode 3";
-				Log.Error($"[TransformerService]\n {message}");
+				this.LogError(message);
 				throw new TransformException(message, 3);
 			}
 

@@ -2,8 +2,8 @@
 using System.Text;
 using Configurations.General.Settings;
 using CoreHelpers;
+using CoreImplementations;
 using Microsoft.Extensions.Options;
-using Serilog;
 
 namespace Remote.Core.Communication.Client
 {
@@ -60,18 +60,18 @@ namespace Remote.Core.Communication.Client
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
 					if (completedTask == timeoutTask)
 					{
-						Log.Warning($"Client connection timed out. Id: {Id}");
+						this.LogWarning($"Client connection timed out. Id: {Id}");
 						break;
 					}
 
 					var received = await receiveTask;
 					if (received == 0)
 					{
-						Log.Warning($"Client connection closed. Id: {Id}");
+						this.LogWarning($"Client connection closed. Id: {Id}");
 						break;
 					}
 
-					Log.Information($"Message received: {received} bytes. Id: {Id}");
+					this.LogInfo($"Message received: {received} bytes. Id: {Id}");
 
 					var json = Encoding.UTF8.GetString(buffer, 0, received);
 					MessageReceived?.Invoke(json);
@@ -79,22 +79,22 @@ namespace Remote.Core.Communication.Client
 			}
 			catch (OperationCanceledException)
 			{
-				Log.Debug("Receiving cancelled");
+				this.Log("Receiving cancelled");
 			}
 			catch (SocketException ex)
 			{
 				switch (ex.ErrorCode)
 				{
 					default:
-						Log.Error(ex.Message);
+						this.LogError(ex.Message);
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.Fatal($"!!! Unexpected error receiving client. Id: {Id}" +
-				          $"{ex.Message}" +
-				          $"Stacktrace: {ex.StackTrace}.");
+				this.LogFatal($"!!! Unexpected error receiving client. Id: {Id}" +
+				              $"{ex.Message}" +
+				              $"Stacktrace: {ex.StackTrace}.");
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace Remote.Core.Communication.Client
 		{
 			var messageBytes = Encoding.UTF8.GetBytes(message);
 			var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
-			Log.Debug($"Send {sendingResult}. Id: {Id}");
+			this.Log($"Send {sendingResult}. Id: {Id}");
 		}
 
 		public void Dispose()

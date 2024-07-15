@@ -1,9 +1,9 @@
 ﻿using System.Collections.Concurrent;
+using CoreImplementations;
 using Newtonsoft.Json;
 using Remote.Core.Communication.Client;
 using Remote.Core.Transformation;
 using Remote.Core.Transformation.Configurations;
-using Serilog;
 
 namespace Remote.Core.Communication
 {
@@ -41,15 +41,15 @@ namespace Remote.Core.Communication
 		{
 			if (IsClientSet)
 			{
-				Log.Warning("Client is already set. \n" +
-				            $"Set client: {Client.Id} \n" +
-				            $"New client: {client.Id} ");
+				this.LogWarning("Client is already set. \n" +
+				                $"Set client: {Client.Id} \n" +
+				                $"New client: {client.Id} ");
 				return;
 			}
 
 			_client = client;
-			Log.Debug($"Set client. Code: <cs_setClient>" +
-			          $"Set client: {Client.Id}");
+			this.Log($"Set client. Code: <cs_setClient>" +
+			         $"Set client: {Client.Id}");
 		}
 
 		public void Start()
@@ -128,15 +128,15 @@ namespace Remote.Core.Communication
 			}
 			catch (JsonReaderException jsonReaderException)
 			{
-				Log.Error($"[CommunicationService] \n Json reader error for jsonString: {jsonString}.\n" +
-				          $"{jsonReaderException.Message}");
+				this.LogError($"Json reader error for jsonString: {jsonString}.\n" +
+				              $"{jsonReaderException.Message}");
 
 				// Todo check, why jsonString is not a valid json format
 			}
 			catch (JsonException ex)
 			{
-				Log.Error($"[CommunicationService] \n Json error for jsonString: {jsonString}.\n" +
-				          $"{ex.Message}");
+				this.LogError($"Json error for jsonString: {jsonString}.\n" +
+				              $"{ex.Message}");
 			}
 			catch (TransformException ex)
 			{
@@ -147,16 +147,17 @@ namespace Remote.Core.Communication
 					case 1:
 					case 2:
 					case 3:
-						Log.Error($"[CommunicationService] \n Transform error for jsonString: {jsonString}.\n" +
-						          $"{ex.Message}");
+						this.LogError(
+							$"Transform error for jsonString: {jsonString}.\n" +
+							$"{ex.Message}");
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.Fatal($"[CommunicationService] \n !!! Unexpected error while OnMessageReceived event\n" +
-				          $"Message: {ex.Message}\n" +
-				          $"Stacktrace: {ex.StackTrace}\n");
+				this.LogFatal($"!!! Unexpected error while OnMessageReceived event\n" +
+				              $"Message: {ex.Message}\n" +
+				              $"Stacktrace: {ex.StackTrace}\n");
 			}
 		}
 
