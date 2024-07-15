@@ -1,5 +1,4 @@
 ﻿using Configurations.General.Settings;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using Remote.Core.Communication.Client;
 using System.Net.Sockets;
@@ -15,9 +14,7 @@ namespace Tests.Remote.Core.Communication.Client
 		{
 			_clientMock = Substitute.For<IClient>();
 
-			IOptions<AsyncClientSettings> optionsMock = Substitute.For<IOptions<AsyncClientSettings>>();
-			optionsMock.Value.Returns(AsyncClientSettings.Default);
-			_asyncClient = AsyncClient.Create(_clientMock, optionsMock);
+			_asyncClient = AsyncClient.Create(_clientMock, AsyncClientSettings.Default);
 		}
 
 		[Fact]

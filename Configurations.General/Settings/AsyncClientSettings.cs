@@ -1,6 +1,6 @@
 ﻿namespace Configurations.General.Settings
 {
-	public class AsyncClientSettings
+	public class AsyncClientSettings : IAsyncClientSettings
 	{
 		private const int DefaultBufferSize = 4096;
 		private const int DefaultClientTimeout = 5;
@@ -13,5 +13,11 @@
 			BufferSize = DefaultBufferSize,
 			ClientTimeout = DefaultClientTimeout // Minutes
 		};
+	}
+
+	public interface IAsyncClientSettings
+	{
+		int BufferSize { get; init; }
+		int ClientTimeout { get; init; }
 	}
 }

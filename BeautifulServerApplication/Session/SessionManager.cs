@@ -1,7 +1,6 @@
 ﻿using Configurations.General.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
@@ -33,18 +32,18 @@ internal class SessionManager : ISessionManager
 	private readonly IScopeFactory _scopeFactory;
 	private readonly IAsyncClientFactory _asyncClientFactory;
 
-	private readonly IOptions<AsyncClientSettings> _asyncClientOptions;
+	private readonly AsyncClientSettings _asyncClientSettings;
 
 	public SessionManager(IAsyncServer asyncSocketServer, ISessionFactory sessionFactory,
 		IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory,
-		IOptions<AsyncClientSettings> asyncClientOptions)
+		AsyncClientSettings asyncClientSettings)
 	{
 		_sessionFactory = sessionFactory;
 		_scopeFactory = scopeFactory;
 		_asyncSocketServer = asyncSocketServer;
 		_asyncClientFactory = asyncClientFactory;
 
-		_asyncClientOptions = asyncClientOptions;
+		_asyncClientSettings = asyncClientSettings;
 
 		_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 	}
@@ -85,7 +84,7 @@ internal class SessionManager : ISessionManager
 		if (scope == null)
 			throw new SessionManagerException("Scope is not set.", 2);
 
-		var asyncClient = _asyncClientFactory.Create(client, _asyncClientOptions);
+		var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
 		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 		communicationService.SetClient(asyncClient);
 

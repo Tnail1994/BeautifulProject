@@ -1,13 +1,12 @@
-﻿using System.Net.Sockets;
-using BeautifulServerApplication;
+﻿using BeautifulServerApplication;
 using BeautifulServerApplication.Session;
 using Configurations.General.Settings;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using NSubstitute;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
+using System.Net.Sockets;
 
 namespace Tests.BeautifulServerApplication.Session
 {
@@ -19,7 +18,6 @@ namespace Tests.BeautifulServerApplication.Session
 		private readonly IScopeFactory _scopeFactoryMock;
 		private readonly CancellationTokenSource _cancelledTokenSource;
 		private readonly IAsyncClientFactory _asyncClientFactoryMock;
-		private readonly IOptions<AsyncClientSettings> _optionsMock;
 		private IServiceScope? _scopeMock;
 		private IServiceProvider? _serviceProviderMock;
 
@@ -32,10 +30,8 @@ namespace Tests.BeautifulServerApplication.Session
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_optionsMock = Substitute.For<IOptions<AsyncClientSettings>>();
-			_optionsMock.Value.Returns(AsyncClientSettings.Default);
 			_sessionManager = new SessionManager(_asyncSocketServerMock, _sessionFactoryMock, _scopeFactoryMock,
-				_asyncClientFactoryMock, _optionsMock);
+				_asyncClientFactoryMock, AsyncClientSettings.Default);
 		}
 
 		private void BaseProviderMocking()
@@ -71,7 +67,7 @@ namespace Tests.BeautifulServerApplication.Session
 			RaiseNewConnectionEvent(dummySocket);
 
 			_scopeFactoryMock.Received(1).Create();
-			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>(), _optionsMock);
+			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>(), Arg.Any<IAsyncClientSettings>());
 			session.Received(1).Start();
 		}
 

@@ -1,9 +1,8 @@
-﻿using System.Net.Sockets;
-using System.Text;
-using Configurations.General.Settings;
+﻿using Configurations.General.Settings;
 using CoreHelpers;
-using Microsoft.Extensions.Options;
 using Serilog;
+using System.Net.Sockets;
+using System.Text;
 
 namespace Remote.Core.Communication.Client
 {
@@ -25,13 +24,11 @@ namespace Remote.Core.Communication.Client
 
 		private readonly int _bufferSize;
 
-		private AsyncClient(IClient client, IOptions<AsyncClientSettings> options)
+		private AsyncClient(IClient client, IAsyncClientSettings settings)
 		{
 			Id = GuidIdCreator.CreateString();
 
 			_receivingCancellationTokenSource = new CancellationTokenSource();
-
-			var settings = options.Value;
 
 			_clientTimeout = TimeSpan.FromMinutes(settings.ClientTimeout);
 			_bufferSize = settings.BufferSize;
@@ -44,9 +41,9 @@ namespace Remote.Core.Communication.Client
 		public event Action<string>? MessageReceived;
 		public event EventHandler<string>? ConnectionLost;
 
-		public static IAsyncClient Create(IClient client, IOptions<AsyncClientSettings> options)
+		public static IAsyncClient Create(IClient client, IAsyncClientSettings settings)
 		{
-			return new AsyncClient(client, options);
+			return new AsyncClient(client, settings);
 		}
 
 		public async void StartReceivingAsync()

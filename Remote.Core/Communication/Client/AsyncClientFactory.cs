@@ -1,19 +1,18 @@
 ﻿using Configurations.General.Settings;
-using Microsoft.Extensions.Options;
 using System.Net.Sockets;
 
 namespace Remote.Core.Communication.Client
 {
 	public interface IAsyncClientFactory
 	{
-		IAsyncClient Create(TcpClient client, IOptions<AsyncClientSettings> options);
+		IAsyncClient Create(TcpClient client, IAsyncClientSettings settings);
 	}
 
 	public class AsyncClientFactory : IAsyncClientFactory
 	{
-		public IAsyncClient Create(TcpClient client, IOptions<AsyncClientSettings> options)
+		public IAsyncClient Create(TcpClient client, IAsyncClientSettings settings)
 		{
-			return AsyncClient.Create(ClientWrapper.Create(client), options);
+			return AsyncClient.Create(ClientWrapper.Create(client), settings);
 		}
 	}
 }

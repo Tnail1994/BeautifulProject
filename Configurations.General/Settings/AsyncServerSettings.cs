@@ -1,6 +1,6 @@
 ﻿namespace Configurations.General.Settings
 {
-	public class AsyncServerSettings
+	public class AsyncServerSettings : IAsyncServerSettings
 	{
 		private const int DefaultPort = 8910;
 		private const int DefaultMaxConnections = int.MaxValue;
@@ -20,5 +20,13 @@
 			IpAddress = DefaultIpAddress,
 			MaxErrorCount = DefaultMaxErrorCount
 		};
+	}
+
+	public interface IAsyncServerSettings
+	{
+		int Port { get; init; }
+		int MaxConnections { get; init; }
+		int MaxErrorCount { get; init; }
+		string IpAddress { get; init; }
 	}
 }

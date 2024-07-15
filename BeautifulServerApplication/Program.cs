@@ -3,6 +3,7 @@ using Configurations.General.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Remote.Core;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
@@ -136,6 +137,11 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
+
+					services.AddSingleton<IAsyncServerSettings>(provider =>
+						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
+					services.AddSingleton<IAsyncClientSettings>(provider =>
+						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
 				});
 	}
 }

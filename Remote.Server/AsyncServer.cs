@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using Configurations.General.Settings;
 using CoreImplementations;
-using Microsoft.Extensions.Options;
 
 namespace Remote.Server
 {
@@ -21,9 +20,9 @@ namespace Remote.Server
 
 		public event Action<TcpClient>? NewConnectionOccured;
 
-		public AsyncServer(IOptions<AsyncServerSettings> options)
+		public AsyncServer(IAsyncServerSettings settings)
 		{
-			var asyncServerSettings = options.Value;
+			var asyncServerSettings = settings;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
 			_maxErrorCount = asyncServerSettings.MaxErrorCount;
 			_listener = new TcpListener(ipAddress, asyncServerSettings.Port);
