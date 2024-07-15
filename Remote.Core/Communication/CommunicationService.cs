@@ -38,8 +38,17 @@ namespace Remote.Core.Communication
 
 		public void SetClient(IAsyncClient client)
 		{
-			Log.Debug($"Set client. Code: <cs_setClient>");
+			if (IsClientSet)
+			{
+				Log.Warning("Client is already set. \n" +
+				            $"Set client: {Client.Id} \n" +
+				            $"New client: {client.Id} ");
+				return;
+			}
+
 			_client = client;
+			Log.Debug($"Set client. Code: <cs_setClient>" +
+			          $"Set client: {Client.Id}");
 		}
 
 		public void Start()

@@ -7,6 +7,7 @@ namespace Remote.Core.Communication
 {
 	public interface IAsyncClient
 	{
+		string Id { get; }
 		event Action<string> MessageReceived;
 		void StartReceivingAsync();
 		void Send(string message);

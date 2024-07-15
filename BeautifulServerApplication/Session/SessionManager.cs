@@ -1,9 +1,8 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Sockets;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Remote.Server.Common.Contracts;
 using Serilog;
+using System.Collections.Concurrent;
+using System.Net.Sockets;
 
 namespace BeautifulServerApplication.Session;
 
@@ -13,18 +12,21 @@ internal interface ISessionManager
 
 internal class SessionManager : ISessionManager, IHostedService
 {
-	private readonly IServiceProvider _serviceProvider;
 	private readonly IAsyncSocketServer _asyncSocketServer;
 
 	private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
 	private CancellationToken _cancellationToken;
+	private readonly ISessionFactory _sessionFactory;
+	private readonly IScopeFactory _scopeFactory;
 
-	public SessionManager(IServiceProvider serviceProvider)
+	public SessionManager(IAsyncSocketServer asyncSocketServer, ISessionFactory sessionFactory,
+		IScopeFactory scopeFactory)
 	{
-		_serviceProvider = serviceProvider;
+		_sessionFactory = sessionFactory;
+		_scopeFactory = scopeFactory;
+		_asyncSocketServer = asyncSocketServer;
 
-		_asyncSocketServer = _serviceProvider.GetRequiredService<IAsyncSocketServer>();
 		_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 	}
 
@@ -58,30 +60,20 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void StartNewSession(Socket socket)
 	{
-		Task.Factory.StartNew(() =>
-			{
-				var scope = _serviceProvider.CreateScope();
-				var sessionFactory = _serviceProvider.GetRequiredService<ISessionFactory>();
+		var scope = _scopeFactory.Create();
 
-				sessionFactory.AddScope(scope);
-				sessionFactory.AddSocket(socket);
+		_sessionFactory.AddScope(scope);
+		_sessionFactory.AddSocket(socket);
 
-				var session = sessionFactory.Create();
+		var session = _sessionFactory.Create();
 
-				Log.Information($"New session with Id {session.Id} created.");
+		Log.Information($"New session with Id {session.Id} created.");
 
-				_sessions.TryAdd(session.Id, session);
+		_sessions.TryAdd(session.Id, session);
 
-				session.Start();
+		session.Start();
 
-				Log.Information($"New session with Id {session.Id} started.");
-			}, _cancellationToken)
-			.ContinueWith(t =>
-				{
-					Log.Error($"Error in session creation or starting: {t.Exception?.Message}+" +
-					          $"Stacktrace: {t.Exception?.StackTrace}");
-				},
-				TaskContinuationOptions.OnlyOnFaulted);
+		Log.Information($"New session with Id {session.Id} started.");
 	}
 
 

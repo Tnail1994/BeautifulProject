@@ -21,4 +21,7 @@
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Tests" />
+  </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@ using Serilog;
 
 namespace BeautifulServerApplication.Session
 {
-	internal interface ISession
+	public interface ISession
 	{
 		string Id { get; }
 

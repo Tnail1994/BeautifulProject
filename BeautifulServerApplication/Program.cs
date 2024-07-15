@@ -53,8 +53,9 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IAsyncSocketServer, AsyncSocketServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
 
-					services.AddTransient<ISessionFactory, SessionFactory>();
-					services.AddTransient<IAsyncClientFactory, AsyncClientFactory>();
+					services.AddSingleton<ISessionFactory, SessionFactory>();
+					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
+					services.AddSingleton<IScopeFactory, ScopeFactory>();
 
 					services.AddScoped<ICommunicationService, CommunicationService>();
 				});

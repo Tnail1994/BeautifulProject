@@ -29,7 +29,7 @@ namespace Remote.Server
 
 			Log.Information("Server started.");
 
-			return Task.Run(ListenForClientsAsync, _cts.Token);
+			return Task.Factory.StartNew(ListenForClientsAsync, _cts.Token);
 		}
 
 		public void Stop()

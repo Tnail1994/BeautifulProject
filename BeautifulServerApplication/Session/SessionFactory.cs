@@ -4,7 +4,7 @@ using Remote.Core.Communication;
 
 namespace BeautifulServerApplication.Session
 {
-	internal interface ISessionFactory
+	public interface ISessionFactory
 	{
 		void AddScope(IServiceScope scope);
 		void AddSocket(Socket socket);
@@ -37,7 +37,17 @@ namespace BeautifulServerApplication.Session
 			var asyncClient = asyncClientFactory.Create(_socket);
 			var communicationService = _scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 			communicationService.SetClient(asyncClient);
-			return Session.Create(_scope.ServiceProvider);
+			var session = Session.Create(_scope.ServiceProvider);
+
+			Clear();
+
+			return session;
+		}
+
+		private void Clear()
+		{
+			_scope = null;
+			_socket = null;
 		}
 	}
 }
