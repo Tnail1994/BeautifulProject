@@ -2,7 +2,7 @@
 using Remote.Core.Communication.Client;
 using System.Net.Sockets;
 
-namespace Tests.Remote.Core.Communication
+namespace Tests.Remote.Core.Communication.Client
 {
 	public class AsyncClientTests
 	{

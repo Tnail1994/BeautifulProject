@@ -111,6 +111,7 @@ namespace Remote.Core.Communication
 					_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
 						.ToList();
 
+				var messageAtLeastHandledOnce = false;
 				foreach (var transformedObjectWaiter in transformedObjectWaiters)
 				{
 					transformedObjectWaiter.TaskCompletionSource.SetResult(transformedObject);
@@ -118,10 +119,12 @@ namespace Remote.Core.Communication
 					if (transformedObjectWaiter.IsPermanent)
 						continue;
 
+					messageAtLeastHandledOnce = true;
 					_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
 				}
 
-				TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
+				if (messageAtLeastHandledOnce)
+					TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
 			}
 			catch (TransformException ex)
 			{
@@ -150,8 +153,6 @@ namespace Remote.Core.Communication
 
 		public void Dispose()
 		{
-			_client?.Dispose();
-
 			foreach (var waiter in _transformedObjectWaiters)
 			{
 				waiter.Value.TaskCompletionSource.SetCanceled();
@@ -163,6 +164,7 @@ namespace Remote.Core.Communication
 			if (!IsClientSet)
 				return;
 
+			Client.Dispose();
 			Client.MessageReceived -= OnMessageReceived;
 		}
 	}
