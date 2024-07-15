@@ -5,6 +5,7 @@ using Serilog;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 using Microsoft.Extensions.DependencyInjection;
+using Remote.Core.Communication.Client;
 
 namespace BeautifulServerApplication.Session;
 
@@ -107,6 +108,10 @@ internal class SessionManager : ISessionManager, IHostedService
 	private void StopServer()
 	{
 		_asyncSocketServer.Stop();
+		foreach (var session in _sessions)
+		{
+			session.Value.Stop();
+		}
 	}
 
 	#endregion

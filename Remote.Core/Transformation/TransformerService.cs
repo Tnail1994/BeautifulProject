@@ -6,7 +6,7 @@ using Serilog;
 
 namespace Remote.Core.Transformation
 {
-	public interface ITransformerService
+	public interface ITransformerService : IDisposable
 	{
 		TransformedObject Transform(string jsonString);
 	}
@@ -86,6 +86,12 @@ namespace Remote.Core.Transformation
 			var jObject = JObject.Parse(json);
 			var discriminator = jObject["$type"]?.ToString().Split(',')[0].Split('.').Last();
 			return discriminator;
+		}
+
+		public void Dispose()
+		{
+			_typeMap.Clear();
+			_methodCache.Clear();
 		}
 	}
 }

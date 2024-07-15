@@ -17,4 +17,7 @@
     <ProjectReference Include="..\CoreHelpers\CoreHelpers.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Tests" />
+  </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Remote.Core;
 using Remote.Core.Communication;
+using Remote.Core.Communication.Client;
 using Remote.Core.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;

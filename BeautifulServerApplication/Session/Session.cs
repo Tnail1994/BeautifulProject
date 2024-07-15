@@ -1,5 +1,4 @@
 ﻿using CoreHelpers;
-using Microsoft.Extensions.DependencyInjection;
 using Remote.Core.Communication;
 using Serilog;
 
@@ -10,9 +9,10 @@ namespace BeautifulServerApplication.Session
 		string Id { get; }
 
 		void Start();
+		void Stop();
 	}
 
-	internal class Session : ISession
+	internal class Session : ISession, IDisposable
 	{
 		private readonly ICommunicationService _communicationService;
 
@@ -27,12 +27,21 @@ namespace BeautifulServerApplication.Session
 
 		public void Start()
 		{
+			Log.Debug($"[Session] Starting session {Id}");
+
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
 			// So beware of writing to the console or doing other blocking operations.
 			// Need to define an own logging system for this session overall.
 
 			StartCommunicationService();
+		}
+
+		public void Stop()
+		{
+			Log.Debug($"[Session] Stopping session {Id}");
+
+			Dispose();
 		}
 
 		private void StartCommunicationService()
@@ -67,5 +76,10 @@ namespace BeautifulServerApplication.Session
 		}
 
 		#endregion
+
+		public void Dispose()
+		{
+			_communicationService.Dispose();
+		}
 	}
 }

@@ -3,9 +3,9 @@ using System.Text;
 using CoreHelpers;
 using Serilog;
 
-namespace Remote.Core.Communication
+namespace Remote.Core.Communication.Client
 {
-	public interface IAsyncClient
+	public interface IAsyncClient : IDisposable
 	{
 		string Id { get; }
 		event Action<string> MessageReceived;
@@ -15,12 +15,12 @@ namespace Remote.Core.Communication
 
 	internal class AsyncClient : IAsyncClient
 	{
-		private readonly Socket _socket;
+		private readonly ISocket _socket;
 
 		private readonly CancellationTokenSource _receivingCancellationTokenSource;
 		private readonly TimeSpan _clientTimeout = TimeSpan.FromMinutes(5);
 
-		private AsyncClient(Socket socket)
+		private AsyncClient(ISocket socket)
 		{
 			Id = GuidIdCreator.CreateString();
 
@@ -35,7 +35,8 @@ namespace Remote.Core.Communication
 
 		public static IAsyncClient Create(Socket socket)
 		{
-			return new AsyncClient(socket);
+			ISocket socketWrapper = SocketWrapper.Create(socket);
+			return new AsyncClient(socketWrapper);
 		}
 
 		public async void StartReceivingAsync()
@@ -94,6 +95,12 @@ namespace Remote.Core.Communication
 			var messageBytes = Encoding.UTF8.GetBytes(message);
 			var sendingResult = await _socket.SendAsync(messageBytes, SocketFlags.None);
 			Log.Debug($"Send {sendingResult}. Id: {Id}");
+		}
+
+		public void Dispose()
+		{
+			_receivingCancellationTokenSource.Dispose();
+			_socket.Dispose();
 		}
 	}
 }

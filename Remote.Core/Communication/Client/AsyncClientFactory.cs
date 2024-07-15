@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace Remote.Core.Communication
+namespace Remote.Core.Communication.Client
 {
 	public interface IAsyncClientFactory
 	{

@@ -4,6 +4,7 @@ using BeautifulServerApplication.Session;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Remote.Core.Communication;
+using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
 
 namespace Tests.BeautifulServerApplication.Session

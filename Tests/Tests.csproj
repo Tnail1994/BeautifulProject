@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BeautifulServerApplication - Copy - Copy\" />
+    <Folder Include="Remote\Core\Transformation\" />
   </ItemGroup>
 
   <ItemGroup>

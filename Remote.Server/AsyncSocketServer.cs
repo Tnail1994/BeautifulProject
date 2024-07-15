@@ -36,8 +36,7 @@ namespace Remote.Server
 		{
 			Log.Information("Server stopping...");
 
-			_cts.Cancel();
-			_listener.Close();
+			Dispose();
 
 			Log.Information("Server stopped.");
 		}

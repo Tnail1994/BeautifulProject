@@ -1,12 +1,13 @@
 ﻿using System.Collections.Concurrent;
 using Newtonsoft.Json;
+using Remote.Core.Communication.Client;
 using Remote.Core.Implementations;
 using Remote.Core.Transformation;
 using Serilog;
 
 namespace Remote.Core.Communication
 {
-	public interface ICommunicationService
+	public interface ICommunicationService : IDisposable
 	{
 		void SetClient(IAsyncClient client);
 		void Start();
@@ -145,6 +146,24 @@ namespace Remote.Core.Communication
 		private void AddTransformedObject(TransformedObject transformedObject)
 		{
 			_transformedObjects.TryAdd(transformedObject.Id, transformedObject);
+		}
+
+		public void Dispose()
+		{
+			_client?.Dispose();
+
+			foreach (var waiter in _transformedObjectWaiters)
+			{
+				waiter.Value.TaskCompletionSource.SetCanceled();
+			}
+
+			_transformedObjectWaiters.Clear();
+			_transformedObjects.Clear();
+
+			if (!IsClientSet)
+				return;
+
+			Client.MessageReceived -= OnMessageReceived;
 		}
 	}
 }
