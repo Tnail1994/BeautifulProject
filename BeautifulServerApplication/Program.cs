@@ -57,6 +57,16 @@ namespace BeautifulServerApplication
 						.Build();
 				}
 			}
+			catch (ArgumentException argumentException)
+			{
+				Log.Error($"Wrong basePath: {basePath}\n" +
+				          $"[{argumentException.ParamName}]: {argumentException.Message}");
+			}
+			catch (FileNotFoundException fileNotFoundException)
+			{
+				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
+				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}");
+			}
 			catch (Exception ex)
 			{
 				Log.Fatal("!!! Unexpected error\n" +
