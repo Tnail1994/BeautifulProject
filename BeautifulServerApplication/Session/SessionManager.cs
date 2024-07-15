@@ -47,7 +47,7 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void StartServices()
 	{
-		Log.Information("Starting services...");
+		Log.Information("[SessionManager] \\n Starting services...");
 	}
 
 	private async Task StartServer()
@@ -57,35 +57,35 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	#endregion
 
-	private void OnNewConnectionOccured(Socket socket)
+	private void OnNewConnectionOccured(TcpClient client)
 	{
-		Log.Information("Starting new session ...");
-		StartNewSession(socket);
+		Log.Information("[SessionManager] \\n Starting new session ...");
+		StartNewSession(client);
 	}
 
-	private void StartNewSession(Socket socket)
+	private void StartNewSession(TcpClient client)
 	{
 		var scope = _scopeFactory.Create();
 
-		if (socket == null)
-			throw new InvalidOperationException("[SessionManager] Socket is not set.");
+		if (client == null)
+			throw new SessionManagerException("[SessionManager] Socket is not set.", 1);
 
 		if (scope == null)
-			throw new InvalidOperationException("[SessionManager] Scope is not set.");
+			throw new SessionManagerException("[SessionManager] Scope is not set.", 2);
 
-		var asyncClient = _asyncClientFactory.Create(socket);
+		var asyncClient = _asyncClientFactory.Create(client);
 		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 		communicationService.SetClient(asyncClient);
 
 		var session = _sessionFactory.Create(communicationService);
 
-		Log.Information($"New session with Id {session.Id} created.");
+		Log.Information($"[SessionManager] \n New session with Id {session.Id} created.");
 
 		_sessions.TryAdd(session.Id, session);
 
 		session.Start();
 
-		Log.Information($"New session with Id {session.Id} started.");
+		Log.Information($"[SessionManager] \\n New session with Id {session.Id} started.");
 	}
 
 
@@ -102,7 +102,7 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void StopServices()
 	{
-		Log.Information("Stopping services...");
+		Log.Information("[SessionManager] \\n Stopping services...");
 	}
 
 	private void StopServer()

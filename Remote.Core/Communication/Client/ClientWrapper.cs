@@ -9,33 +9,33 @@ namespace Remote.Core.Communication.Client
 		Task<int> SendAsync(byte[] buffer, SocketFlags socketFlags);
 	}
 
-	public class SocketWrapper : ISocket
+	public class ClientWrapper : ISocket
 	{
-		private readonly Socket _socket;
+		private readonly TcpClient _client;
 
-		private SocketWrapper(Socket socket)
+		private ClientWrapper(TcpClient client)
 		{
-			_socket = socket;
+			_client = client;
 		}
 
-		public static ISocket Create(Socket socket)
+		public static ISocket Create(TcpClient client)
 		{
-			return new SocketWrapper(socket);
+			return new ClientWrapper(client);
 		}
 
 		public Task<int> ReceiveAsync(byte[] buffer, SocketFlags socketFlags)
 		{
-			return _socket.ReceiveAsync(buffer, socketFlags);
+			return _client.Client.ReceiveAsync(buffer, socketFlags);
 		}
 
 		public Task<int> SendAsync(byte[] buffer, SocketFlags socketFlags)
 		{
-			return _socket.SendAsync(buffer, socketFlags);
+			return _client.Client.SendAsync(buffer, socketFlags);
 		}
 
 		public void Dispose()
 		{
-			_socket.Dispose();
+			_client.Dispose();
 		}
 	}
 }

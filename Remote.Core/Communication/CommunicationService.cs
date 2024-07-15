@@ -142,6 +142,8 @@ namespace Remote.Core.Communication
 			{
 				switch (ex.ErrorCode)
 				{
+					// Todo, depending on case do error handling
+
 					case 1:
 					case 2:
 					case 3:

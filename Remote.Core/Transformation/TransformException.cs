@@ -1,12 +1,11 @@
-﻿namespace Remote.Core.Transformation
-{
-	public class TransformException : Exception
-	{
-		public TransformException(string message, int errorCode) : base(message)
-		{
-			ErrorCode = errorCode;
-		}
+﻿using CoreImplementations;
 
-		public int ErrorCode { get; }
+namespace Remote.Core.Transformation
+{
+	public class TransformException : BaseException
+	{
+		public TransformException(string message, int errorCode) : base(message, errorCode)
+		{
+		}
 	}
 }

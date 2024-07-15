@@ -4,14 +4,14 @@ namespace Remote.Core.Communication.Client
 {
 	public interface IAsyncClientFactory
 	{
-		IAsyncClient Create(Socket socket);
+		IAsyncClient Create(TcpClient client);
 	}
 
 	public class AsyncClientFactory : IAsyncClientFactory
 	{
-		public IAsyncClient Create(Socket socket)
+		public IAsyncClient Create(TcpClient client)
 		{
-			return AsyncClient.Create(SocketWrapper.Create(socket));
+			return AsyncClient.Create(ClientWrapper.Create(client));
 		}
 	}
 }
