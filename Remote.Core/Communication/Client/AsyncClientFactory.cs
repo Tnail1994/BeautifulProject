@@ -11,7 +11,7 @@ namespace Remote.Core.Communication.Client
 	{
 		public IAsyncClient Create(Socket socket)
 		{
-			return AsyncClient.Create(socket);
+			return AsyncClient.Create(SocketWrapper.Create(socket));
 		}
 	}
 }

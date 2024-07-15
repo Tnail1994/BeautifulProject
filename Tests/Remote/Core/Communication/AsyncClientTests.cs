@@ -1,34 +1,39 @@
-﻿using Remote.Core.Communication.Client;
+﻿using NSubstitute;
+using Remote.Core.Communication.Client;
 using System.Net.Sockets;
 
 namespace Tests.Remote.Core.Communication
 {
-	public class TestableSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
-		: Socket(addressFamily, socketType, protocolType), ITestableSocket;
-
-	public interface ITestableSocket
-	{
-	}
-
 	public class AsyncClientTests
 	{
-		private readonly Socket _dummySocket;
 		private readonly IAsyncClient _asyncClient;
+		private readonly ISocket _socketMock;
 
 		public AsyncClientTests()
 		{
-			_dummySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			_asyncClient = AsyncClient.Create(_dummySocket);
+			_socketMock = Substitute.For<ISocket>();
+			_asyncClient = AsyncClient.Create(_socketMock);
 		}
 
 		[Fact]
 		public void StartReceivingAsync_WhenCalled_ShouldStartReceivingOnSocket()
 		{
-			// Arrange
-			var message = "Hello, World!";
-			var receivedMessage = string.Empty;
-
 			_asyncClient.StartReceivingAsync();
+			_socketMock.Received(1).ReceiveAsync(Arg.Any<byte[]>(), Arg.Any<SocketFlags>());
+		}
+
+		[Fact]
+		public void SendingAString_ShouldCallSendMethodOnSocket()
+		{
+			_asyncClient.Send("MockMessage");
+			_socketMock.Received(1).SendAsync(Arg.Any<byte[]>(), Arg.Any<SocketFlags>());
+		}
+
+		[Fact]
+		public void Dispose_WhenCalled_ShouldDisposeSocket()
+		{
+			_asyncClient.Dispose();
+			_socketMock.Received(1).Dispose();
 		}
 	}
 }

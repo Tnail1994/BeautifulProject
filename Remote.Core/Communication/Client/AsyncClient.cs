@@ -33,10 +33,9 @@ namespace Remote.Core.Communication.Client
 
 		public event Action<string>? MessageReceived;
 
-		public static IAsyncClient Create(Socket socket)
+		public static IAsyncClient Create(ISocket socket)
 		{
-			ISocket socketWrapper = SocketWrapper.Create(socket);
-			return new AsyncClient(socketWrapper);
+			return new AsyncClient(socket);
 		}
 
 		public async void StartReceivingAsync()
