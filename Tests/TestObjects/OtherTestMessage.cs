@@ -4,7 +4,7 @@ using Remote.Core.Implementations;
 
 namespace Tests.TestObjects
 {
-	public class OtherTestMessage : BaseMessage<Test>
+	public class OtherTestMessage : BaseMessage<TestObject>
 	{
 		public static string CreateString()
 		{
@@ -15,7 +15,7 @@ namespace Tests.TestObjects
 		{
 			return new OtherTestMessage
 			{
-				MessageObject = Test.Create("MockMessage2")
+				MessageObject = TestObject.Create("MockMessage2")
 			};
 		}
 	}
