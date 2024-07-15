@@ -27,7 +27,7 @@ namespace BeautifulServerApplication.Session
 
 		public void Start()
 		{
-			Log.Debug($"[Session] Starting session {Id}");
+			Log.Debug($"Starting session {Id}");
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
@@ -39,7 +39,7 @@ namespace BeautifulServerApplication.Session
 
 		public void Stop()
 		{
-			Log.Debug($"[Session] Stopping session {Id}");
+			Log.Debug($"Stopping session {Id}");
 
 			Dispose();
 		}

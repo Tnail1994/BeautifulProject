@@ -128,14 +128,14 @@ namespace Remote.Core.Communication
 			}
 			catch (JsonReaderException jsonReaderException)
 			{
-				Log.Error($"[CommunicationService] \n Json reader error for jsonString: {jsonString}.\n" +
+				Log.Error($"Json reader error for jsonString: {jsonString}.\n" +
 				          $"{jsonReaderException.Message}");
 
 				// Todo check, why jsonString is not a valid json format
 			}
 			catch (JsonException ex)
 			{
-				Log.Error($"[CommunicationService] \n Json error for jsonString: {jsonString}.\n" +
+				Log.Error($"Json error for jsonString: {jsonString}.\n" +
 				          $"{ex.Message}");
 			}
 			catch (TransformException ex)
@@ -147,14 +147,14 @@ namespace Remote.Core.Communication
 					case 1:
 					case 2:
 					case 3:
-						Log.Error($"[CommunicationService] \n Transform error for jsonString: {jsonString}.\n" +
+						Log.Error($"Transform error for jsonString: {jsonString}.\n" +
 						          $"{ex.Message}");
 						break;
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.Fatal($"[CommunicationService] \n !!! Unexpected error while OnMessageReceived event\n" +
+				Log.Fatal($"!!! Unexpected error while OnMessageReceived event\n" +
 				          $"Message: {ex.Message}\n" +
 				          $"Stacktrace: {ex.StackTrace}\n");
 			}

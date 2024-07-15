@@ -49,7 +49,7 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void StartServices()
 	{
-		Log.Information("[SessionManager] \\n Starting services...");
+		Log.Information("Starting services...");
 	}
 
 	private async Task StartServer()
@@ -61,7 +61,7 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void OnNewConnectionOccured(TcpClient client)
 	{
-		Log.Information("[SessionManager] \\n Starting new session ...");
+		Log.Information("Starting new session ...");
 		StartNewSession(client);
 	}
 
@@ -70,10 +70,10 @@ internal class SessionManager : ISessionManager, IHostedService
 		var scope = _scopeFactory.Create();
 
 		if (client == null)
-			throw new SessionManagerException("[SessionManager] Socket is not set.", 1);
+			throw new SessionManagerException("Socket is not set.", 1);
 
 		if (scope == null)
-			throw new SessionManagerException("[SessionManager] Scope is not set.", 2);
+			throw new SessionManagerException("Scope is not set.", 2);
 
 		var asyncClient = _asyncClientFactory.Create(client, _asyncClientOptions);
 		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
@@ -81,13 +81,13 @@ internal class SessionManager : ISessionManager, IHostedService
 
 		var session = _sessionFactory.Create(communicationService);
 
-		Log.Information($"[SessionManager] \n New session with Id {session.Id} created.");
+		Log.Information($"New session with Id {session.Id} created.");
 
 		_sessions.TryAdd(session.Id, session);
 
 		session.Start();
 
-		Log.Information($"[SessionManager] \\n New session with Id {session.Id} started.");
+		Log.Information($"New session with Id {session.Id} started.");
 	}
 
 
@@ -104,7 +104,7 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private void StopServices()
 	{
-		Log.Information("[SessionManager] \\n Stopping services...");
+		Log.Information("Stopping services...");
 	}
 
 	private void StopServer()
