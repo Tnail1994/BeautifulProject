@@ -1,6 +1,8 @@
 ﻿using System.Net.Sockets;
 using System.Text;
+using Configurations.General.Settings;
 using CoreHelpers;
+using Microsoft.Extensions.Options;
 using Serilog;
 
 namespace Remote.Core.Communication.Client
@@ -15,27 +17,34 @@ namespace Remote.Core.Communication.Client
 
 	internal class AsyncClient : IAsyncClient
 	{
-		private readonly ISocket _socket;
+		private readonly IClient _client;
 
 		private readonly CancellationTokenSource _receivingCancellationTokenSource;
-		private readonly TimeSpan _clientTimeout = TimeSpan.FromMinutes(5);
+		private readonly TimeSpan _clientTimeout;
 
-		private AsyncClient(ISocket socket)
+		private readonly int _bufferSize;
+
+		private AsyncClient(IClient client, IOptions<AsyncClientSettings> options)
 		{
 			Id = GuidIdCreator.CreateString();
 
 			_receivingCancellationTokenSource = new CancellationTokenSource();
 
-			_socket = socket;
+			var settings = options.Value;
+
+			_clientTimeout = TimeSpan.FromMinutes(settings.ClientTimeout);
+			_bufferSize = settings.BufferSize;
+
+			_client = client;
 		}
 
 		public string Id { get; }
 
 		public event Action<string>? MessageReceived;
 
-		public static IAsyncClient Create(ISocket socket)
+		public static IAsyncClient Create(IClient client, IOptions<AsyncClientSettings> options)
 		{
-			return new AsyncClient(socket);
+			return new AsyncClient(client, options);
 		}
 
 		public async void StartReceivingAsync()
@@ -45,7 +54,7 @@ namespace Remote.Core.Communication.Client
 				var buffer = new byte[4096];
 				while (!_receivingCancellationTokenSource.Token.IsCancellationRequested)
 				{
-					var receiveTask = _socket.ReceiveAsync(buffer, SocketFlags.None);
+					var receiveTask = _client.ReceiveAsync(buffer, SocketFlags.None);
 					var timeoutTask = Task.Delay(_clientTimeout, _receivingCancellationTokenSource.Token);
 
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
@@ -92,14 +101,14 @@ namespace Remote.Core.Communication.Client
 		public async void Send(string message)
 		{
 			var messageBytes = Encoding.UTF8.GetBytes(message);
-			var sendingResult = await _socket.SendAsync(messageBytes, SocketFlags.None);
+			var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
 			Log.Debug($"Send {sendingResult}. Id: {Id}");
 		}
 
 		public void Dispose()
 		{
 			_receivingCancellationTokenSource.Dispose();
-			_socket.Dispose();
+			_client.Dispose();
 		}
 	}
 }

@@ -1,4 +1,7 @@
-﻿using Remote.Server;
+﻿using Configurations.General.Settings;
+using Microsoft.Extensions.Options;
+using NSubstitute;
+using Remote.Server;
 using Remote.Server.Common.Contracts;
 
 namespace Tests.Remote.Server
@@ -9,7 +12,9 @@ namespace Tests.Remote.Server
 
 		public AsyncServerTests()
 		{
-			_asyncSocketServer = new AsyncServer();
+			var optionsMock = Substitute.For<IOptions<AsyncServerSettings>>();
+			optionsMock.Value.Returns(AsyncServerSettings.Default);
+			_asyncSocketServer = new AsyncServer(optionsMock);
 		}
 	}
 }

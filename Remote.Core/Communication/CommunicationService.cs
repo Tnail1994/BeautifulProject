@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using Newtonsoft.Json;
 using Remote.Core.Communication.Client;
-using Remote.Core.Implementations;
 using Remote.Core.Transformation;
+using Remote.Core.Transformation.Configurations;
 using Serilog;
 
 namespace Remote.Core.Communication

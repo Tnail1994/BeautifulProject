@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Remote.Core.Implementations;
+using Remote.Core.Transformation.Configurations;
 
 namespace Remote.Core.Communication
 {

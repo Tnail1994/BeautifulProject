@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Remote.Core.Implementations
+namespace Remote.Core.Transformation.Configurations
 {
 	public static class JsonConfig
 	{

@@ -1,6 +1,11 @@
 ﻿using BeautifulServerApplication.Session;
+using Configurations.General.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Remote.Core;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
@@ -17,6 +22,8 @@ namespace BeautifulServerApplication
 
 		static Task Main(string[] args)
 		{
+			Configure();
+
 			var host = CreateHostBuilder(args)
 				.Build();
 
@@ -25,6 +32,31 @@ namespace BeautifulServerApplication
 			RunConsoleInteraction();
 
 			return host.StopAsync();
+		}
+
+		private static void Configure()
+		{
+			var currentDirectory = Directory.GetCurrentDirectory();
+			var basePath = Directory.GetParent(currentDirectory)?.Parent?.Parent?.ToString();
+
+			try
+			{
+				if (!string.IsNullOrEmpty(basePath))
+				{
+					new ConfigurationBuilder()
+						.SetBasePath(basePath)
+						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						.AddEnvironmentVariables()
+						.Build();
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Fatal("!!! Unexpected error\n" +
+				          "Base path is null or empty. Cannot load configuration." +
+				          $"{ex.Message}");
+			}
 		}
 
 		private static void RunConsoleInteraction()
@@ -57,6 +89,11 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IScopeFactory, ScopeFactory>();
 
 					services.AddScoped<ICommunicationService, CommunicationService>();
+
+					services.Configure<AsyncServerSettings>(
+						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
+					services.Configure<AsyncClientSettings>(
+						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 				});
 	}
 }

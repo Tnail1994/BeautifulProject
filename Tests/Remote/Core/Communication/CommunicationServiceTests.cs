@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json;
-using NSubstitute;
+﻿using NSubstitute;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
-using Remote.Core.Implementations;
 using Remote.Core.Transformation;
 using Tests.TestObjects;
 

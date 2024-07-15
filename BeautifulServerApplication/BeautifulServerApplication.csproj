@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Configurations.General\Configurations.General.csproj" />
     <ProjectReference Include="..\CoreHelpers\CoreHelpers.csproj" />
     <ProjectReference Include="..\Remote.Core\Remote.Core.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
@@ -23,5 +24,11 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 </Project>

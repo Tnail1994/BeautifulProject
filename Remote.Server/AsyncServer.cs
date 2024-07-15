@@ -3,7 +3,9 @@ using Serilog;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using Configurations.General.Settings;
 using CoreImplementations;
+using Microsoft.Extensions.Options;
 
 namespace Remote.Server
 {
@@ -16,12 +18,19 @@ namespace Remote.Server
 	{
 		private static int _errorCount = 0;
 
-		private readonly TcpListener _listener = new(IPAddress.Any, 8910);
+		private readonly TcpListener _listener;
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 
 		private readonly ConcurrentDictionary<string, TcpClient> _connectedClients = new();
 
 		public event Action<TcpClient>? NewConnectionOccured;
+
+		public AsyncServer(IOptions<AsyncServerSettings> options)
+		{
+			var asyncServerSettings = options.Value;
+			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
+			_listener = new TcpListener(ipAddress, asyncServerSettings.Port);
+		}
 
 		public Task StartAsync()
 		{

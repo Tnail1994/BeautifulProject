@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Remote.Core.Communication;
-using Remote.Core.Implementations;
+using Remote.Core.Transformation.Configurations;
 
 namespace Tests.TestObjects
 {

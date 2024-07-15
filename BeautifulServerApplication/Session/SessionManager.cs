@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Configurations.General.Settings;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic.FileIO;
 using Remote.Core.Communication;
+using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
-using Microsoft.Extensions.DependencyInjection;
-using Remote.Core.Communication.Client;
 
 namespace BeautifulServerApplication.Session;
 
@@ -19,26 +22,28 @@ internal class SessionManager : ISessionManager, IHostedService
 
 	private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
-	private CancellationToken _cancellationToken;
 	private readonly ISessionFactory _sessionFactory;
 	private readonly IScopeFactory _scopeFactory;
 	private readonly IAsyncClientFactory _asyncClientFactory;
 
+	private readonly IOptions<AsyncClientSettings> _asyncClientOptions;
+
 	public SessionManager(IAsyncServer asyncSocketServer, ISessionFactory sessionFactory,
-		IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory)
+		IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory,
+		IOptions<AsyncClientSettings> asyncClientOptions)
 	{
 		_sessionFactory = sessionFactory;
 		_scopeFactory = scopeFactory;
 		_asyncSocketServer = asyncSocketServer;
 		_asyncClientFactory = asyncClientFactory;
 
+		_asyncClientOptions = asyncClientOptions;
+
 		_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 	}
 
 	public async Task StartAsync(CancellationToken cancellationToken)
 	{
-		_cancellationToken = cancellationToken;
-
 		StartServices();
 		await StartServer();
 	}
@@ -73,7 +78,7 @@ internal class SessionManager : ISessionManager, IHostedService
 		if (scope == null)
 			throw new SessionManagerException("[SessionManager] Scope is not set.", 2);
 
-		var asyncClient = _asyncClientFactory.Create(client);
+		var asyncClient = _asyncClientFactory.Create(client, _asyncClientOptions);
 		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 		communicationService.SetClient(asyncClient);
 

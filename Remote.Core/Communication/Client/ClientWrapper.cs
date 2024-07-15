@@ -2,14 +2,14 @@
 
 namespace Remote.Core.Communication.Client
 {
-	public interface ISocket : IDisposable
+	public interface IClient : IDisposable
 	{
 		Task<int> ReceiveAsync(byte[] buffer, SocketFlags socketFlags);
 
 		Task<int> SendAsync(byte[] buffer, SocketFlags socketFlags);
 	}
 
-	public class ClientWrapper : ISocket
+	public class ClientWrapper : IClient
 	{
 		private readonly TcpClient _client;
 
@@ -18,7 +18,7 @@ namespace Remote.Core.Communication.Client
 			_client = client;
 		}
 
-		public static ISocket Create(TcpClient client)
+		public static IClient Create(TcpClient client)
 		{
 			return new ClientWrapper(client);
 		}
