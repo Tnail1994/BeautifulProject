@@ -9,7 +9,7 @@ namespace Remote.Core.Communication
 
 	public abstract class BaseMessage<T> : IBaseMessage
 	{
-		public T? MessageObject { get; init; }
+		public T? MessageObject { get; set; }
 
 		public static BaseMessage<T>? Transform(string jsonString) =>
 			JsonConvert.DeserializeObject<BaseMessage<T>>(jsonString, JsonConfig.Settings);

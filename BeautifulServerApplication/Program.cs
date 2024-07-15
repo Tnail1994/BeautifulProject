@@ -79,6 +79,7 @@ namespace BeautifulServerApplication
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
+
 					services.AddSingleton<ISessionFactory, SessionFactory>();
 					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 					services.AddSingleton<IScopeFactory, ScopeFactory>();

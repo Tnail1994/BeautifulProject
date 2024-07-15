@@ -1,4 +1,5 @@
 ﻿using Remote.Server.Common.Contracts;
+using Serilog;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
@@ -30,59 +31,59 @@ namespace Remote.Server
 
 		public Task StartAsync()
 		{
-			this.LogInfo("Server starting...");
+			Log.Information("[AsyncSocketServer]\n Server starting...");
 
 			_listener.Start();
 
-			this.LogInfo("Server started.");
+			Log.Information("[AsyncSocketServer]\n Server started.");
 
 			return Task.Factory.StartNew(ListenForClientsAsync, _cts.Token);
 		}
 
 		public void Stop()
 		{
-			this.LogInfo("Server stopping...");
+			Log.Information("[AsyncSocketServer]\n Server stopping...");
 
 			Dispose();
 
-			this.LogInfo("Server stopped.");
+			Log.Information("[AsyncSocketServer]\n Server stopped.");
 		}
 
 		private async Task ListenForClientsAsync()
 		{
-			this.LogInfo("Server start listening for clients...");
+			Log.Information("[AsyncSocketServer]\n Server start listening for clients...");
 
 			try
 			{
 				while (!_cts.Token.IsCancellationRequested)
 				{
-					this.LogInfo("Listening...");
+					Log.Information("[AsyncSocketServer]\n Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
 					var clientId = Guid.NewGuid().ToString();
 					var addingResult = _connectedClients.TryAdd(clientId, client);
 
 					if (!addingResult)
-						this.LogWarning($"Cannot add Id {clientId} to dictionary.");
+						Log.Warning($"[AsyncSocketServer]\n Cannot add Id {clientId} to dictionary.");
 
-					this.LogInfo($"New Connection: Id = {clientId}");
+					Log.Information($"[AsyncSocketServer]\n New Connection: Id = {clientId}");
 					NewConnectionOccured?.Invoke(client);
 				}
 			}
 			catch (OperationCanceledException oce)
 			{
-				this.Log($"{oce.Message}");
+				Log.Debug($"[AsyncSocketServer]\n {oce.Message}");
 			}
 			catch (BaseException baseException)
 			{
-				this.LogError($"{baseException.Message}");
+				Log.Error($"[AsyncSocketServer]\n {baseException.Message}");
 
 				// todo: we know that the exception is out of our project. We have to figure out, what should happen if the project (like Session) fails
 				// todo: processing the NewConnectionOccured event. We maybe have to retry the event?
 			}
 			catch (Exception ex) when (!_cts.Token.IsCancellationRequested)
 			{
-				this.LogFatal($"!!! Unexpected error in listener loop: {ex.Message}+" +
-				              $"Stacktrace: {ex.StackTrace}");
+				Log.Fatal($"[AsyncSocketServer]\n !!! Unexpected error in listener loop: {ex.Message}+" +
+				          $"Stacktrace: {ex.StackTrace}");
 			}
 			finally
 			{
@@ -92,8 +93,8 @@ namespace Remote.Server
 
 					if (_errorCount > _maxErrorCount)
 					{
-						this.LogFatal(
-							$"Error count is greater than {_maxErrorCount}. Stopping server.");
+						Log.Fatal(
+							$"[AsyncSocketServer]\n Error count is greater than {_maxErrorCount}. Stopping server.");
 						Stop();
 					}
 					else

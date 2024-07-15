@@ -1,6 +1,6 @@
 ﻿using CoreHelpers;
-using CoreImplementations;
 using Remote.Core.Communication;
+using Serilog;
 
 namespace BeautifulServerApplication.Session
 {
@@ -27,7 +27,7 @@ namespace BeautifulServerApplication.Session
 
 		public void Start()
 		{
-			this.Log($"Starting session {Id}");
+			Log.Debug($"[Session] Starting session {Id}");
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
@@ -39,7 +39,7 @@ namespace BeautifulServerApplication.Session
 
 		public void Stop()
 		{
-			this.Log($"Stopping session {Id}");
+			Log.Debug($"[Session] Stopping session {Id}");
 
 			Dispose();
 		}
@@ -52,9 +52,9 @@ namespace BeautifulServerApplication.Session
 			}
 			catch (NullReferenceException nullReferenceException)
 			{
-				this.LogError($"Cannot start communication for this session: {Id}" +
-				              $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {_communicationService.IsClientSet}" +
-				              $"{nullReferenceException.Message}");
+				Log.Error($"Cannot start communication for this session: {Id}" +
+				          $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {_communicationService.IsClientSet}" +
+				          $"{nullReferenceException.Message}");
 
 				if (!_communicationService.IsClientSet)
 				{
@@ -63,8 +63,8 @@ namespace BeautifulServerApplication.Session
 			}
 			catch (Exception ex)
 			{
-				this.LogFatal($"!!! Unexpected {Id}" +
-				              $"{ex.Message}");
+				Log.Fatal($"!!! Unexpected {Id}" +
+				          $"{ex.Message}");
 			}
 		}
 
