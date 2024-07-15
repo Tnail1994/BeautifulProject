@@ -25,4 +25,8 @@
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Remote\Server\" />
+  </ItemGroup>
+
 </Project>
