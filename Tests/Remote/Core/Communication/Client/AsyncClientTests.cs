@@ -1,5 +1,4 @@
-﻿using Configurations.General.Settings;
-using NSubstitute;
+﻿using NSubstitute;
 using Remote.Core.Communication.Client;
 using System.Net.Sockets;
 

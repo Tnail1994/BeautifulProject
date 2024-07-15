@@ -3,8 +3,8 @@ using Serilog;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using Configurations.General.Settings;
 using CoreImplementations;
+using Remote.Server.Common.Settings;
 
 namespace Remote.Server
 {

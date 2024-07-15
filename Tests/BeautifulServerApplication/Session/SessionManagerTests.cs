@@ -1,6 +1,5 @@
 ﻿using BeautifulServerApplication;
 using BeautifulServerApplication.Session;
-using Configurations.General.Settings;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Remote.Core.Communication;

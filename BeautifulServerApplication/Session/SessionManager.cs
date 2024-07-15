@@ -1,5 +1,4 @@
-﻿using Configurations.General.Settings;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;

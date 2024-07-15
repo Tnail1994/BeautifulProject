@@ -1,5 +1,4 @@
-﻿using Configurations.General.Settings;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 
 namespace Remote.Core.Communication.Client
 {

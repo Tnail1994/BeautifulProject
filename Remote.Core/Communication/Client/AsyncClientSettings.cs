@@ -1,4 +1,4 @@
-﻿namespace Configurations.General.Settings
+﻿namespace Remote.Core.Communication.Client
 {
 	public class AsyncClientSettings : IAsyncClientSettings
 	{

@@ -1,4 +1,4 @@
-﻿namespace Configurations.General.Settings
+﻿namespace Remote.Server.Common.Settings
 {
 	public class AsyncServerSettings : IAsyncServerSettings
 	{

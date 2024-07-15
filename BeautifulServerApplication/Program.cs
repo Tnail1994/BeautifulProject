@@ -1,5 +1,4 @@
 ﻿using BeautifulServerApplication.Session;
-using Configurations.General.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +9,7 @@ using Remote.Core.Communication.Client;
 using Remote.Core.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
+using Remote.Server.Common.Settings;
 using Serilog;
 
 namespace BeautifulServerApplication
