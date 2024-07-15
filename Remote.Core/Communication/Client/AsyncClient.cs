@@ -51,7 +51,7 @@ namespace Remote.Core.Communication.Client
 		{
 			try
 			{
-				var buffer = new byte[4096];
+				var buffer = new byte[_bufferSize];
 				while (!_receivingCancellationTokenSource.Token.IsCancellationRequested)
 				{
 					var receiveTask = _client.ReceiveAsync(buffer, SocketFlags.None);

@@ -9,7 +9,7 @@ namespace BeautifulServerApplication
 
 	internal class ScopeFactory(IServiceProvider serviceProvider) : IScopeFactory
 	{
-		public IServiceScope? Create()
+		public IServiceScope Create()
 		{
 			return serviceProvider.CreateScope();
 		}

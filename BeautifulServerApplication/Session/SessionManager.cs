@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.VisualBasic.FileIO;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
@@ -12,9 +11,7 @@ using System.Net.Sockets;
 
 namespace BeautifulServerApplication.Session;
 
-internal interface ISessionManager
-{
-}
+internal interface ISessionManager;
 
 internal class SessionManager : ISessionManager, IHostedService
 {

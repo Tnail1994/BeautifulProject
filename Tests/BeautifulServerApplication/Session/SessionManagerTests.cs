@@ -109,7 +109,7 @@ namespace Tests.BeautifulServerApplication.Session
 		{
 			var dummySocket = CreateDummySocket();
 
-			_scopeFactoryMock.Create().Returns((IServiceScope)null);
+			_scopeFactoryMock.Create().Returns(null as IServiceScope);
 			// We're assuming an InvalidOperationException because the Substitute framework mocks
 			// ServiceProvider. But cannot resolve ICommunicationService from ServiceProvider.
 			Assert.Throws<SessionManagerException>(() => RaiseNewConnectionEvent(dummySocket));

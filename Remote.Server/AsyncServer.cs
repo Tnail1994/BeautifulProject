@@ -9,14 +9,10 @@ using Microsoft.Extensions.Options;
 
 namespace Remote.Server
 {
-	// Extract options like:
-	// - Port
-	// - IP Address
-	// - Max Listeners
-
 	public class AsyncServer : IAsyncServer, IDisposable
 	{
-		private static int _errorCount = 0;
+		private static int _errorCount;
+		private readonly int _maxErrorCount;
 
 		private readonly TcpListener _listener;
 		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
@@ -29,6 +25,7 @@ namespace Remote.Server
 		{
 			var asyncServerSettings = options.Value;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
+			_maxErrorCount = asyncServerSettings.MaxErrorCount;
 			_listener = new TcpListener(ipAddress, asyncServerSettings.Port);
 		}
 
@@ -94,10 +91,17 @@ namespace Remote.Server
 				{
 					_errorCount++;
 
-					// todo: if errorCount is greater than x, we have to stop the server. May it is a fatal error anywhere.
-
-					// We definitely have to restart listening
-					await ListenForClientsAsync();
+					if (_errorCount > _maxErrorCount)
+					{
+						Log.Fatal(
+							$"[AsyncSocketServer]\n Error count is greater than {_maxErrorCount}. Stopping server.");
+						Stop();
+					}
+					else
+					{
+						// We definitely have to restart listening
+						await ListenForClientsAsync();
+					}
 				}
 			}
 		}

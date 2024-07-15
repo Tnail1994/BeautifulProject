@@ -34,7 +34,7 @@ namespace Tests.Remote.Core.Transformation
 			Assert.NotNull(((TestMessage)transformedObject.Object).MessageObject);
 			Assert.NotNull(((TestMessage)transformedObject.Object).MessageObject?.MockObj);
 			Assert.Equal(TestMessage.Create().MessageObject?.MockObj,
-				((TestMessage)transformedObject.Object)?.MessageObject?.MockObj);
+				((TestMessage)transformedObject.Object).MessageObject?.MockObj);
 		}
 
 		[Fact]

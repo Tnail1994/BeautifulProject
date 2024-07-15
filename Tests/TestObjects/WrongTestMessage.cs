@@ -6,10 +6,6 @@ namespace Tests.TestObjects
 {
 	public class WrongTestMessage : IBaseMessage
 	{
-		public WrongTestMessage()
-		{
-		}
-
 		private static WrongTestMessage Create()
 		{
 			return new WrongTestMessage();

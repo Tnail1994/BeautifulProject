@@ -1,11 +1,8 @@
 ﻿using BeautifulServerApplication.Session;
 using Configurations.General.Settings;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
-using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Remote.Core;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
@@ -48,7 +45,6 @@ namespace BeautifulServerApplication
 						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
 						.AddEnvironmentVariables()
 						.Build();
-					return;
 				}
 			}
 			catch (Exception ex)

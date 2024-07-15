@@ -54,7 +54,7 @@ namespace Remote.Core.Transformation
 
 			var discriminator = FindDiscriminator(json);
 
-			if (string.IsNullOrEmpty(discriminator) || !_typeMap.TryGetValue(discriminator, out var type))
+			if (string.IsNullOrEmpty(discriminator) || !_typeMap.TryGetValue(discriminator, out _))
 			{
 				var message = $"No type registered for discriminator: {discriminator}" +
 				              $"no discriminator: {string.IsNullOrEmpty(discriminator)}. Errorcode 1";
