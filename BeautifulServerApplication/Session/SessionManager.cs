@@ -15,7 +15,7 @@ internal interface ISessionManager
 
 internal class SessionManager : ISessionManager, IHostedService
 {
-	private readonly IAsyncSocketServer _asyncSocketServer;
+	private readonly IAsyncServer _asyncSocketServer;
 
 	private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
@@ -24,7 +24,7 @@ internal class SessionManager : ISessionManager, IHostedService
 	private readonly IScopeFactory _scopeFactory;
 	private readonly IAsyncClientFactory _asyncClientFactory;
 
-	public SessionManager(IAsyncSocketServer asyncSocketServer, ISessionFactory sessionFactory,
+	public SessionManager(IAsyncServer asyncSocketServer, ISessionFactory sessionFactory,
 		IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory)
 	{
 		_sessionFactory = sessionFactory;

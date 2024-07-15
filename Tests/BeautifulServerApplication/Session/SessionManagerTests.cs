@@ -12,7 +12,7 @@ namespace Tests.BeautifulServerApplication.Session
 	public class SessionManagerTests
 	{
 		private readonly SessionManager _sessionManager;
-		private readonly IAsyncSocketServer _asyncSocketServerMock;
+		private readonly IAsyncServer _asyncSocketServerMock;
 		private readonly ISessionFactory _sessionFactoryMock;
 		private readonly IScopeFactory _scopeFactoryMock;
 		private readonly CancellationTokenSource _cancelledTokenSource;
@@ -22,7 +22,7 @@ namespace Tests.BeautifulServerApplication.Session
 
 		public SessionManagerTests()
 		{
-			_asyncSocketServerMock = Substitute.For<IAsyncSocketServer>();
+			_asyncSocketServerMock = Substitute.For<IAsyncServer>();
 			_sessionFactoryMock = Substitute.For<ISessionFactory>();
 			_scopeFactoryMock = Substitute.For<IScopeFactory>();
 			_asyncClientFactoryMock = Substitute.For<IAsyncClientFactory>();
@@ -45,7 +45,7 @@ namespace Tests.BeautifulServerApplication.Session
 			BaseProviderMocking();
 
 			await _sessionManager.StartAsync(_cancelledTokenSource.Token);
-			await _asyncSocketServerMock.Received(1).StartAsync(Arg.Any<int>(), Arg.Any<int>());
+			await _asyncSocketServerMock.Received(1).StartAsync();
 			await _cancelledTokenSource.CancelAsync();
 		}
 

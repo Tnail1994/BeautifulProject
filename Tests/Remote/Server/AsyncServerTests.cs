@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Remote.Server;
+﻿using Remote.Server;
+using Remote.Server.Common.Contracts;
 
 namespace Tests.Remote.Server
 {
 	public class AsyncServerTests
 	{
-		private readonly AsyncServer _asyncSocketServer;
+		private readonly IAsyncServer _asyncSocketServer;
 
 		public AsyncServerTests()
 		{

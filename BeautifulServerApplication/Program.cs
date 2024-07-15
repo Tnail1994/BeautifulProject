@@ -49,7 +49,7 @@ namespace BeautifulServerApplication
 
 					services.AddTransient<IBaseMessage, UserMessage>();
 
-					services.AddSingleton<IAsyncSocketServer, AsyncServer>();
+					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
 
 					services.AddSingleton<ISessionFactory, SessionFactory>();
