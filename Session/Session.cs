@@ -22,7 +22,7 @@ namespace Session
 
 		public void Start()
 		{
-			this.LogDebug($"Starting session {Id}");
+			this.LogDebug($"Starting session {Id}", Id);
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
@@ -34,7 +34,7 @@ namespace Session
 
 		public void Stop()
 		{
-			this.LogDebug($"Stopping session {Id}");
+			this.LogDebug($"Stopping session {Id}", Id);
 
 			Dispose();
 		}
@@ -50,7 +50,7 @@ namespace Session
 			{
 				this.LogError($"Cannot start communication for this session: {Id}" +
 				              $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {_communicationService.IsClientSet}" +
-				              $"{nullReferenceException.Message}");
+				              $"{nullReferenceException.Message}", Id);
 
 				if (!_communicationService.IsClientSet)
 				{
@@ -60,7 +60,7 @@ namespace Session
 			catch (Exception ex)
 			{
 				this.LogFatal($"!!! Unexpected {Id}" +
-				              $"{ex.Message}");
+				              $"{ex.Message}", Id);
 			}
 		}
 

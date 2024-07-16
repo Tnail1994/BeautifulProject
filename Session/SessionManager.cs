@@ -76,9 +76,11 @@ namespace Session
 			if (scope == null)
 				throw new SessionManagerException("Scope is not set.", 2);
 
-			var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
-
+			this.LogDebug($"Creating session key.", "server");
 			var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
+			this.LogDebug($"Creating client.", "server");
+			var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
+			this.LogDebug($"Client {asyncClient.Id} matches to Session {sessionKey.SessionId}", "server");
 
 			var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 			communicationService.SetClient(asyncClient);
@@ -88,8 +90,6 @@ namespace Session
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 
 			_sessions.TryAdd(session.Id, session);
-
-			this.LogDebug($"Creating and init session key.", "server");
 
 			session.Start();
 

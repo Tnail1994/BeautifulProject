@@ -9,7 +9,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Debug, sessionId);
 		}
 
@@ -18,7 +18,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Information, sessionId);
 		}
 
@@ -26,7 +26,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Error, sessionId);
 		}
 
@@ -34,7 +34,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Warning, sessionId);
 		}
 
@@ -42,7 +42,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Fatal, sessionId);
 		}
 
@@ -50,7 +50,7 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Debug, sessionId);
 		}
 
@@ -58,28 +58,15 @@ namespace CoreImplementations
 			[CallerMemberName] string caller = "",
 			[CallerFilePath] string file = "")
 		{
-			logMessage = PrepareLogMessage(logMessage, caller, file, sessionId);
+			logMessage = PrepareLogMessage(logMessage, sessionId);
 			WriteLog(logMessage, LogEventLevel.Verbose, sessionId);
 		}
 
-		private static string PrepareLogMessage(string logMessage, string caller, string file, string sessionId)
+		private static string PrepareLogMessage(string logMessage, string sessionId)
 		{
-			if (!string.IsNullOrEmpty(caller) && !string.IsNullOrEmpty(file))
-			{
-				logMessage = $"[{Path.GetFileNameWithoutExtension(file)}, {caller}] {logMessage}";
-			}
-			else if (!string.IsNullOrEmpty(caller))
-			{
-				logMessage = $"[{caller}] {logMessage}";
-			}
-			else if (!string.IsNullOrEmpty(file))
-			{
-				logMessage = $"-{Path.GetFileNameWithoutExtension(file)}- {logMessage}";
-			}
-
 			if (!string.IsNullOrEmpty(sessionId))
 			{
-				logMessage += " ||{SessionId}|| ";
+				logMessage += " ###{SessionId}";
 			}
 
 			return logMessage;

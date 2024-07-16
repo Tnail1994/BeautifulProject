@@ -7,6 +7,7 @@ using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Common.Transformation.Implementations;
 using Remote.Communication.Transformation;
+using Session.Common.Implementations;
 
 namespace Remote.Communication
 {
@@ -16,12 +17,14 @@ namespace Remote.Communication
 		private readonly ConcurrentDictionary<string, TransformedObjectWaiter> _transformedObjectWaiters = new();
 
 		private readonly ITransformerService _transformerService;
+		private readonly ISessionKey _sessionKey;
 
 		private IAsyncClient? _client;
 
-		public CommunicationService(ITransformerService transformerService)
+		public CommunicationService(ITransformerService transformerService, ISessionKey sessionKey)
 		{
 			_transformerService = transformerService;
+			_sessionKey = sessionKey;
 		}
 
 		public bool IsClientSet => _client != null;
@@ -32,19 +35,21 @@ namespace Remote.Communication
 
 		public event EventHandler<string>? ConnectionLost;
 
+		private string SessionId => _sessionKey.SessionId;
+
 		public void SetClient(IAsyncClient client)
 		{
 			if (IsClientSet)
 			{
 				this.LogWarning("Client is already set. \n" +
 				                $"Set client: {Client.Id} \n" +
-				                $"New client: {client.Id} ");
+				                $"New client: {client.Id} ", SessionId);
 				return;
 			}
 
 			_client = client;
 			this.LogDebug($"Set client. Code: <cs_setClient>" +
-			              $"Set client: {Client.Id}");
+			              $"Set client: {Client.Id}", SessionId);
 		}
 
 		public void Start()
@@ -71,12 +76,14 @@ namespace Remote.Communication
 			if (_transformedObjectWaiters.Values.Any(waiter => waiter.Discriminator == discriminator))
 				return;
 
-			_transformedObjects.TryRemove(transformedObject.Id, out _);
+			var removeRes = _transformedObjects.TryRemove(transformedObject.Id, out _);
+			this.LogDebug($"Removed item = {discriminator}, was successful {removeRes}", SessionId);
 		}
 
 		public void SendAsync(object messageObj)
 		{
 			var jsonString = JsonConvert.SerializeObject(messageObj, JsonConfig.Settings);
+			this.LogDebug($"Sending {jsonString} to client.", SessionId);
 			Client.Send(jsonString);
 		}
 
@@ -100,8 +107,12 @@ namespace Remote.Communication
 		{
 			try
 			{
+				this.LogDebug($"OnMessageReceived with {jsonString}", SessionId);
+
+				this.LogDebug("Start transforming with Service...", SessionId);
 				var transformedObject = _transformerService.Transform(jsonString);
 				AddTransformedObject(transformedObject);
+				this.LogDebug($"Finished and added: {transformedObject}", SessionId);
 
 				var transformedObjectWaiters =
 					_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
@@ -125,14 +136,14 @@ namespace Remote.Communication
 			catch (JsonReaderException jsonReaderException)
 			{
 				this.LogError($"Json reader error for jsonString: {jsonString}.\n" +
-				              $"{jsonReaderException.Message}");
+				              $"{jsonReaderException.Message}", SessionId);
 
 				// Todo check, why jsonString is not a valid json format
 			}
 			catch (JsonException ex)
 			{
 				this.LogError($"Json error for jsonString: {jsonString}.\n" +
-				              $"{ex.Message}");
+				              $"{ex.Message}", SessionId);
 			}
 			catch (TransformException ex)
 			{
@@ -144,7 +155,7 @@ namespace Remote.Communication
 					case 2:
 					case 3:
 						this.LogError($"Transform error for jsonString: {jsonString}.\n" +
-						              $"{ex.Message}");
+						              $"{ex.Message}", SessionId);
 						break;
 				}
 			}
@@ -152,7 +163,7 @@ namespace Remote.Communication
 			{
 				this.LogFatal($"!!! Unexpected error while OnMessageReceived event\n" +
 				              $"Message: {ex.Message}\n" +
-				              $"Stacktrace: {ex.StackTrace}\n");
+				              $"Stacktrace: {ex.StackTrace}\n", SessionId);
 			}
 		}
 

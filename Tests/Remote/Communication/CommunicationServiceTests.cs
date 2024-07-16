@@ -4,6 +4,7 @@ using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Common.Transformation.Implementations;
+using Session.Common.Implementations;
 using Tests.TestObjects;
 
 namespace Tests.Remote.Communication
@@ -17,7 +18,8 @@ namespace Tests.Remote.Communication
 		public CommunicationServiceTests()
 		{
 			_transformerServiceMock = Substitute.For<ITransformerService>();
-			_communicationService = new CommunicationService(_transformerServiceMock);
+			var sessionKeyMock = Substitute.For<ISessionKey>();
+			_communicationService = new CommunicationService(_transformerServiceMock, sessionKeyMock);
 			_client = Substitute.For<IAsyncClient>();
 		}
 
