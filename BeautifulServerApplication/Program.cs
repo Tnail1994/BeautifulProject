@@ -1,16 +1,24 @@
-﻿using BeautifulServerApplication.Session;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Remote.Communication;
+using Remote.Communication.Client;
+using Remote.Communication.Common.Client.Contracts;
+using Remote.Communication.Common.Client.Implementations;
+using Remote.Communication.Common.Contracts;
+using Remote.Communication.Common.Implementations;
+using Remote.Communication.Common.Transformation.Contracts;
+using Remote.Communication.Transformation;
 using Remote.Core;
-using Remote.Core.Communication;
-using Remote.Core.Communication.Client;
-using Remote.Core.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
 using Remote.Server.Common.Settings;
 using Serilog;
+using Session;
+using Session.Common.Contracts;
+using Session.Common.Contracts.Services;
+using Session.Services;
 
 namespace BeautifulServerApplication
 {

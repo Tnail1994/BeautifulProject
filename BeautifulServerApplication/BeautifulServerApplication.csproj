@@ -20,6 +20,8 @@
     <ProjectReference Include="..\CoreHelpers\CoreHelpers.csproj" />
     <ProjectReference Include="..\Remote.Core\Remote.Core.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
+    <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
+    <ProjectReference Include="..\Session\Session.csproj" />
   </ItemGroup>
 
   <ItemGroup>

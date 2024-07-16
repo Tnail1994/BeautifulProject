@@ -1,4 +1,4 @@
-﻿using Remote.Core.Communication;
+﻿using Remote.Communication.Common.Implementations;
 
 namespace Remote.Core
 {
