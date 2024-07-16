@@ -3,7 +3,6 @@ using System.Text;
 using Core.Extensions;
 using Core.Helpers;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 
 namespace Remote.Communication.Client
 {
@@ -18,7 +17,7 @@ namespace Remote.Communication.Client
 		private readonly int _port;
 		private readonly string _ip;
 
-		private AsyncClient(IClient client, AsyncClientSettings settings)
+		private AsyncClient(IClient client, IAsyncClientSettings settings)
 		{
 			Id = GuidIdCreator.CreateString();
 
@@ -39,7 +38,7 @@ namespace Remote.Communication.Client
 		public event Action<string>? MessageReceived;
 		public event EventHandler<string>? ConnectionLost;
 
-		public static IAsyncClient Create(IClient client, AsyncClientSettings settings)
+		public static IAsyncClient Create(IClient client, IAsyncClientSettings settings)
 		{
 			return new AsyncClient(client, settings);
 		}

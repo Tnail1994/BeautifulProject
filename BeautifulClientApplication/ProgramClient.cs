@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Remote.Communication;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
@@ -77,7 +76,7 @@ namespace BeautifulClientApplication
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 
-					services.AddSingleton<AsyncClientSettings>(provider =>
+					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
 
 					services.AddSingleton<ICommunicationService, CommunicationService>();

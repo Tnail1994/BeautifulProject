@@ -1,4 +1,6 @@
-﻿namespace Remote.Server.Common.Settings
+﻿using Remote.Server.Common.Contracts;
+
+namespace Remote.Server
 {
 	public class AsyncServerSettings : IAsyncServerSettings
 	{
@@ -20,13 +22,5 @@
 			IpAddress = DefaultIpAddress,
 			MaxErrorCount = DefaultMaxErrorCount
 		};
-	}
-
-	public interface IAsyncServerSettings
-	{
-		int Port { get; init; }
-		int MaxConnections { get; init; }
-		int MaxErrorCount { get; init; }
-		string IpAddress { get; init; }
 	}
 }

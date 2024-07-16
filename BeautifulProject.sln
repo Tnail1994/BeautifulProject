@@ -33,6 +33,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeautifulClientApplication", "BeautifulClientApplication\BeautifulClientApplication.csproj", "{93B3C950-4A38-408B-BDDE-69D9160D1132}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedBeautifulServices", "SharedBeautifulServices\SharedBeautifulServices.csproj", "{32C66D0B-A8FC-4591-A789-03C7BFA715CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedBeautifulServices.Common", "SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj", "{25E636D0-7E3D-411C-A0B5-5AE6644E7A18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,14 @@ Global
 		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C66D0B-A8FC-4591-A789-03C7BFA715CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C66D0B-A8FC-4591-A789-03C7BFA715CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C66D0B-A8FC-4591-A789-03C7BFA715CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C66D0B-A8FC-4591-A789-03C7BFA715CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25E636D0-7E3D-411C-A0B5-5AE6644E7A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25E636D0-7E3D-411C-A0B5-5AE6644E7A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25E636D0-7E3D-411C-A0B5-5AE6644E7A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25E636D0-7E3D-411C-A0B5-5AE6644E7A18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

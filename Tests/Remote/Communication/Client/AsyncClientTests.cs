@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 
 namespace Tests.Remote.Communication.Client
 {

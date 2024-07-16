@@ -1,14 +1,13 @@
 ﻿using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 using System.Net.Sockets;
 
 namespace Remote.Communication.Client
 {
 	public class AsyncClientFactory : IAsyncClientFactory
 	{
-		private readonly AsyncClientSettings _settings;
+		private readonly IAsyncClientSettings _settings;
 
-		public AsyncClientFactory(AsyncClientSettings settings)
+		public AsyncClientFactory(IAsyncClientSettings settings)
 		{
 			_settings = settings;
 		}

@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using Core.Exceptions;
 using Core.Extensions;
-using Remote.Server.Common.Settings;
 
 namespace Remote.Server
 {
@@ -20,7 +19,7 @@ namespace Remote.Server
 
 		public event Action<TcpClient>? NewConnectionOccured;
 
-		public AsyncServer(AsyncServerSettings settings)
+		public AsyncServer(IAsyncServerSettings settings)
 		{
 			var asyncServerSettings = settings;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);

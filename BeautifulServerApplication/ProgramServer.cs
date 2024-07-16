@@ -4,20 +4,19 @@ using Microsoft.Extensions.Options;
 using Remote.Communication;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
-using Remote.Server.Common.Settings;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 using Session.Services;
 using SharedBeautifulData;
+using SharedBeautifulServices.Common;
 
 namespace BeautifulServerApplication
 {
@@ -110,11 +109,15 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
+					services.Configure<CheckAliveSettings>(
+						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
 
-					services.AddSingleton<AsyncServerSettings>(provider =>
+					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
-					services.AddSingleton<AsyncClientSettings>(provider =>
+					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
+					services.AddSingleton<ICheckAliveSettings>(provider =>
+						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ICommunicationService, CommunicationService>();

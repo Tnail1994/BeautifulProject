@@ -1,4 +1,6 @@
-﻿namespace Remote.Communication.Common.Client.Implementations
+﻿using Remote.Communication.Common.Client.Contracts;
+
+namespace Remote.Communication.Client
 {
 	public class AsyncClientSettings : IAsyncClientSettings
 	{
@@ -19,13 +21,5 @@
 			IpAddress = DefaultIpAddress,
 			Port = DefaultPort
 		};
-	}
-
-	public interface IAsyncClientSettings
-	{
-		int BufferSize { get; init; }
-		int ClientTimeout { get; init; }
-		string IpAddress { get; init; }
-		int Port { get; init; }
 	}
 }
