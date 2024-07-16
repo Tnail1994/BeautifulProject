@@ -17,6 +17,7 @@ namespace BeautifulClientApplication
 	internal class ProgramClient
 	{
 		private static readonly CancellationTokenSource ClientProgramCancellationTokenSource = new();
+		private static ICommunicationService? _communicationService;
 
 		static Task Main(string[] args)
 		{
@@ -24,7 +25,7 @@ namespace BeautifulClientApplication
 				.Build();
 
 			host.RunAsync(ClientProgramCancellationTokenSource.Token);
-
+			_communicationService = host.Services.GetRequiredService<ICommunicationService>();
 			RunConsoleInteraction();
 
 			return host.StopAsync();
@@ -43,13 +44,12 @@ namespace BeautifulClientApplication
 					break;
 				}
 				else if (input == "i")
-
 				{
 					PlotInfo();
 				}
-				else
+				else if (_communicationService != null)
 				{
-					// Send Message
+					_communicationService.SendAsync(new UserMessage { MessageObject = User.Create("tk", "ms") });
 				}
 			}
 		}
