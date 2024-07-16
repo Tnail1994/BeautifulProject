@@ -1,7 +1,7 @@
 ﻿using CoreHelpers;
-using Serilog;
 using System.Net.Sockets;
 using System.Text;
+using CoreImplementations;
 
 namespace Remote.Core.Communication.Client
 {
@@ -58,18 +58,18 @@ namespace Remote.Core.Communication.Client
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
 					if (completedTask == timeoutTask)
 					{
-						Log.Warning($"Client connection timed out. Id: {Id}");
+						this.LogWarning($"Client connection timed out. Id: {Id}");
 						break;
 					}
 
 					var received = await receiveTask;
 					if (received == 0)
 					{
-						Log.Warning($"Client connection closed. Id: {Id}");
+						this.LogWarning($"Client connection closed. Id: {Id}");
 						break;
 					}
 
-					Log.Information($"Message received: {received} bytes. Id: {Id}");
+					this.LogInfo($"Message received: {received} bytes. Id: {Id}");
 
 					var json = Encoding.UTF8.GetString(buffer, 0, received);
 					MessageReceived?.Invoke(json);
@@ -77,14 +77,14 @@ namespace Remote.Core.Communication.Client
 			}
 			catch (OperationCanceledException)
 			{
-				Log.Debug("Receiving cancelled");
+				this.LogDebug("Receiving cancelled");
 			}
 			catch (SocketException ex)
 			{
 				switch (ex.ErrorCode)
 				{
 					default:
-						Log.Error("SocketException");
+						this.LogError("SocketException");
 						break;
 				}
 
@@ -92,9 +92,9 @@ namespace Remote.Core.Communication.Client
 			}
 			catch (Exception ex)
 			{
-				Log.Fatal($"!!! Unexpected error receiving client. Id: {Id}" +
-				          $"{ex.Message}" +
-				          $"Stacktrace: {ex.StackTrace}.");
+				this.LogFatal($"!!! Unexpected error receiving client. Id: {Id}" +
+				              $"{ex.Message}" +
+				              $"Stacktrace: {ex.StackTrace}.");
 
 				ConnectionLost?.Invoke(this, ex.Message);
 			}
@@ -107,7 +107,7 @@ namespace Remote.Core.Communication.Client
 
 			var messageBytes = Encoding.UTF8.GetBytes(message);
 			var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
-			Log.Debug($"Send {sendingResult}. Id: {Id}");
+			this.LogDebug($"Send {sendingResult}. Id: {Id}");
 		}
 
 		public void Dispose()

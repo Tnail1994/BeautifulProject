@@ -1,5 +1,4 @@
 ﻿using Remote.Server.Common.Contracts;
-using Serilog;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
@@ -30,59 +29,59 @@ namespace Remote.Server
 
 		public Task StartAsync()
 		{
-			Log.Information("Server starting...");
+			this.LogInfo("Server starting...");
 
 			_listener.Start();
 
-			Log.Information("Server started.");
+			this.LogInfo("Server started.");
 
 			return Task.Factory.StartNew(ListenForClientsAsync, _cts.Token);
 		}
 
 		public void Stop()
 		{
-			Log.Information("Server stopping...");
+			this.LogInfo("Server stopping...");
 
 			Dispose();
 
-			Log.Information("Server stopped.");
+			this.LogInfo("Server stopped.");
 		}
 
 		private async Task ListenForClientsAsync()
 		{
-			Log.Information("Server start listening for clients...");
+			this.LogInfo("Server start listening for clients...");
 
 			try
 			{
 				while (!_cts.Token.IsCancellationRequested)
 				{
-					Log.Information("Listening...");
+					this.LogInfo("Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
 					var clientId = Guid.NewGuid().ToString();
 					var addingResult = _connectedClients.TryAdd(clientId, client);
 
 					if (!addingResult)
-						Log.Warning($"Cannot add Id {clientId} to dictionary.");
+						this.LogWarning($"Cannot add Id {clientId} to dictionary.");
 
-					Log.Information($"New Connection: Id = {clientId}");
+					this.LogInfo($"New Connection: Id = {clientId}");
 					NewConnectionOccured?.Invoke(client);
 				}
 			}
 			catch (OperationCanceledException oce)
 			{
-				Log.Debug($"{oce.Message}");
+				this.LogDebug($"{oce.Message}");
 			}
 			catch (BaseException baseException)
 			{
-				Log.Error($"{baseException.Message}");
+				this.LogError($"{baseException.Message}");
 
 				// todo: we know that the exception is out of our project. We have to figure out, what should happen if the project (like Session) fails
 				// todo: processing the NewConnectionOccured event. We maybe have to retry the event?
 			}
 			catch (Exception ex) when (!_cts.Token.IsCancellationRequested)
 			{
-				Log.Fatal($"!!! Unexpected error in listener loop: {ex.Message}+" +
-				          $"Stacktrace: {ex.StackTrace}");
+				this.LogFatal($"!!! Unexpected error in listener loop: {ex.Message}+" +
+				              $"Stacktrace: {ex.StackTrace}");
 			}
 			finally
 			{
@@ -92,7 +91,7 @@ namespace Remote.Server
 
 					if (_errorCount > _maxErrorCount)
 					{
-						Log.Fatal(
+						this.LogFatal(
 							$"Error count is greater than {_maxErrorCount}. Stopping server.");
 						Stop();
 					}

@@ -3,9 +3,9 @@ using Microsoft.Extensions.Hosting;
 using Remote.Core.Communication;
 using Remote.Core.Communication.Client;
 using Remote.Server.Common.Contracts;
-using Serilog;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
+using CoreImplementations;
 #if DEBUG
 using CoreHelpers;
 #endif
@@ -57,7 +57,7 @@ internal class SessionManager : ISessionManager
 
 	private void StartServices()
 	{
-		Log.Information("Starting services... {SessionId}", "server");
+		this.LogInfo("Starting services...", "server");
 	}
 
 	private async Task StartServer()
@@ -69,7 +69,7 @@ internal class SessionManager : ISessionManager
 
 	private void OnNewConnectionOccured(TcpClient client)
 	{
-		Log.Information("Starting new session ..." + "{SessionId}", "server");
+		this.LogInfo("Starting new session ...", "server");
 		StartNewSession(client);
 	}
 
@@ -90,26 +90,26 @@ internal class SessionManager : ISessionManager
 
 		var session = _sessionFactory.Create(communicationService);
 		session.SessionOnHold += OnSessionOnHold;
-		Log.Information($"New session with Id {session.Id} created." + "{SessionId}", "server");
+		this.LogInfo($"New session with Id {session.Id} created.", "server");
 
 		_sessions.TryAdd(session.Id, session);
 
-		Log.Debug($"Creating and init session key." + "{SessionId}", "server");
+		this.LogDebug($"Creating and init session key.", "server");
 		//var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
 		//sessionKey.Init(session.Id);
 
 		session.Start();
 
-		Log.Information($"New session with Id {session.Id} started." + "{SessionId}", "server");
+		this.LogInfo($"New session with Id {session.Id} started.", "server");
 	}
 
 	private void OnSessionOnHold(object? sender, string e)
 	{
 		if (sender is not ISession session)
 		{
-			Log.Fatal(
-				$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!" +
-				"{SessionId}", "server");
+			this.LogFatal(
+				$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!",
+				"server");
 			return;
 		}
 
@@ -117,7 +117,7 @@ internal class SessionManager : ISessionManager
 
 		if (!removeResult)
 		{
-			Log.Error($"Cannot remove session with Id {session.Id} from dictionary." + "{SessionId}", "server");
+			this.LogError($"Cannot remove session with Id {session.Id} from dictionary.", "server");
 			return;
 		}
 
@@ -125,11 +125,12 @@ internal class SessionManager : ISessionManager
 
 		if (pendingSession == null)
 		{
-			Log.Warning($"Cannot pend session." + "{SessionId}", "server");
+			this.LogWarning($"Cannot pend session.", "server");
 			return;
 		}
 
-		Log.Debug($"Pending session {pendingSession.Id}, for possibly restart this session." + "{SessionId}", "server");
+		this.LogDebug($"Pending session {pendingSession.Id}, for possibly restart this session.",
+			"server");
 		_pendingSessions.TryAdd(pendingSession.Id, pendingSession);
 	}
 
@@ -146,7 +147,7 @@ internal class SessionManager : ISessionManager
 
 	private void StopServices()
 	{
-		Log.Information("Stopping services...");
+		this.LogInfo("Stopping services...");
 	}
 
 	private void StopServer()

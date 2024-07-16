@@ -61,18 +61,21 @@ namespace BeautifulServerApplication
 			catch (ArgumentException argumentException)
 			{
 				Log.Error($"Wrong basePath: {basePath}\n" +
-				          $"[{argumentException.ParamName}]: {argumentException.Message}");
+				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
+				          " ||{SessionKey}||", "server");
 			}
 			catch (FileNotFoundException fileNotFoundException)
 			{
 				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
-				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}");
+				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}" +
+				          " ||{SessionKey}||", "server");
 			}
 			catch (Exception ex)
 			{
 				Log.Fatal("!!! Unexpected error\n" +
 				          "Base path is null or empty. Cannot load configuration." +
-				          $"{ex.Message}");
+				          $"{ex.Message}" +
+				          " ||{SessionKey}||", "server");
 			}
 		}
 
@@ -122,6 +125,7 @@ namespace BeautifulServerApplication
 				{
 					services.AddHostedService<SessionManager>();
 
+					// Server wide
 					services.AddTransient<IBaseMessage, UserMessage>();
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();
@@ -130,8 +134,6 @@ namespace BeautifulServerApplication
 					services.AddSingleton<ISessionFactory, SessionFactory>();
 					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 					services.AddSingleton<IScopeFactory, ScopeFactory>();
-
-					services.AddScoped<ICommunicationService, CommunicationService>();
 
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
@@ -142,6 +144,9 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
 					services.AddSingleton<AsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
+
+					// Session wide
+					services.AddScoped<ICommunicationService, CommunicationService>();
 				});
 	}
 }
