@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Configurations.General\Configurations.General.csproj" />
     <ProjectReference Include="..\CoreImplementations\CoreImplementations.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
   </ItemGroup>

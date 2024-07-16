@@ -11,7 +11,7 @@ namespace Tests.BeautifulServerApplication.Session
 {
 	public class SessionManagerTests
 	{
-		private readonly SessionManager _sessionManager;
+		private readonly ISessionManager _sessionManager;
 		private readonly IAsyncServer _asyncSocketServerMock;
 		private readonly ISessionFactory _sessionFactoryMock;
 		private readonly IScopeFactory _scopeFactoryMock;
