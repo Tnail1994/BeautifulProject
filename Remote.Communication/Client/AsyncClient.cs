@@ -38,6 +38,11 @@ namespace Remote.Communication.Client
 			return new AsyncClient(client, settings);
 		}
 
+		public Task<bool> ConnectAsync(string ip, int port)
+		{
+			return _client.ConnectAsync(ip, port);
+		}
+
 		public async void StartReceivingAsync()
 		{
 			try

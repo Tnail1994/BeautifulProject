@@ -31,6 +31,12 @@ namespace Remote.Communication.Client
 			return _client.Client.SendAsync(buffer, socketFlags);
 		}
 
+		public async Task<bool> ConnectAsync(string ip, int port)
+		{
+			await _client.ConnectAsync(ip, port);
+			return _client.Connected;
+		}
+
 		public void Dispose()
 		{
 			_client.Dispose();

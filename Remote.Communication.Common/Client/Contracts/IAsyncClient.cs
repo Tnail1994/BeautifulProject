@@ -5,6 +5,8 @@
 		string Id { get; }
 		event Action<string> MessageReceived;
 		event EventHandler<string> ConnectionLost;
+
+		Task<bool> ConnectAsync(string ip, int port);
 		void StartReceivingAsync();
 		void Send(string message);
 	}
