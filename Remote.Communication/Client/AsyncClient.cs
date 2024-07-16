@@ -77,7 +77,7 @@ namespace Remote.Communication.Client
 				switch (ex.ErrorCode)
 				{
 					default:
-						this.LogError("SocketException");
+						this.LogError(ex.Message);
 						break;
 				}
 
