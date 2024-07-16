@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 
 namespace Tests.Session
 {
@@ -12,7 +13,8 @@ namespace Tests.Session
 		public SessionTests()
 		{
 			_communicationServiceMock = Substitute.For<ICommunicationService>();
-			_session = global::Session.Session.Create(_communicationServiceMock);
+			var sessionKeyMock = Substitute.For<ISessionKey>();
+			_session = global::Session.Session.Create(_communicationServiceMock, sessionKeyMock);
 		}
 
 		[Fact]

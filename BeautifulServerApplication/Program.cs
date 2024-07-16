@@ -18,6 +18,7 @@ using Serilog;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
+using Session.Common.Implementations;
 using Session.Services;
 
 namespace BeautifulServerApplication
@@ -155,6 +156,7 @@ namespace BeautifulServerApplication
 
 					// Session wide
 					services.AddScoped<ICommunicationService, CommunicationService>();
+					services.AddScoped<ISessionKey, SessionKey>();
 				});
 	}
 }

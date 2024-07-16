@@ -20,6 +20,7 @@ namespace Tests.Session
 		private readonly IScopeFactory _scopeFactoryMock;
 		private readonly CancellationTokenSource _cancelledTokenSource;
 		private readonly IAsyncClientFactory _asyncClientFactoryMock;
+		private readonly ISessionKey _sessionKeyMock;
 		private IServiceScope? _scopeMock;
 		private IServiceProvider? _serviceProviderMock;
 
@@ -29,6 +30,7 @@ namespace Tests.Session
 			_sessionFactoryMock = Substitute.For<ISessionFactory>();
 			_scopeFactoryMock = Substitute.For<IScopeFactory>();
 			_asyncClientFactoryMock = Substitute.For<IAsyncClientFactory>();
+			_sessionKeyMock = Substitute.For<ISessionKey>();
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
@@ -64,7 +66,8 @@ namespace Tests.Session
 			_scopeFactoryMock.Create().Returns(_scopeMock);
 
 			_serviceProviderMock?.GetService<ICommunicationService>().Returns(communicationServiceMock);
-			_sessionFactoryMock.Create(communicationServiceMock).Returns(session);
+			_serviceProviderMock?.GetService<ISessionKey>().Returns(_sessionKeyMock);
+			_sessionFactoryMock.Create(communicationServiceMock, _sessionKeyMock).Returns(session);
 
 			RaiseNewConnectionEvent(dummySocket);
 

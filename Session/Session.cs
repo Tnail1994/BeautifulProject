@@ -1,23 +1,23 @@
-﻿using CoreHelpers;
-using CoreImplementations;
+﻿using CoreImplementations;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 
 namespace Session
 {
 	internal class Session : ISession, IDisposable
 	{
 		private readonly ICommunicationService _communicationService;
+		private readonly ISessionKey _sessionKey;
 
-		private Session(ICommunicationService communicationService)
+		private Session(ICommunicationService communicationService, ISessionKey sessionKey)
 		{
-			Id = GuidIdCreator.CreateString();
-
+			_sessionKey = sessionKey;
 			_communicationService = communicationService;
 			_communicationService.ConnectionLost += OnConnectionLost;
 		}
 
-		public string Id { get; }
+		public string Id => _sessionKey.SessionId;
 		public event EventHandler<string>? SessionOnHold;
 
 		public void Start()
@@ -66,9 +66,9 @@ namespace Session
 
 		#region Factory
 
-		public static ISession Create(ICommunicationService communicationService)
+		public static ISession Create(ICommunicationService communicationService, ISessionKey sessionKey)
 		{
-			return new Session(communicationService);
+			return new Session(communicationService, sessionKey);
 		}
 
 		#endregion

@@ -78,18 +78,18 @@ namespace Session
 
 			var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
 
+			var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
+
 			var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 			communicationService.SetClient(asyncClient);
 
-			var session = _sessionFactory.Create(communicationService);
+			var session = _sessionFactory.Create(communicationService, sessionKey);
 			session.SessionOnHold += OnSessionOnHold;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 
 			_sessions.TryAdd(session.Id, session);
 
 			this.LogDebug($"Creating and init session key.", "server");
-			//var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
-			//sessionKey.Init(session.Id);
 
 			session.Start();
 
