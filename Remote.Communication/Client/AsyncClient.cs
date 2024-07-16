@@ -15,8 +15,10 @@ namespace Remote.Communication.Client
 		private readonly TimeSpan _clientTimeout;
 
 		private readonly int _bufferSize;
+		private readonly int _port;
+		private readonly string _ip;
 
-		private AsyncClient(IClient client, IAsyncClientSettings settings)
+		private AsyncClient(IClient client, AsyncClientSettings settings)
 		{
 			Id = GuidIdCreator.CreateString();
 
@@ -24,11 +26,15 @@ namespace Remote.Communication.Client
 
 			_clientTimeout = TimeSpan.FromMinutes(settings.ClientTimeout);
 			_bufferSize = settings.BufferSize;
+			_ip = settings.IpAddress;
+			_port = settings.Port;
 
 			_client = client;
 		}
 
 		public string Id { get; }
+
+		public bool IsNotConnected => _client.IsNotConnected;
 
 		public event Action<string>? MessageReceived;
 		public event EventHandler<string>? ConnectionLost;
@@ -38,9 +44,9 @@ namespace Remote.Communication.Client
 			return new AsyncClient(client, settings);
 		}
 
-		public Task<bool> ConnectAsync(string ip, int port)
+		public Task<bool> ConnectAsync()
 		{
-			return _client.ConnectAsync(ip, port);
+			return _client.ConnectAsync(_ip, _port);
 		}
 
 		public async void StartReceivingAsync()

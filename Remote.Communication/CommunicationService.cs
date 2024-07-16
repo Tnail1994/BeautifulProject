@@ -52,11 +52,24 @@ namespace Remote.Communication
 			              $"Set client: {Client.Id}", SessionId);
 		}
 
-		public void Start()
+		public async void Start()
 		{
-			Client.StartReceivingAsync();
 			Client.MessageReceived += OnMessageReceived;
 			Client.ConnectionLost += ConnectionLost;
+
+			if (Client.IsNotConnected)
+			{
+				var connectionResult = await Client.ConnectAsync();
+
+				if (!connectionResult)
+				{
+					this.LogError("Connection to client failed. \n" +
+					              "Check connection settings and try again.", SessionId);
+					return;
+				}
+			}
+
+			Client.StartReceivingAsync();
 		}
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage

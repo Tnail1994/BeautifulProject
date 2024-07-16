@@ -6,7 +6,6 @@ using Remote.Communication.Common.Client.Contracts;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using Remote.Communication.Common.Client.Implementations;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts.Services;
 
@@ -35,7 +34,7 @@ namespace Tests.Session
 			_cancelledTokenSource = new CancellationTokenSource();
 
 			_sessionManager = new SessionManager(_asyncSocketServerMock, _sessionFactoryMock, _scopeFactoryMock,
-				_asyncClientFactoryMock, AsyncClientSettings.Default);
+				_asyncClientFactoryMock);
 		}
 
 		private void BaseProviderMocking()
@@ -72,7 +71,7 @@ namespace Tests.Session
 			RaiseNewConnectionEvent(dummySocket);
 
 			_scopeFactoryMock.Received(1).Create();
-			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>(), Arg.Any<AsyncClientSettings>());
+			_asyncClientFactoryMock.Received(1).Create(Arg.Any<TcpClient>());
 			session.Received(1).Start();
 		}
 

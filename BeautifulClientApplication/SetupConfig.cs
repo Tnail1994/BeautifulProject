@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
-namespace BeautifulServerApplication
+namespace BeautifulClientApplication
 {
 	public class SetupConfig
 	{
@@ -32,20 +32,20 @@ namespace BeautifulServerApplication
 			{
 				Log.Error($"Wrong basePath: {basePath}\n" +
 				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "client");
 			}
 			catch (FileNotFoundException fileNotFoundException)
 			{
 				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
 				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "client");
 			}
 			catch (Exception ex)
 			{
 				Log.Fatal("!!! Unexpected error\n" +
 				          "Base path is null or empty. Cannot load configuration." +
 				          $"{ex.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "client");
 			}
 		}
 	}

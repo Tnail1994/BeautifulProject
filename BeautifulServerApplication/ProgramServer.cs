@@ -63,11 +63,13 @@ namespace BeautifulServerApplication
 #if DEBUG
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToRandomClient(User.Create("1", "2"));
+					_sessionManager.SendMessageToRandomClient(new UserMessage
+						{ MessageObject = User.Create("1", "1") });
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToAllClients(User.Create("1", "2"));
+					_sessionManager.SendMessageToAllClients(new UserMessage
+						{ MessageObject = User.Create("2", "2") });
 				}
 #endif
 				else

@@ -3,10 +3,11 @@
 	public interface IAsyncClient : IDisposable
 	{
 		string Id { get; }
+		bool IsNotConnected { get; }
 		event Action<string> MessageReceived;
 		event EventHandler<string> ConnectionLost;
 
-		Task<bool> ConnectAsync(string ip, int port);
+		Task<bool> ConnectAsync();
 		void StartReceivingAsync();
 		void Send(string message);
 	}

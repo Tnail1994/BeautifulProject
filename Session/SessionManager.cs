@@ -4,7 +4,6 @@ using Core.Extensions;
 using Core.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Client.Implementations;
 using Remote.Communication.Common.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
@@ -24,18 +23,15 @@ namespace Session
 		private readonly IScopeFactory _scopeFactory;
 		private readonly IAsyncClientFactory _asyncClientFactory;
 
-		private readonly AsyncClientSettings _asyncClientSettings;
 
 		public SessionManager(IAsyncServer asyncSocketServer, ISessionFactory sessionFactory,
-			IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory,
-			AsyncClientSettings asyncClientSettings)
+			IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory)
 		{
 			_sessionFactory = sessionFactory;
 			_scopeFactory = scopeFactory;
 			_asyncSocketServer = asyncSocketServer;
 			_asyncClientFactory = asyncClientFactory;
 
-			_asyncClientSettings = asyncClientSettings;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 		}
@@ -79,7 +75,7 @@ namespace Session
 			this.LogDebug($"Creating session key.", "server");
 			var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
 			this.LogDebug($"Creating client.", "server");
-			var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
+			var asyncClient = _asyncClientFactory.Create(client);
 			this.LogDebug($"Client {asyncClient.Id} matches to Session {sessionKey.SessionId}", "server");
 
 			var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
