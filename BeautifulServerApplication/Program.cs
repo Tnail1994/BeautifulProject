@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Remote.Communication;
@@ -14,7 +13,6 @@ using Remote.Core;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
 using Remote.Server.Common.Settings;
-using Serilog;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
@@ -34,8 +32,6 @@ namespace BeautifulServerApplication
 
 		static Task Main(string[] args)
 		{
-			Configure();
-
 			var host = CreateHostBuilder(args)
 				.Build();
 
@@ -51,42 +47,6 @@ namespace BeautifulServerApplication
 			return host.StopAsync();
 		}
 
-		private static void Configure()
-		{
-			var currentDirectory = Directory.GetCurrentDirectory();
-			var basePath = Directory.GetParent(currentDirectory)?.Parent?.Parent?.ToString();
-
-			try
-			{
-				if (!string.IsNullOrEmpty(basePath))
-				{
-					new ConfigurationBuilder()
-						.SetBasePath(basePath)
-						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-						.AddEnvironmentVariables()
-						.Build();
-				}
-			}
-			catch (ArgumentException argumentException)
-			{
-				Log.Error($"Wrong basePath: {basePath}\n" +
-				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
-				          " ||{SessionKey}||", "server");
-			}
-			catch (FileNotFoundException fileNotFoundException)
-			{
-				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
-				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}" +
-				          " ||{SessionKey}||", "server");
-			}
-			catch (Exception ex)
-			{
-				Log.Fatal("!!! Unexpected error\n" +
-				          "Base path is null or empty. Cannot load configuration." +
-				          $"{ex.Message}" +
-				          " ||{SessionKey}||", "server");
-			}
-		}
 
 		private static void RunConsoleInteraction()
 		{
