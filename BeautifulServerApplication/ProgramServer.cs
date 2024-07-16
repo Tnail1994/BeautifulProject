@@ -16,6 +16,7 @@ using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 using Session.Services;
 using SharedBeautifulData;
+using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
 namespace BeautifulServerApplication
@@ -97,6 +98,8 @@ namespace BeautifulServerApplication
 
 					// Server wide
 					services.AddTransient<IBaseMessage, UserMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
@@ -122,6 +125,7 @@ namespace BeautifulServerApplication
 					// Session wide
 					services.AddScoped<ICommunicationService, CommunicationService>();
 					services.AddScoped<ISessionKey, SessionKey>();
+					services.AddScoped<ICheckAliveService, CheckAliveService>();
 				});
 	}
 }

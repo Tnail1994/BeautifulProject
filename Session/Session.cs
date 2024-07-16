@@ -2,6 +2,8 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using SharedBeautifulData;
+using SharedBeautifulServices.Common;
 
 namespace Session
 {
@@ -9,12 +11,16 @@ namespace Session
 	{
 		private readonly ICommunicationService _communicationService;
 		private readonly ISessionKey _sessionKey;
+		private readonly ICheckAliveService _checkAliveService;
 
-		private Session(ICommunicationService communicationService, ISessionKey sessionKey)
+		private Session(ICommunicationService communicationService, ISessionKey sessionKey,
+			ICheckAliveService checkAliveService)
 		{
 			_sessionKey = sessionKey;
+			_checkAliveService = checkAliveService;
+			_checkAliveService.ConnectionLost += OnCheckAliveServiceConnectionLost;
 			_communicationService = communicationService;
-			_communicationService.ConnectionLost += OnConnectionLost;
+			_communicationService.ConnectionLost += OnCommunicationServiceConnectionLost;
 		}
 
 		public string Id => _sessionKey.SessionId;
@@ -29,8 +35,23 @@ namespace Session
 			// So beware of writing to the console or doing other blocking operations.
 			// Need to define an own logging system for this session overall.
 
-			StartCommunicationService();
+			try
+			{
+				StartCommunicationService();
+				StartKeepAliveService();
+			}
+			catch (CheckAliveException checkAliveException)
+			{
+				this.LogError($"CheckAliveService failed to start. {checkAliveException.Message}", Id);
+			}
+			catch (Exception e)
+			{
+				this.LogFatal($"!!! Unexpected error while Start inside Session event\n" +
+				              $"Message: {e.Message}\n" +
+				              $"Stacktrace: {e.StackTrace}\n", Id);
+			}
 		}
+
 
 		public void Stop()
 		{
@@ -64,16 +85,32 @@ namespace Session
 			}
 		}
 
+		private void StartKeepAliveService()
+		{
+			_checkAliveService.Start();
+		}
+
 		#region Factory
 
-		public static ISession Create(ICommunicationService communicationService, ISessionKey sessionKey)
+		public static ISession Create(ICommunicationService communicationService, ISessionKey sessionKey,
+			ICheckAliveService checkAliveService)
 		{
-			return new Session(communicationService, sessionKey);
+			return new Session(communicationService, sessionKey, checkAliveService);
 		}
 
 		#endregion
 
-		private void OnConnectionLost(object? sender, string reason)
+		private void OnCheckAliveServiceConnectionLost()
+		{
+			InvokeSessionOnHold("Check alive did not receive answer.");
+		}
+
+		private void OnCommunicationServiceConnectionLost(object? sender, string reason)
+		{
+			InvokeSessionOnHold(reason);
+		}
+
+		private void InvokeSessionOnHold(string reason)
 		{
 			SessionOnHold?.Invoke(this, $"Connection lost: {reason}");
 		}

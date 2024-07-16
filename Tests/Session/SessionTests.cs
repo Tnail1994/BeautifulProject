@@ -2,6 +2,7 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using SharedBeautifulServices.Common;
 
 namespace Tests.Session
 {
@@ -9,12 +10,14 @@ namespace Tests.Session
 	{
 		private readonly ISession _session;
 		private readonly ICommunicationService _communicationServiceMock;
+		private readonly ICheckAliveService _checkAliveService;
 
 		public SessionTests()
 		{
 			_communicationServiceMock = Substitute.For<ICommunicationService>();
 			var sessionKeyMock = Substitute.For<ISessionKey>();
-			_session = global::Session.Session.Create(_communicationServiceMock, sessionKeyMock);
+			_checkAliveService = Substitute.For<ICheckAliveService>();
+			_session = global::Session.Session.Create(_communicationServiceMock, sessionKeyMock, _checkAliveService);
 		}
 
 		[Fact]
@@ -22,6 +25,7 @@ namespace Tests.Session
 		{
 			_session.Start();
 			_communicationServiceMock.Received(1).Start();
+			_checkAliveService.Received(1).Start();
 		}
 	}
 }

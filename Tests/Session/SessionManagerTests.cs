@@ -8,6 +8,7 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts.Services;
+using SharedBeautifulServices.Common;
 
 namespace Tests.Session
 {
@@ -20,6 +21,7 @@ namespace Tests.Session
 		private readonly CancellationTokenSource _cancelledTokenSource;
 		private readonly IAsyncClientFactory _asyncClientFactoryMock;
 		private readonly ISessionKey _sessionKeyMock;
+		private readonly ICheckAliveService _checkAliveService;
 		private IServiceScope? _scopeMock;
 		private IServiceProvider? _serviceProviderMock;
 
@@ -30,6 +32,7 @@ namespace Tests.Session
 			_scopeFactoryMock = Substitute.For<IScopeFactory>();
 			_asyncClientFactoryMock = Substitute.For<IAsyncClientFactory>();
 			_sessionKeyMock = Substitute.For<ISessionKey>();
+			_checkAliveService = Substitute.For<ICheckAliveService>();
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
@@ -66,7 +69,8 @@ namespace Tests.Session
 
 			_serviceProviderMock?.GetService<ICommunicationService>().Returns(communicationServiceMock);
 			_serviceProviderMock?.GetService<ISessionKey>().Returns(_sessionKeyMock);
-			_sessionFactoryMock.Create(communicationServiceMock, _sessionKeyMock).Returns(session);
+			_serviceProviderMock?.GetService<ICheckAliveService>().Returns(_checkAliveService);
+			_sessionFactoryMock.Create(communicationServiceMock, _sessionKeyMock, _checkAliveService).Returns(session);
 
 			RaiseNewConnectionEvent(dummySocket);
 

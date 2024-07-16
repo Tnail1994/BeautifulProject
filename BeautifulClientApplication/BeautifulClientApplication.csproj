@@ -24,6 +24,8 @@
     <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
     <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
+    <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
+    <ProjectReference Include="..\SharedBeautifulServices\SharedBeautifulServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>

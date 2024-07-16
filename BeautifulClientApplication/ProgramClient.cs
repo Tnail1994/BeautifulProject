@@ -10,6 +10,8 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
 using SharedBeautifulData;
+using SharedBeautifulServices;
+using SharedBeautifulServices.Common;
 
 namespace BeautifulClientApplication
 {
@@ -68,19 +70,27 @@ namespace BeautifulClientApplication
 					services.AddHostedService<ClientManager>();
 
 					services.AddTransient<IBaseMessage, UserMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
 
-					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddSingleton<ISessionKey, SessionKey>();
 
 					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 
+					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddSingleton<ICommunicationService, CommunicationService>();
+					services.AddSingleton<ICheckAliveService, CheckAliveService>();
+
+
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
+					services.Configure<CheckAliveSettings>(
+						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
 
 					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
-
-					services.AddSingleton<ICommunicationService, CommunicationService>();
-					services.AddSingleton<ISessionKey, SessionKey>();
+					services.AddSingleton<ICheckAliveSettings>(provider =>
+						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
 				});
 	}
 }

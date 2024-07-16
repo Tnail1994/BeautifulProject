@@ -9,6 +9,7 @@ using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
+using SharedBeautifulServices.Common;
 
 namespace Session
 {
@@ -79,9 +80,10 @@ namespace Session
 			this.LogDebug($"Client {asyncClient.Id} matches to Session {sessionKey.SessionId}", "server");
 
 			var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
+			var checkAliveService = scope.ServiceProvider.GetRequiredService<ICheckAliveService>();
 			communicationService.SetClient(asyncClient);
 
-			var session = _sessionFactory.Create(communicationService, sessionKey);
+			var session = _sessionFactory.Create(communicationService, sessionKey, checkAliveService);
 			session.SessionOnHold += OnSessionOnHold;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 

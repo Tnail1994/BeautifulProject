@@ -18,6 +18,7 @@ namespace Remote.Communication
 
 		private readonly ITransformerService _transformerService;
 		private readonly ISessionKey _sessionKey;
+		private readonly CancellationTokenSource _ownCancellationReceivingTokenSource = new();
 
 		private IAsyncClient? _client;
 
@@ -52,7 +53,7 @@ namespace Remote.Communication
 			              $"Set client: {Client.Id}", SessionId);
 		}
 
-		public async void Start()
+		public async Task Start()
 		{
 			Client.MessageReceived += OnMessageReceived;
 			Client.ConnectionLost += ConnectionLost;
@@ -73,6 +74,11 @@ namespace Remote.Communication
 		}
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage
+		{
+			return ReceiveAsync<T>(_ownCancellationReceivingTokenSource.Token);
+		}
+
+		public Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage
 		{
 			var transformedObject = _transformedObjects.Values.FirstOrDefault(x => x.Object is T);
 
@@ -108,6 +114,10 @@ namespace Remote.Communication
 
 			var transformedObject = await transformedObjectWaiter.TaskCompletionSource.Task;
 
+			_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out transformedObjectWaiter);
+
+			TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
+
 			return (T)transformedObject.Object;
 		}
 
@@ -131,7 +141,6 @@ namespace Remote.Communication
 					_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
 						.ToList();
 
-				var messageAtLeastHandledOnce = false;
 				foreach (var transformedObjectWaiter in transformedObjectWaiters)
 				{
 					transformedObjectWaiter.TaskCompletionSource.SetResult(transformedObject);
@@ -139,12 +148,8 @@ namespace Remote.Communication
 					if (transformedObjectWaiter.IsPermanent)
 						continue;
 
-					messageAtLeastHandledOnce = true;
 					_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
 				}
-
-				if (messageAtLeastHandledOnce)
-					TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
 			}
 			catch (JsonReaderException jsonReaderException)
 			{
@@ -194,6 +199,7 @@ namespace Remote.Communication
 
 			_transformedObjectWaiters.Clear();
 			_transformedObjects.Clear();
+			_ownCancellationReceivingTokenSource.Dispose();
 
 			if (!IsClientSet)
 				return;

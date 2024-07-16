@@ -62,7 +62,6 @@ namespace Remote.Communication.Client
 					if (completedTask == timeoutTask)
 					{
 						this.LogWarning($"Client connection timed out. Id: {Id}");
-						ConnectionLost?.Invoke(this, Id);
 						break;
 					}
 

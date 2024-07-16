@@ -7,6 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Remote.Communication.Common\Remote.Communication.Common.csproj" />
+    <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
+    <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
     <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
   </ItemGroup>
 

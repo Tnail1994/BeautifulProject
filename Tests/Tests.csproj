@@ -22,17 +22,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BeautifulClientApplication\BeautifulClientApplication.csproj" />
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Remote.Communication.Common\Remote.Communication.Common.csproj" />
     <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
     <ProjectReference Include="..\Session\Session.csproj" />
+    <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
+    <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
+    <ProjectReference Include="..\SharedBeautifulServices\SharedBeautifulServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="BeautifulServerApplication\" />
     <Folder Include="Remote\Server\" />
   </ItemGroup>
 

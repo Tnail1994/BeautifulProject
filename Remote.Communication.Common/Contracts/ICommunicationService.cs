@@ -7,9 +7,10 @@ namespace Remote.Communication.Common.Contracts
 	{
 		event EventHandler<string>? ConnectionLost;
 		void SetClient(IAsyncClient client);
-		void Start();
+		Task Start();
 
 		Task<T> ReceiveAsync<T>() where T : IBaseMessage;
+		Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage;
 		void SendAsync(object messageObj);
 		bool IsClientSet { get; }
 	}

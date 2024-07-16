@@ -31,6 +31,7 @@
     <ProjectReference Include="..\Session\Session.csproj" />
     <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
     <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
+    <ProjectReference Include="..\SharedBeautifulServices\SharedBeautifulServices.csproj" />
   </ItemGroup>
 
   <ItemGroup>
