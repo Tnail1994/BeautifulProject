@@ -21,7 +21,7 @@ using SharedBeautifulData;
 
 namespace BeautifulServerApplication
 {
-	internal class Program
+	internal class BeautifulServerProgram
 	{
 		private static readonly CancellationTokenSource ServerProgramCancellationTokenSource = new();
 
