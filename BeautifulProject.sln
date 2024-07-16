@@ -29,7 +29,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Remote.Communication.Common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedBeautifulData", "SharedBeautifulData\SharedBeautifulData.csproj", "{BEDE6AF7-8700-4DA0-9C0C-D71939D712F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{0EDE7D70-8097-4626-B40D-D495443D776C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{0EDE7D70-8097-4626-B40D-D495443D776C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeautifulClientApplication", "BeautifulClientApplication\BeautifulClientApplication.csproj", "{93B3C950-4A38-408B-BDDE-69D9160D1132}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +79,10 @@ Global
 		{0EDE7D70-8097-4626-B40D-D495443D776C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EDE7D70-8097-4626-B40D-D495443D776C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EDE7D70-8097-4626-B40D-D495443D776C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93B3C950-4A38-408B-BDDE-69D9160D1132}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
