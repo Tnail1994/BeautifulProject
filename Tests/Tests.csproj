@@ -23,11 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
-    <ProjectReference Include="..\CoreHelpers\CoreHelpers.csproj" />
-    <ProjectReference Include="..\CoreImplementations\CoreImplementations.csproj" />
     <ProjectReference Include="..\Remote.Communication.Common\Remote.Communication.Common.csproj" />
     <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
-    <ProjectReference Include="..\Remote.Core\Remote.Core.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />

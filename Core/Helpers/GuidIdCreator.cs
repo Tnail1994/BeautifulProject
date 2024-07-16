@@ -1,4 +1,4 @@
-﻿namespace CoreHelpers
+﻿namespace Core.Helpers
 {
 	public class GuidIdCreator
 	{

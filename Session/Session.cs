@@ -1,4 +1,4 @@
-﻿using CoreImplementations;
+﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;

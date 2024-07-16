@@ -1,4 +1,4 @@
-﻿namespace CoreImplementations
+﻿namespace Core.Exceptions
 {
 	public class BaseException : Exception
 	{

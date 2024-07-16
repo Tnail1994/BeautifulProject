@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using Serilog.Events;
 
-namespace CoreImplementations
+namespace Core.Extensions
 {
 	public static class LogExtension
 	{

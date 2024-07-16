@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CoreImplementations\CoreImplementations.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
   </ItemGroup>
 

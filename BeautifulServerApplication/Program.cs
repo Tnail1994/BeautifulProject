@@ -9,7 +9,6 @@ using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
-using Remote.Core;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
 using Remote.Server.Common.Settings;
@@ -18,6 +17,7 @@ using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 using Session.Services;
+using SharedBeautifulData;
 
 namespace BeautifulServerApplication
 {

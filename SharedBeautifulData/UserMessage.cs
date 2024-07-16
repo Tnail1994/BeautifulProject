@@ -1,6 +1,6 @@
 ﻿using Remote.Communication.Common.Implementations;
 
-namespace Remote.Core
+namespace SharedBeautifulData
 {
 	public class UserMessage : BaseMessage<User>
 	{

@@ -1,4 +1,4 @@
-﻿using CoreHelpers;
+﻿using Core.Helpers;
 
 namespace Session.Common.Implementations
 {

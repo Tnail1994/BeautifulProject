@@ -1,4 +1,4 @@
-﻿namespace Remote.Core
+﻿namespace SharedBeautifulData
 {
 	public class User
 	{

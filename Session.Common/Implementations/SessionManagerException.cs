@@ -1,4 +1,4 @@
-﻿using CoreImplementations;
+﻿using Core.Exceptions;
 
 namespace Session.Common.Implementations
 {

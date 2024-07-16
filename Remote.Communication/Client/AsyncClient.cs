@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using CoreHelpers;
-using CoreImplementations;
+using Core.Extensions;
+using Core.Helpers;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Client.Implementations;
 

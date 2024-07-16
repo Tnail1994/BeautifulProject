@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Sockets;
-using CoreHelpers;
-using CoreImplementations;
+using Core.Extensions;
+using Core.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Client.Implementations;

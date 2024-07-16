@@ -1,5 +1,5 @@
 ﻿using System.Collections.Concurrent;
-using CoreImplementations;
+using Core.Extensions;
 using Newtonsoft.Json;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Contracts;

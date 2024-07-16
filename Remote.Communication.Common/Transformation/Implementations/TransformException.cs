@@ -1,4 +1,4 @@
-﻿using CoreImplementations;
+﻿using Core.Exceptions;
 
 namespace Remote.Communication.Common.Transformation.Implementations
 {

@@ -2,7 +2,8 @@
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using CoreImplementations;
+using Core.Exceptions;
+using Core.Extensions;
 using Remote.Server.Common.Settings;
 
 namespace Remote.Server

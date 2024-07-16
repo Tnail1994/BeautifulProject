@@ -1,4 +1,4 @@
-﻿using CoreHelpers;
+﻿using Core.Helpers;
 using Remote.Communication.Common.Transformation.Implementations;
 
 namespace Remote.Communication.Transformation

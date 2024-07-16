@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using CoreImplementations;
+using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
 using Remote.Communication.Common.Implementations;
