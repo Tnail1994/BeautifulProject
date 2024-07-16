@@ -15,12 +15,15 @@ namespace BeautifulServerApplication
 		{
 			Log.Logger = new LoggerConfiguration()
 				.MinimumLevel.Verbose()
-				.WriteTo.File(
-					Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LogFiles",
-						$"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}", "Log.txt"),
-					rollingInterval: RollingInterval.Infinite,
-					outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level}] {Message}{NewLine}{Exception}")
-				.WriteTo.Console()
+				.WriteTo.Map("SessionId", "Misc",
+					(sessionId, wt) => wt.File(Path.Combine(
+							AppDomain.CurrentDomain.BaseDirectory, "LogFiles",
+							$"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}", $"Log-{sessionId}.txt"),
+						rollingInterval: RollingInterval.Day,
+						outputTemplate:
+						"[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} | [{Level}] | {Message}{NewLine}{Exception}"))
+				.WriteTo.Console(outputTemplate:
+					"[{Timestamp:yyyy-MM-dd HH:mm:ss.fff} | [{Level}] | {Message}{NewLine}{Exception}")
 				.CreateLogger();
 		}
 	}

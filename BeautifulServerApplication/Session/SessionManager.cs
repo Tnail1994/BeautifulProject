@@ -57,7 +57,7 @@ internal class SessionManager : ISessionManager
 
 	private void StartServices()
 	{
-		Log.Information("Starting services...");
+		Log.Information("Starting services... {SessionId}", "server");
 	}
 
 	private async Task StartServer()
@@ -69,7 +69,7 @@ internal class SessionManager : ISessionManager
 
 	private void OnNewConnectionOccured(TcpClient client)
 	{
-		Log.Information("Starting new session ...");
+		Log.Information("Starting new session ..." + "{SessionId}", "server");
 		StartNewSession(client);
 	}
 
@@ -84,19 +84,23 @@ internal class SessionManager : ISessionManager
 			throw new SessionManagerException("Scope is not set.", 2);
 
 		var asyncClient = _asyncClientFactory.Create(client, _asyncClientSettings);
+
 		var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
 		communicationService.SetClient(asyncClient);
 
 		var session = _sessionFactory.Create(communicationService);
 		session.SessionOnHold += OnSessionOnHold;
-
-		Log.Information($"New session with Id {session.Id} created.");
+		Log.Information($"New session with Id {session.Id} created." + "{SessionId}", "server");
 
 		_sessions.TryAdd(session.Id, session);
 
+		Log.Debug($"Creating and init session key." + "{SessionId}", "server");
+		//var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
+		//sessionKey.Init(session.Id);
+
 		session.Start();
 
-		Log.Information($"New session with Id {session.Id} started.");
+		Log.Information($"New session with Id {session.Id} started." + "{SessionId}", "server");
 	}
 
 	private void OnSessionOnHold(object? sender, string e)
@@ -104,7 +108,8 @@ internal class SessionManager : ISessionManager
 		if (sender is not ISession session)
 		{
 			Log.Fatal(
-				$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!");
+				$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!" +
+				"{SessionId}", "server");
 			return;
 		}
 
@@ -112,7 +117,7 @@ internal class SessionManager : ISessionManager
 
 		if (!removeResult)
 		{
-			Log.Error($"Cannot remove session with Id {session.Id} from dictionary.");
+			Log.Error($"Cannot remove session with Id {session.Id} from dictionary." + "{SessionId}", "server");
 			return;
 		}
 
@@ -120,11 +125,11 @@ internal class SessionManager : ISessionManager
 
 		if (pendingSession == null)
 		{
-			Log.Warning($"Cannot pend session.");
+			Log.Warning($"Cannot pend session." + "{SessionId}", "server");
 			return;
 		}
 
-		Log.Debug($"Pending session {pendingSession.Id}, for possibly restart this session.");
+		Log.Debug($"Pending session {pendingSession.Id}, for possibly restart this session." + "{SessionId}", "server");
 		_pendingSessions.TryAdd(pendingSession.Id, pendingSession);
 	}
 
