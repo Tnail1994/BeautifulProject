@@ -1,4 +1,4 @@
-# What do you learn?
+# What you will learn
 You will learn, how to create a well structure server and client console application, which communications via TCP/IP asyncronously.
 Furthermore, you will learn:
 - Using the IoC container ([.Net Dependency Injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection))
