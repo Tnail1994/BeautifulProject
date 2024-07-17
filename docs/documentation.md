@@ -130,7 +130,7 @@ To get started with Serilog and learn how to configure it for your application, 
 - [Serilog File Sink](https://github.com/serilog/serilog-sinks-file)
 
 ## Client-Side Implementation
-*In development...*
+*[In development... How to really use the full magic of asyncron communication on UI side](#todos)* 
 ## Server-Side Implementation
 ## Asynchronous Communication and Operations
 ## Error Handling and Logging
