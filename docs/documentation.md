@@ -23,7 +23,7 @@ Before diving into the code, every great software project often begins with a si
 For this tutorial, our journey began with a rough sketch that outlined the core components of our client-server system. This initial brainstorming session on paper laid the foundation for what would become a robust, asynchronous application using C# and .NET.
 Our initial idea was to create a server that could handle multiple client connections simultaneously, with clients communicating asynchronously. The paper sketch revealed a structure with several key components:
 
-![image](imgs/first_idea.jpg "first_sketch")
+![image](imgs/first_idea.jpg "My first sketch, when thinking about to make a tutorial about it. In the section `Development Journey` you will get a short overview, how these `first sketch` is really created.")
 
 - App: The main application container, responsible for IoC configuration and setup.
 - Session Manager: A critical component for handling multiple client sessions.
@@ -49,6 +49,7 @@ The concept of the `ITransformerService` emerged as a potential solution to our 
 The challenge of session isolation with shared services led us to explore advanced dependency injection techniques and consider how we could structure our application to maintain clear boundaries while allowing necessary interactions.
 As we moved forward, these questions shaped our development process, pushing us to create a more robust and flexible system than our initial sketch suggested. In the following sections, we'll explore how we overcame each of these challenges and turned our initial idea into a full-fledged, efficient client-server application.
 
+# Development Journey
 The journey from our initial sketch to the final implementation underscores a fundamental truth about software development: the evolution of a software system is an iterative process of sketching, building, breaking, refactoring and starting over again. This cycle isn't just normal; it's essential to creating robust, efficient, and maintainable software.
 
 ***Requirements analysis:*** The process begins with understanding user needs and translating them into detailed specifications. This includes identifying both functional requirements, which define what the system should do, and non-functional requirements, which address how the system performs its functions. This fundamental step ensures that our development efforts are aligned with user expectations and business goals.
@@ -70,4 +71,74 @@ This iterative approach of sketching, building, breaking, refactoring and starti
 There is so much more to say about designing software, but to avoid dragging this tutorial out into infinity, let's move on to the next section.
 
 # How it really works
+
+## Overview of the Architecture
+
+The architecture of our application follows a client-server model, which is a common design pattern in software development. This model separates the system into two main components: the client and the server. Each component has distinct responsibilities and interacts with the other to provide a seamless user experience.
+
+![image](draws/BeautifulApplicationLandscape.png "This is a general overlook about the server and client side. Please note that this isn't following any diagram design patterns. I created it just out of the box, to visualize something.")
+
+***What both apps do:***
+`ProgramServer` and `ProgramClient` manages configuration, logger, and lifecycle of ``IHostedService``. ``SetupConfig`` and ``SetupLogging`` define configurations and logging setup.
+
+***Server Side:***
+``SessionManager`` handles connections and sessions. ``IAsyncServer`` manages connections. 
+
+***Client Side:***
+IClientManager manages client services.
+
+***Shared:***
+``ICommunicationService`` and ``IAsyncClient`` handle message transmission and connection management. ``ITransformerService`` transforms JSON strings to objects automatically depending on the object type (`"$type"`).
+
+### How IoC Works
+
+In our application, we use the Inversion of Control (IoC) principle to manage dependencies and promote a more modular and testable codebase. IoC is implemented using Dependency Injection (DI), which allows us to inject dependencies into classes rather than having classes create their own dependencies. This approach decouples the creation of objects from their use, making the code more flexible and easier to maintain.
+
+To learn more about how IoC and DI work in .NET, you can refer to the official documentation:
+- [Dependency Injection in .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection)
+- [Service Lifetimes](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection#service-lifetimes)
+
+### Configuring a .NET Console App
+
+Configuring a .NET console application involves setting up various configuration sources, such as JSON files, environment variables, and command-line arguments. This allows the application to read configuration settings from multiple sources and use them at run time. The configuration system in .NET is very flexible and can be customized to meet the needs of the application.
+
+For detailed instructions on how to configure a .NET console application, you can refer to the official documentation:
+- [Configuration in .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration)
+- [Configuration in .NET Console Applications](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration-providers#json-configuration-provider)
+- [Options Pattern in .NET](https://learn.microsoft.com/en-us/dotnet/core/extensions/options)
+
+### Using Serilog for Logging
+
+Serilog is a popular logging library for .NET that allows you to create structured log files and log to various outputs, including the console. By using Serilog, you can separate logs for each session and ensure that logs are written in a structured format that is easy to query and analyze.
+
+To get started with Serilog and learn how to configure it for your application, you can refer to the following resources:
+- [Serilog Documentation](https://serilog.net/)
+- [Serilog GitHub Repository](https://github.com/serilog/serilog)
+- [Serilog Map Sink](https://github.com/serilog/serilog-sinks-map)
+- [Serilog Console Sink](https://github.com/serilog/serilog-sinks-console)
+- [Serilog File Sink](https://github.com/serilog/serilog-sinks-file)
+
+## Client-Side Implementation
+*In development...*
+## Server-Side Implementation
+## Asynchronous Communication and Operations
+## Error Handling and Logging
+## Testing
+
 # Conclusion 
+
+# Limitation
+
+# Todos
+
+- Security Considerations
+    1. Authentication and uthorization
+    2. Data Protection
+
+- How to really use the full magic of asyncron communication on UI side.
+
+- Deployment
+    1. Deployment process
+    2. Continuous Integration/Continuous Deployment (CI/CD)
+
+- Looking in the future: Dockerize
