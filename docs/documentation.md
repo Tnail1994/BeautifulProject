@@ -23,7 +23,7 @@ Before diving into the code, every great software project often begins with a si
 For this tutorial, our journey began with a rough sketch that outlined the core components of our client-server system. This initial brainstorming session on paper laid the foundation for what would become a robust, asynchronous application using C# and .NET.
 Our initial idea was to create a server that could handle multiple client connections simultaneously, with clients communicating asynchronously. The paper sketch revealed a structure with several key components:
 
-![image](/imgs/first_idea.jpg "first_sketch")
+![image](imgs/first_idea.jpg "first_sketch")
 
 - App: The main application container, responsible for IoC configuration and setup.
 - Session Manager: A critical component for handling multiple client sessions.
