@@ -133,12 +133,97 @@ To get started with Serilog and learn how to configure it for your application, 
 *[In development... How to really use the full magic of asyncron communication on UI side](#todos)* 
 ## Server-Side Implementation
 ## Asynchronous Communication and Operations
-## Error Handling and Logging
-## Testing
 
-# Conclusion 
+In this section, we will delve into the details of our system's asynchronous communication and operations. We'll cover the components and their interactions, focusing on how they work together to create a seamless, efficient communication system. The guiding principle behind these components is to maintain small, focused interfaces while encapsulating deep logic and hiding as much irrelevant information as possible.
+
+### An Overview of the Components and their Interaction
+
+![image](draws/Transformation_and_Communication.png "This is a general overlook about the components and their interaction. Please note that this isn't following any diagram design patterns. I created it just out of the box, to visualize the specific instances and how they interacting.")
+
+The image above provides a visual representation of how our key components interact. Let's break down each component and its role in the system.
+
+### The `ITransformerService`
+The ITransformerService is a critical component in our system, responsible for transforming messages between different formats or types. The main features of this service are
+
+- Self-resolving dependencies: The ITransformerService uses the IServiceProvider to dynamically resolve its required dependencies. This approach allows for greater flexibility and easier testing.
+- Reflection-based method discovery: Uses reflection to find the appropriate transform method for each message type. This powerful feature allows the service to handle new message types without requiring changes to its core logic.
+- Caching for performance: When the service is first resolved, it registers all type mappings and caches its method information. This optimization ensures that we only need to perform potentially expensive reflection operations once, improving overall performance.
+- Handling of BaseMessage objects: Each message object (derived from BaseMessage) is processed through its transformation pipeline. The TransformerService acts as an intermediary, finding and calling the correct transform method for each specific message type.
+
+### The `ICommunicationService`
+The ICommunicationService is the central hub for message handling in our system. Its main tasks include
+
+- Sending and receiving messages: This service supports both sending and receiving messages asynchronously.
+- Event-based communication: It registers with the MessageReceived event of the IAsyncClient and provides a thread-safe delegate for all ungrabbed TransformedObjects.
+- Automatic transformation: When a message is received, the ICommunicationService automatically uses the ITransformerService to transform the message into the appropriate object type.
+- Asynchronous operations: Both sending and receiving operations are handled asynchronously, ensuring that our application remains responsive even when dealing with high message volumes or network latency.
+
+### The `IAsyncClient`
+
+The IAsyncClient is our low-level communication interface. Its main features are:
+
+- Asynchronous receiving loop: It implements an asynchronous loop for receiving messages, ensuring that message reception doesn't block other operations.
+- Event-based notification: When a new message is received, it raises an event asynchronously, allowing other components (particularly the ICommunicationService) to react to new messages without polling.
+- Connection management: It provides events for connection status changes, such as when a connection is lost, allowing the system to respond appropriately to network issues.
+- Abstraction of underlying technology: By using an interface, we abstract away the details of the actual network communication (in this case, TcpClient), making it easier to change or mock the network layer for testing.
+
+### Putting all togehter
+The interaction of these components creates a robust asynchronous communication system:
+
+- The IAsyncClient constantly listens for incoming messages.
+- When a message is received, it notifies the ICommunicationService.
+- The ICommunicationService uses the ITransformerService to transform the raw message into the appropriate object type.
+- The transformed message is then made available to the rest of the application, either through events or by releasing waiting tasks.
+
+This design allows for efficient, scalable communication while maintaining a clear separation of concerns. The use of asynchronous operations throughout ensures that our application remains responsive even when dealing with high volumes of messages or complex transformations.
+By using dependency injection, reflection, and event-driven programming, we've created a flexible system that can easily accommodate new message types and communication patterns without requiring significant changes to the core architecture.
+
+### Risks and Challenges of Asynchronous Programming
+
+1. **Increased Complexity**:
+   - Writing, reading, and debugging asynchronous code can be more challenging compared to synchronous code. The non-linear flow of execution makes it harder to reason about behavior.
+
+2. **Potential for Race Conditions**:
+   - When multiple asynchronous operations run concurrently, race conditions may occur due to uncontrollable timing. These bugs can be subtle and hard to reproduce.
+
+3. **Deadlocks**:
+   - Improper use of `async/await`, especially combined with synchronous waits, can lead to deadlocks where tasks wait for each other indefinitely.
+
+4. **Context and Synchronization Issues**:
+   - Asynchronous operations may complete on different threads than where they started. This can cause problems with thread-specific data or UI interactions.
+
+5. **Error Handling Complexity**:
+   - Exception handling in asynchronous code can be challenging, as exceptions might occur in a different context from where the async operation began.
+
+6. **Overuse of Asynchronous Programming**:
+   - Not every operation needs to be asynchronous. Overusing `async/await` for simple tasks can lead to unnecessary overhead and complexity.
+
+7. **Testing Difficulties**:
+   - Asynchronous code requires testing various timing scenarios to ensure robustness.
+
+8. **Performance Overhead**:
+   - While beneficial for I/O-bound tasks, asynchronous programming introduces some overhead. For very short tasks, this overhead might outweigh the benefits.
+
+9. **Callback Hell**:
+   - Deeply nested asynchronous operations can still lead to hard-to-follow code, even with C#'s `async/await` syntax.
+
+10. **Resource Management**:
+    - Properly disposing of resources in asynchronous operations can be tricky, especially with long-running or nested async tasks.
+
+To mitigate these risks, consider the following strategies:
+- **Separation of Concerns**: Organize code to manage complexity.
+- **Locking and Synchronization**: Use carefully to avoid issues.
+- **Exception Handling**: Handle exceptions properly in async methods.
+- **Judicious Use**: Only apply asynchronous programming where it provides clear benefits.
+- **Comprehensive Testing**: Thoroughly test async code, including stress tests.
+
+# And that's why we do this
+
+# Statistics
 
 # Limitation
+
+# Conclusion 
 
 # Todos
 

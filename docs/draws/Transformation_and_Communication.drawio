@@ -1,128 +1,128 @@
-<mxfile host="Electron" modified="2024-07-17T14:30:38.342Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="rf4RmsXcNHijSvjISPYa" version="23.1.5" type="device">
+<mxfile host="Electron" modified="2024-07-17T20:08:28.222Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="t6y_uoe1v8ypShssk2oX" version="23.1.5" type="device">
   <diagram name="Seite-1" id="I6qX5loglK38hHRYpvuJ">
-    <mxGraphModel dx="1195" dy="737" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1434" dy="884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Uses the&amp;nbsp;&lt;i&gt;IServiceProvider&amp;nbsp;&lt;/i&gt;to find all&amp;nbsp;&lt;i&gt;IBaseMessage&amp;nbsp;&lt;/i&gt;registered inside the container and registering its Transform-Method. Every Message-Object (&lt;i&gt;BaseMessage&amp;lt;&amp;gt;&lt;/i&gt;) is handling its transformation. Means the&amp;nbsp;&lt;i&gt;ITransformerService&amp;nbsp;&lt;/i&gt;is just the middle man to find the correct Transform-Method. It finds the Transform&amp;lt;&amp;gt; method of the message objects by reflection.&lt;br&gt;&lt;br&gt;When the service gets resolved for the first time:&amp;nbsp;It registering all type mappings and filling its method cache. All methods get cache, that we do not have to search for them again. Only once.&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;div&gt;Uses the &lt;i&gt;IServiceProvider &lt;/i&gt;to find all &lt;i&gt;IBaseMessages &lt;/i&gt;that are registered inside the container and register their transform method. Each Message object (&lt;i&gt;BaseMessage&lt;/i&gt;&amp;lt;&amp;gt;) handles its transformation. This means that the ITransformerService is just the middleman to find the right Transform method. It finds the Transform&amp;lt;&amp;gt; method of the message objects through reflection.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;When the service is resolved for the first time: It registers all type mappings and fills its method cache. All methods are cached, so we never have to look for them again. Just once.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="260" y="302.5" width="470" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir. Registering to MessageReceived event of IAsyncClient. It holds a thread safe dictionary for all ungrabbed TransformedObjects (all message the come in but nobody take it before) and TransformedObjectWaiters (all instances, who are waiting for a requested type of message object),&lt;/div&gt;&lt;div&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;div&gt;The instance that supports sending and receiving messages. Also includes connection loss and reconnect behavior. It registers with the MessageReceived event of the &lt;i&gt;IAsyncClient&lt;/i&gt;. It holds a thread-safe dictionary for all ungrabbed TransformedObjects (all messages that come in but no one has grabbed them yet) and &lt;i&gt;TransformedObjectWaiters &lt;/i&gt;(all instances that are waiting for a requested type of message object),&lt;/div&gt;&lt;div&gt;Note: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="920" y="280" width="310" height="245" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-3" value="Use Transform and&lt;br&gt;get back a&amp;nbsp;&lt;br&gt;TransformedObject" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-2" target="xAueIYfnHOLh6w_8SJoP-1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-3" value="Use Transform and&lt;br&gt;get back a&amp;nbsp;&lt;br&gt;TransformedObject" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-2" target="xAueIYfnHOLh6w_8SJoP-1" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="860" y="490" as="sourcePoint" />
             <mxPoint x="1020" y="490" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-4" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- provides a receiving loop, which fires an MessageReceived event&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- provides an ConnectionLost event&lt;/span&gt;&lt;/div&gt;&lt;div&gt;- can connect and send&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-4" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- provides a receiving loop, which fires an MessageReceived event&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;- provides an ConnectionLost event&lt;/span&gt;&lt;/div&gt;&lt;div&gt;- can connect and send&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="1088.75" y="605" width="192.5" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-8" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-4" target="xAueIYfnHOLh6w_8SJoP-7">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-8" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-4" target="xAueIYfnHOLh6w_8SJoP-7" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="810" y="830" as="sourcePoint" />
             <mxPoint x="970" y="830" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-11" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-11" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="870" y="740" width="280" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-7" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IClient / ClientWrapper&lt;/b&gt;&lt;/font&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;Just a wrapper interface/class to help testing IAsyncClient class.&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="xAueIYfnHOLh6w_8SJoP-11">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-7" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IClient / ClientWrapper&lt;/b&gt;&lt;/font&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;Just a wrapper interface/class to help testing &lt;i&gt;IAsyncClient &lt;/i&gt;class.&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&lt;br&gt;&lt;/div&gt;&lt;div style=&quot;line-height: 100%;&quot;&gt;&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;align=center;" parent="xAueIYfnHOLh6w_8SJoP-11" vertex="1">
           <mxGeometry width="280" height="180" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-9" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;TcpClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from Net.Sockets&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="xAueIYfnHOLh6w_8SJoP-11">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-9" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;TcpClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from Net.Sockets&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="xAueIYfnHOLh6w_8SJoP-11" vertex="1">
           <mxGeometry x="10" y="90" width="260" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-12" target="xAueIYfnHOLh6w_8SJoP-4">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-12" target="xAueIYfnHOLh6w_8SJoP-4" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-28" value="calls StartReceivingAsync()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-27">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-28" value="calls StartReceivingAsync()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-27" vertex="1" connectable="0">
           <mxGeometry x="-0.2875" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-12" value="When the service gets started:&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-12" value="When the service gets started:&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="1150" y="450" width="70" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-13" target="xAueIYfnHOLh6w_8SJoP-19">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-13" target="xAueIYfnHOLh6w_8SJoP-19" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-13" value="When Receiving is requested:" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-13" value="When Receiving is requested:" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="930" y="450" width="70" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-22" target="xAueIYfnHOLh6w_8SJoP-13">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fillColor=#60a917;strokeColor=#2D7600;" parent="1" source="xAueIYfnHOLh6w_8SJoP-22" target="xAueIYfnHOLh6w_8SJoP-13" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-36" value="Give back and releases the waiter" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-35">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-36" value="Give back and releases the waiter" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-35" vertex="1" connectable="0">
           <mxGeometry x="-0.0962" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-29" target="xAueIYfnHOLh6w_8SJoP-30">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-29" target="xAueIYfnHOLh6w_8SJoP-30" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-29" value="When Message-Received event occurs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-29" value="When Message-Received event occurs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="1035" y="450" width="80" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-30" target="xAueIYfnHOLh6w_8SJoP-38">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-30" target="xAueIYfnHOLh6w_8SJoP-38" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-30" value="Calling the Transform() method from the ITransformerService" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-30" value="Calling the Transform() method from the &lt;i&gt;ITransformerService&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="860" y="630" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-38" target="xAueIYfnHOLh6w_8SJoP-40">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-38" target="xAueIYfnHOLh6w_8SJoP-40" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-38" value="And and update collection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-38" value="Add and update collection" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="637.5" y="640" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-40" value="Looking for Waiters, who are waiting for this specific transformed object and setting the TaskCompletionSource result." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-40" value="Looking for Waiters, who are waiting for this specific transformed object and setting the &lt;i&gt;TaskCompletionSource &lt;/i&gt;result." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="1" vertex="1">
           <mxGeometry x="608.75" y="740" width="177.5" height="90" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-43" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-43" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="260" y="570" width="320" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-19" value="Is a TransformedObject for requested type available?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="xAueIYfnHOLh6w_8SJoP-43">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-19" value="Is a &lt;i&gt;TransformedObject &lt;/i&gt;for requested type available?" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="xAueIYfnHOLh6w_8SJoP-43" vertex="1">
           <mxGeometry x="95" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-21" value="Registering a TransformedObjectWaiter, who is waiting until the specific MessageReceived event occurs." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="xAueIYfnHOLh6w_8SJoP-43">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-21" value="Registering a &lt;i&gt;TransformedObjectWaiter&lt;/i&gt;, who is waiting until the specific MessageReceived event occurs." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="xAueIYfnHOLh6w_8SJoP-43" vertex="1">
           <mxGeometry y="100" width="140" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-19" target="xAueIYfnHOLh6w_8SJoP-21">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-19" target="xAueIYfnHOLh6w_8SJoP-21" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-26" value="no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-25">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-26" value="no" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-25" vertex="1" connectable="0">
           <mxGeometry x="0.0242" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-22" value="Give back the result and update the collection." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="xAueIYfnHOLh6w_8SJoP-43">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-22" value="Give back the result and update the collection." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#142405;fontColor=#ffffff;strokeColor=#2D7600;" parent="xAueIYfnHOLh6w_8SJoP-43" vertex="1">
           <mxGeometry x="180" y="100" width="140" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-19" target="xAueIYfnHOLh6w_8SJoP-22">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-19" target="xAueIYfnHOLh6w_8SJoP-22" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-24" value="yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-23">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-24" value="yes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-23" vertex="1" connectable="0">
           <mxGeometry x="0.0719" y="2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-21" target="xAueIYfnHOLh6w_8SJoP-22">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="xAueIYfnHOLh6w_8SJoP-43" source="xAueIYfnHOLh6w_8SJoP-21" target="xAueIYfnHOLh6w_8SJoP-22" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-32" value="When TaskCompletionSource its result is set" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-31">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-32" value="When TaskCompletionSource its result is set" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-31" vertex="1" connectable="0">
           <mxGeometry x="-0.4253" y="-1" relative="1" as="geometry">
             <mxPoint x="25" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-46" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="xAueIYfnHOLh6w_8SJoP-21" target="xAueIYfnHOLh6w_8SJoP-40">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-46" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="xAueIYfnHOLh6w_8SJoP-21" target="xAueIYfnHOLh6w_8SJoP-40" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="450" y="720" as="sourcePoint" />
             <mxPoint x="500" y="670" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="xAueIYfnHOLh6w_8SJoP-47" value="Releasing" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="xAueIYfnHOLh6w_8SJoP-46">
+        <mxCell id="xAueIYfnHOLh6w_8SJoP-47" value="Releasing" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="xAueIYfnHOLh6w_8SJoP-46" vertex="1" connectable="0">
           <mxGeometry x="0.365" relative="1" as="geometry">
             <mxPoint x="18" y="-2" as="offset" />
           </mxGeometry>

@@ -1,105 +1,105 @@
-<mxfile host="Electron" modified="2024-07-17T09:01:10.197Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="tMHYuAraoM1V-xHOsV9u" version="23.1.5" type="device">
+<mxfile host="Electron" modified="2024-07-17T19:45:21.942Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="P-I1Yn-9xk4BHo0Tg4il" version="23.1.5" type="device">
   <diagram name="Seite-1" id="-Cqx07sXX7hBJCMXHcKV">
-    <mxGraphModel dx="4412" dy="3379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="3434" dy="2776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-122" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-122" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="-760" y="-770" width="1570" height="1410" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-35" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1c2f09;fontColor=#ffffff;strokeColor=#2D7600;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-35" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1c2f09;fontColor=#ffffff;strokeColor=#2D7600;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry width="1570" height="1410" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ProgrammServer&lt;/b&gt;&lt;/font&gt;&lt;br&gt;The entry point of the server app. It is managing configuration of logger, creating IoC container and creating and starting the host (&lt;i&gt;IHostedService&lt;/i&gt;).&amp;nbsp;&lt;br&gt;Also for debugging purposes, the interaction for the user is enabled, which led the user:&lt;br&gt;- Stop the server&lt;br&gt;- Send a message to a random client&lt;br&gt;- Send a message to all clients&lt;br&gt;&lt;u&gt;Note to IoC container&lt;/u&gt;: It is important to see the structure of registered instances. Their transient, scope and singleton typed instances, which behaves differently. We need a difference between the server wide and session wide instances. E.g. every session needs its own &lt;i&gt;ICommunicationService&lt;/i&gt;, so this service has to be registered as a scoped one. On the other hand, a &lt;i&gt;ITransformerService &lt;/i&gt;does not need to be scoped. Handling generalized transformation does not need to be limited to a specific scope and can be fully generalized (and registered as singleton)." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-1" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ProgrammServer&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;div&gt;The entry point of the server application. It manages the configuration of the logger, creates the IoC container and creates and starts the host (IHostedService).&amp;nbsp;&lt;/div&gt;&lt;div&gt;Also, for debugging purposes, the interaction for the user is enabled, which is guided by the user:&lt;/div&gt;&lt;div&gt;- Stop the server&lt;/div&gt;&lt;div&gt;- Send a message to any client&lt;/div&gt;&lt;div&gt;- Send a message to all clients&lt;/div&gt;&lt;div&gt;Note about the IoC container: It is important to see the structure of the registered instances. Your transient, scope and singleton typed instances behave differently. We need a difference between server wide and session wide instances. For example, each session needs its own ICommunicationService, so this service must be registered as a scoped one. On the other hand, an ITransformerService does not need to be scoped. The handling of a generalized transformation does not need to be limited to a specific scope and can be fully generalized (and registered as a singleton).&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="415" y="260" width="410" height="270" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-3" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SessionManager&lt;/b&gt;&lt;/font&gt;&lt;div&gt;Starting the server listener socket and handles new occuring connections. Whenever a new connection occurs, then a new session, which lives in its own scope, will be, with scoped resolved instances, created and started.&lt;/div&gt;&lt;div&gt;Holds all active sessions and move disconnected sessions to a pending sessions dictionary.&lt;/div&gt;&lt;div&gt;For debugging purposes, sending messages to random or all clients is provided.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
-          <mxGeometry x="440" y="600" width="360" height="180" as="geometry" />
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-3" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SessionManager&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;div&gt;Starts the server listener socket and handles new connections. Whenever a new connection occurs, a new session living in its own scope is created and started with scoped resolved instances.&lt;/div&gt;&lt;div&gt;Maintains all active sessions and moves disconnected sessions to a dictionary of pending sessions.&lt;/div&gt;&lt;div&gt;For debugging purposes, messages can be sent to random or all clients.&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
+          <mxGeometry x="440" y="600" width="360" height="170" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-3">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-3" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-14" value="calls StartAsync(CancellationToken) of &lt;i&gt;IHostedService&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-13">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-14" value="calls StartAsync(CancellationToken) of &lt;i&gt;IHostedService&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-13" vertex="1" connectable="0">
           <mxGeometry x="-0.0643" y="3" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-5" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupLogging&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Configuration for the (Serilog)-logger." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-5" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupLogging&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Configuration for the (Serilog)-logger." style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="930" y="440" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-5">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-9" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-8">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-9" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-8" vertex="1" connectable="0">
           <mxGeometry x="-0.2" relative="1" as="geometry">
             <mxPoint x="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-6" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupConfig&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Defines configuration and settings." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-6" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupConfig&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Defines configuration and settings." style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="930" y="300" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-6">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-6" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-12" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-7">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-12" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-7" vertex="1" connectable="0">
           <mxGeometry x="-0.216" y="1" relative="1" as="geometry">
             <mxPoint x="11" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-15" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IHostedService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from&amp;nbsp;Microsoft.Extensions.Hosting&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-15" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IHostedService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from&amp;nbsp;Microsoft.Extensions.Hosting&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="930" y="620" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-16" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3" target="NYHA1kSJsDq-rbWYVhYH-15">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-16" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3" target="NYHA1kSJsDq-rbWYVhYH-15" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="650" y="740" as="sourcePoint" />
             <mxPoint x="810" y="740" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-17" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-17" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="605" y="170" width="30" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-18" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="NYHA1kSJsDq-rbWYVhYH-17" parent="NYHA1kSJsDq-rbWYVhYH-122" target="NYHA1kSJsDq-rbWYVhYH-1">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-18" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-17" target="NYHA1kSJsDq-rbWYVhYH-1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="625" y="260" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-19" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncServer&lt;br&gt;&lt;/b&gt;&lt;/span&gt;A &lt;i&gt;TcpListener&lt;/i&gt;, which can be started and stopped. Informs when new connection occures&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-19" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncServer&lt;br&gt;&lt;/b&gt;&lt;/span&gt;A &lt;i&gt;TcpListener&lt;/i&gt;, which can be started and stopped. Informs when new connection occures&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="97" y="615" width="230" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-20" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3" target="NYHA1kSJsDq-rbWYVhYH-19">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-20" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3" target="NYHA1kSJsDq-rbWYVhYH-19" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="540" y="750" as="sourcePoint" />
             <mxPoint x="700" y="750" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="620" y="890" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-23" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-22">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-23" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-22" vertex="1" connectable="0">
           <mxGeometry x="-0.1214" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-36" value="&lt;font style=&quot;font-size: 62px;&quot;&gt;&lt;b&gt;Server side (.Net 8 Console)&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-36" value="&lt;font style=&quot;font-size: 62px;&quot;&gt;&lt;b&gt;Server side (.Net 8 Console)&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="20" y="20" width="1530" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-76" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;Only supports a transform method, which transforms a json string to an suitable registered object.&lt;/div&gt;&lt;div&gt;Resolving its dependencies by it self. Uses the &lt;i&gt;IServiceProvider &lt;/i&gt;to find all &lt;i&gt;IBaseMessage &lt;/i&gt;registered inside the container and registering its Transform-Method. Every Message-Object (&lt;i&gt;BaseMessage&amp;lt;&amp;gt;&lt;/i&gt;) is handling its transformation. Means the &lt;i&gt;ITransformerService &lt;/i&gt;is just the middle man to find the correct Transform-Method.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-76" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;div&gt;Supports only one transform method, which transforms a json string into an appropriate registered object.&lt;/div&gt;&lt;div&gt;Resolves its own dependencies. Uses the IServiceProvider to find all IBaseMessage registered inside the container and register its transform method. Each Message object (BaseMessage&amp;lt;&amp;gt;) handles its transformation. This means that the ITransformerService is just the middleman to find the right transform method.&amp;nbsp;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="30" y="1170" width="320" height="200" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-114" target="NYHA1kSJsDq-rbWYVhYH-76">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-114" target="NYHA1kSJsDq-rbWYVhYH-76" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-80" value="calls Transform()&lt;br&gt;and gets &lt;i&gt;TransformedObject&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-79">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-80" value="calls Transform()&lt;br&gt;and gets &lt;i&gt;TransformedObject&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-79" vertex="1" connectable="0">
           <mxGeometry x="-0.3718" y="4" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-81" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IServiceProvider&lt;br&gt;&lt;/b&gt;&lt;/span&gt;The IoC container&lt;br&gt;from System.Component&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-81" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IServiceProvider&lt;br&gt;&lt;/b&gt;&lt;/span&gt;The IoC container&lt;br&gt;from System.Component&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1">
           <mxGeometry x="100" y="365" width="230" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-76" target="NYHA1kSJsDq-rbWYVhYH-81">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-76" target="NYHA1kSJsDq-rbWYVhYH-81" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-70" y="1140" as="sourcePoint" />
             <mxPoint x="-80" y="400" as="targetPoint" />
@@ -110,226 +110,226 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-84" value="Resolves its &lt;br&gt;own dependencies" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-83">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-84" value="Resolves its &lt;br&gt;own dependencies" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-83" vertex="1" connectable="0">
           <mxGeometry x="-0.6523" y="3" relative="1" as="geometry">
             <mxPoint x="19" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-82" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-81">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-82" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-122" source="NYHA1kSJsDq-rbWYVhYH-1" target="NYHA1kSJsDq-rbWYVhYH-81" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="450" y="655" as="sourcePoint" />
             <mxPoint x="340" y="655" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-121" value="" style="group" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-122">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-121" value="" style="group" parent="NYHA1kSJsDq-rbWYVhYH-122" vertex="1" connectable="0">
           <mxGeometry x="490" y="890" width="1040" height="260" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-102" value="" style="group" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-121">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-102" value="" style="group" parent="NYHA1kSJsDq-rbWYVhYH-121" vertex="1" connectable="0">
           <mxGeometry width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-101" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-102">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-101" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-102" vertex="1">
           <mxGeometry width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-68" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-102">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-68" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-102" vertex="1">
           <mxGeometry x="440" y="65" width="265" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-102" target="NYHA1kSJsDq-rbWYVhYH-68">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-102" target="NYHA1kSJsDq-rbWYVhYH-68" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="260" y="65" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-73" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-72">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-73" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-72" vertex="1" connectable="0">
           <mxGeometry x="-0.1304" y="-2" relative="1" as="geometry">
             <mxPoint y="-5" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-74" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-102" target="NYHA1kSJsDq-rbWYVhYH-68">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-74" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-102" target="NYHA1kSJsDq-rbWYVhYH-68" edge="1">
           <mxGeometry x="-0.0062" width="160" relative="1" as="geometry">
             <mxPoint x="260" y="130" as="sourcePoint" />
             <mxPoint x="530" y="70" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-85" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-102">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-85" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-102" vertex="1">
           <mxGeometry x="780" y="85" width="240" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-86" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-102" source="NYHA1kSJsDq-rbWYVhYH-68" target="NYHA1kSJsDq-rbWYVhYH-85">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-86" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-102" source="NYHA1kSJsDq-rbWYVhYH-68" target="NYHA1kSJsDq-rbWYVhYH-85" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="570" y="170" as="sourcePoint" />
             <mxPoint x="730" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-103" value="" style="group" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-121">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-103" value="" style="group" parent="NYHA1kSJsDq-rbWYVhYH-121" vertex="1" connectable="0">
           <mxGeometry x="10" y="10" width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-104" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-103">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-104" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-103" vertex="1">
           <mxGeometry width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-105" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-103">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-105" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-103" vertex="1">
           <mxGeometry x="440" y="65" width="265" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-106" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-103" target="NYHA1kSJsDq-rbWYVhYH-105">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-106" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-103" target="NYHA1kSJsDq-rbWYVhYH-105" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="260" y="65" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-107" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-106">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-107" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-106" vertex="1" connectable="0">
           <mxGeometry x="-0.1304" y="-2" relative="1" as="geometry">
             <mxPoint y="-5" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-108" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-103" target="NYHA1kSJsDq-rbWYVhYH-105">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-108" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-103" target="NYHA1kSJsDq-rbWYVhYH-105" edge="1">
           <mxGeometry x="-0.0062" width="160" relative="1" as="geometry">
             <mxPoint x="260" y="130" as="sourcePoint" />
             <mxPoint x="530" y="70" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-109" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-103">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-109" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-103" vertex="1">
           <mxGeometry x="780" y="85" width="240" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-110" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-103" source="NYHA1kSJsDq-rbWYVhYH-105" target="NYHA1kSJsDq-rbWYVhYH-109">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-110" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-103" source="NYHA1kSJsDq-rbWYVhYH-105" target="NYHA1kSJsDq-rbWYVhYH-109" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="570" y="170" as="sourcePoint" />
             <mxPoint x="730" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-112" value="" style="group" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-121">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-112" value="" style="group" parent="NYHA1kSJsDq-rbWYVhYH-121" vertex="1" connectable="0">
           <mxGeometry x="20" y="20" width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-113" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-112">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-113" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-112" vertex="1">
           <mxGeometry width="1020" height="240" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-114" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-112">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-114" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance that supports sending and receiving messages. Also covers lost connection and reconnect behavior.&amp;nbsp;&lt;/div&gt;&lt;div&gt;Note: It is important to set the IAsyncClient.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-112" vertex="1">
           <mxGeometry x="440" y="65" width="265" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-115" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-120" target="NYHA1kSJsDq-rbWYVhYH-114">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-115" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-120" target="NYHA1kSJsDq-rbWYVhYH-114" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-116" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-115">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-116" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-115" vertex="1" connectable="0">
           <mxGeometry x="-0.1304" y="-2" relative="1" as="geometry">
             <mxPoint y="-5" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-117" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-120" target="NYHA1kSJsDq-rbWYVhYH-114">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-117" value="Use &lt;br&gt;(only for debugging)" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-120" target="NYHA1kSJsDq-rbWYVhYH-114" edge="1">
           <mxGeometry x="-0.0062" width="160" relative="1" as="geometry">
             <mxPoint x="370" y="70" as="sourcePoint" />
             <mxPoint x="530" y="70" as="targetPoint" />
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-118" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-112">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-118" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-112" vertex="1">
           <mxGeometry x="780" y="85" width="240" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-119" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-114" target="NYHA1kSJsDq-rbWYVhYH-118">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-119" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-112" source="NYHA1kSJsDq-rbWYVhYH-114" target="NYHA1kSJsDq-rbWYVhYH-118" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="570" y="170" as="sourcePoint" />
             <mxPoint x="730" y="170" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-120" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ISession&lt;br&gt;&lt;/b&gt;&lt;/span&gt;Defines the whole scope for one interaction for one client and server.&lt;br&gt;Starting all scoped services, when needed. It can be seen as the entry point of the scope.&lt;br&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-112">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-120" value="&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ISession&lt;br&gt;&lt;/b&gt;&lt;/span&gt;&lt;div&gt;Defines the entire scope for an interaction for a client and server.&lt;/div&gt;&lt;div&gt;Launches all scoped services when needed. It can be thought of as the entry point to the scope.&lt;/div&gt;&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-112" vertex="1">
           <mxGeometry width="260" height="130" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-123" value="" style="group" vertex="1" connectable="0" parent="1">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-123" value="" style="group" parent="1" vertex="1" connectable="0">
           <mxGeometry x="940" y="-760" width="1460" height="1150" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-39" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#001745;fontColor=#ffffff;strokeColor=#001DBC;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-39" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#001745;fontColor=#ffffff;strokeColor=#001DBC;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry width="1460" height="1150" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-40" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ProgrammClient&lt;/b&gt;&lt;/font&gt;&lt;br&gt;The entry point of the client test app. It is managing configuration of logger, creating IoC container and creating and starting the host (&lt;i&gt;IHostedService&lt;/i&gt;).&amp;nbsp;&lt;br&gt;This test app led the user do the following interactions:&lt;br&gt;- Stop the client&lt;br&gt;- Send a message to server&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-40" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ProgrammClient&lt;/b&gt;&lt;/font&gt;&lt;br&gt;&lt;div&gt;The entry point of the client test application. It manages the configuration of the logger, creates the IoC container, and creates and starts the host (IHostedService).&amp;nbsp;&lt;/div&gt;&lt;div&gt;This test application directed the user to perform the following interactions:&lt;/div&gt;&lt;div&gt;- Stop the client&lt;/div&gt;&lt;div&gt;- Send a message to the server&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="382.5" y="330" width="355" height="150" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-41" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ClientManager&lt;/b&gt;&lt;/font&gt;&lt;div&gt;Starting and stopping the services for the client application.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-41" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ClientManager&lt;/b&gt;&lt;/font&gt;&lt;div&gt;Starting and stopping the services for the client application.&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="420" y="600" width="280" height="70" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-41">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-42" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-41" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-43" value="calls StartAsync(CancellationToken) of &lt;i&gt;IHostedService&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-42">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-43" value="calls StartAsync(CancellationToken) of &lt;i&gt;IHostedService&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-42" vertex="1" connectable="0">
           <mxGeometry x="-0.0643" y="3" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-44" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupLogging&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Configuration for the (Serilog)-logger." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-44" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupLogging&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Configuration for the (Serilog)-logger." style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="860" y="420" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-44">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-44" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-46" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-45">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-46" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-45" vertex="1" connectable="0">
           <mxGeometry x="-0.2" relative="1" as="geometry">
             <mxPoint x="10" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-47" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupConfig&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Defines configuration and settings." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-47" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;SetupConfig&lt;/b&gt;&lt;/font&gt;&lt;br&gt;Defines configuration and settings." style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="860" y="340" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-47">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-48" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-40" target="NYHA1kSJsDq-rbWYVhYH-47" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-49" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-48">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-49" value="calls Initialize()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-48" vertex="1" connectable="0">
           <mxGeometry x="-0.216" y="1" relative="1" as="geometry">
             <mxPoint x="11" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-50" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IHostedService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from&amp;nbsp;Microsoft.Extensions.Hosting&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-50" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IHostedService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;from&amp;nbsp;Microsoft.Extensions.Hosting&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="860" y="590" width="230" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-51" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-41" target="NYHA1kSJsDq-rbWYVhYH-50">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-51" value="Extends" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-41" target="NYHA1kSJsDq-rbWYVhYH-50" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="590" y="740" as="sourcePoint" />
             <mxPoint x="750" y="740" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-52" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-52" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="545" y="170" width="30" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-53" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-52" target="NYHA1kSJsDq-rbWYVhYH-40">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-53" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-52" target="NYHA1kSJsDq-rbWYVhYH-40" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="565" y="260" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-63" value="&lt;font style=&quot;font-size: 62px;&quot;&gt;&lt;b&gt;Client side (.Net 8 Console)&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-63" value="&lt;font style=&quot;font-size: 62px;&quot;&gt;&lt;b&gt;Client side (.Net 8 Console)&lt;/b&gt;&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="20" y="20" width="1420" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-66" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-41" target="NYHA1kSJsDq-rbWYVhYH-65">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-66" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-41" target="NYHA1kSJsDq-rbWYVhYH-65" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="560" y="1040" as="targetPoint" />
             <mxPoint x="560" y="670" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-67" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-66">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-67" value="calls Start()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-66" vertex="1" connectable="0">
           <mxGeometry x="-0.1214" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-65" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-65" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ICommunicationService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance, which supports sending and receiving messages. Also covers connection lost and reconnect behavoir.&amp;nbsp;&lt;br&gt;&lt;u&gt;Note&lt;/u&gt;: It is important to set the &lt;i&gt;IAsyncClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="427.5" y="960" width="265" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-88" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-88" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;IAsyncClient&lt;/b&gt;&lt;/font&gt;&lt;div&gt;The instance to handle the real communication. Use the &lt;i&gt;TcpClient&lt;/i&gt;.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="40" y="980" width="240" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-89" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-65" target="NYHA1kSJsDq-rbWYVhYH-88">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-89" value="Use" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-65" target="NYHA1kSJsDq-rbWYVhYH-88" edge="1">
           <mxGeometry width="160" relative="1" as="geometry">
             <mxPoint x="-160" y="790" as="sourcePoint" />
             <mxPoint y="790" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-93" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;Only supports a transform method, which transforms a json string to an suitable registered object.&lt;/div&gt;&lt;div&gt;Resolving its dependencies by it self. Uses the &lt;i&gt;IServiceProvider &lt;/i&gt;to find all &lt;i&gt;IBaseMessage &lt;/i&gt;registered inside the container and registering its Transform-Method. Every Message-Object (&lt;i&gt;BaseMessage&amp;lt;&amp;gt;&lt;/i&gt;) is handling its transformation. Means the &lt;i&gt;ITransformerService &lt;/i&gt;is just the middle man to find the correct Transform-Method.&amp;nbsp;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="NYHA1kSJsDq-rbWYVhYH-123">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-93" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;&lt;b&gt;ITransformerService&lt;/b&gt;&lt;/font&gt;&lt;div&gt;&lt;div&gt;Supports only one transform method, which transforms a json string into an appropriate registered object.&lt;/div&gt;&lt;div&gt;Resolves its own dependencies. Uses the IServiceProvider to find all IBaseMessage registered inside the container and register its transform method. Each Message object (BaseMessage&amp;lt;&amp;gt;) handles its transformation. This means that the ITransformerService is just the middleman to find the right transform method.&amp;nbsp;&lt;/div&gt;&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" vertex="1">
           <mxGeometry x="990" y="925" width="420" height="170" as="geometry" />
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-94" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-93" target="NYHA1kSJsDq-rbWYVhYH-65">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-94" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;startArrow=classic;startFill=1;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-93" target="NYHA1kSJsDq-rbWYVhYH-65" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-927" y="1065" as="sourcePoint" />
             <mxPoint x="-1160" y="1275" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-95" value="calls Transform()&lt;br&gt;and gets &lt;i&gt;TransformedObject&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-94">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-95" value="calls Transform()&lt;br&gt;and gets &lt;i&gt;TransformedObject&lt;/i&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-94" vertex="1" connectable="0">
           <mxGeometry x="-0.3718" y="4" relative="1" as="geometry">
             <mxPoint x="-48" y="1" as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-96" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" edge="1" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-93" target="NYHA1kSJsDq-rbWYVhYH-40">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-96" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" parent="NYHA1kSJsDq-rbWYVhYH-123" source="NYHA1kSJsDq-rbWYVhYH-93" target="NYHA1kSJsDq-rbWYVhYH-40" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="420" y="1360" as="sourcePoint" />
             <mxPoint x="110" y="490" as="targetPoint" />
@@ -339,18 +339,18 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-97" value="Resolves its own dependencies" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-96">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-97" value="Resolves its own dependencies" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-96" vertex="1" connectable="0">
           <mxGeometry x="-0.6523" y="3" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-91" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fillColor=#d80073;strokeColor=#A50040;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="NYHA1kSJsDq-rbWYVhYH-118" target="NYHA1kSJsDq-rbWYVhYH-88">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-91" value="" style="shape=flexArrow;endArrow=classic;startArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fillColor=#d80073;strokeColor=#A50040;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="NYHA1kSJsDq-rbWYVhYH-118" target="NYHA1kSJsDq-rbWYVhYH-88" edge="1">
           <mxGeometry width="100" height="100" relative="1" as="geometry">
             <mxPoint x="460" y="40" as="sourcePoint" />
             <mxPoint x="1190" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="NYHA1kSJsDq-rbWYVhYH-92" value="Telegram is in JSON format" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="NYHA1kSJsDq-rbWYVhYH-91">
+        <mxCell id="NYHA1kSJsDq-rbWYVhYH-92" value="Telegram is in JSON format" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="NYHA1kSJsDq-rbWYVhYH-91" vertex="1" connectable="0">
           <mxGeometry x="-0.1169" y="-2" relative="1" as="geometry">
             <mxPoint y="-4" as="offset" />
           </mxGeometry>
