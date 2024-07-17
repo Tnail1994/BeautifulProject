@@ -65,6 +65,20 @@ namespace Session
 
 		private void StartNewSession(TcpClient client)
 		{
+			var session = BuildSession(client);
+
+			session.SessionOnHold += OnSessionOnHold;
+			this.LogInfo($"New session with Id {session.Id} created.", "server");
+
+			_sessions.TryAdd(session.Id, session);
+
+			session.Start();
+
+			this.LogInfo($"New session with Id {session.Id} started.", "server");
+		}
+
+		private ISession BuildSession(TcpClient client)
+		{
 			var scope = _scopeFactory.Create();
 
 			if (client == null)
@@ -84,14 +98,7 @@ namespace Session
 			communicationService.SetClient(asyncClient);
 
 			var session = _sessionFactory.Create(communicationService, sessionKey, checkAliveService);
-			session.SessionOnHold += OnSessionOnHold;
-			this.LogInfo($"New session with Id {session.Id} created.", "server");
-
-			_sessions.TryAdd(session.Id, session);
-
-			session.Start();
-
-			this.LogInfo($"New session with Id {session.Id} started.", "server");
+			return session;
 		}
 
 		private void OnSessionOnHold(object? sender, string e)

@@ -39,7 +39,7 @@ namespace BeautifulClientApplication
 			while (!ClientProgramCancellationTokenSource.IsCancellationRequested)
 			{
 				var input = Console.ReadLine();
-				if (input == "-e")
+				if (input == "e")
 				{
 					ClientProgramCancellationTokenSource.Cancel();
 					break;
@@ -59,7 +59,7 @@ namespace BeautifulClientApplication
 		{
 			Console.WriteLine("Commands:");
 			Console.WriteLine("i : Info");
-			Console.WriteLine("e : Stop the server");
+			Console.WriteLine("e : Stop the client");
 			Console.WriteLine("  : (Nothing) Send message");
 		}
 
