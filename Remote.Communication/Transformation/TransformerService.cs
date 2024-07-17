@@ -10,7 +10,6 @@ namespace Remote.Communication.Transformation
 {
 	public class TransformerService : ITransformerService
 	{
-		private readonly Dictionary<string, Type> _typeMap = new Dictionary<string, Type>();
 		private readonly Dictionary<string, MethodInfo> _methodCache = new Dictionary<string, MethodInfo>();
 
 		public TransformerService(IServiceProvider serviceProvider)
@@ -31,7 +30,6 @@ namespace Remote.Communication.Transformation
 			{
 				var typeName = type.Name;
 				this.LogDebug($"**Registering {typeName}");
-				_typeMap[typeName] = type;
 				var methodInfo = type.GetMethod("Transform",
 					BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
 
@@ -51,10 +49,9 @@ namespace Remote.Communication.Transformation
 
 			var discriminator = FindDiscriminator(json);
 
-			if (string.IsNullOrEmpty(discriminator) || !_typeMap.TryGetValue(discriminator, out _))
+			if (string.IsNullOrEmpty(discriminator))
 			{
-				var message = $"No type registered for discriminator: {discriminator}" +
-				              $"no discriminator: {string.IsNullOrEmpty(discriminator)}. Errorcode 1";
+				var message = $"No discriminator: {string.IsNullOrEmpty(discriminator)}. Errorcode 1";
 				this.LogError($"{message}");
 				throw new TransformException(message, 1);
 			}
@@ -87,7 +84,6 @@ namespace Remote.Communication.Transformation
 
 		public void Dispose()
 		{
-			_typeMap.Clear();
 			_methodCache.Clear();
 		}
 	}
