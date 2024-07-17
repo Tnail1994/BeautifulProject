@@ -1,4 +1,6 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Net.Http.Headers;
 using Core.Extensions;
 using Newtonsoft.Json;
 using Remote.Communication.Common.Client.Contracts;
@@ -21,11 +23,17 @@ namespace Remote.Communication
 		private readonly CancellationTokenSource _ownCancellationReceivingTokenSource = new();
 
 		private IAsyncClient? _client;
+#if DEBUG
+		private Stopwatch _stopwatch;
+#endif
 
 		public CommunicationService(ITransformerService transformerService, ISessionKey sessionKey)
 		{
 			_transformerService = transformerService;
 			_sessionKey = sessionKey;
+#if DEBUG
+			_stopwatch = new Stopwatch();
+#endif
 		}
 
 		public bool IsClientSet => _client != null;
@@ -133,7 +141,15 @@ namespace Remote.Communication
 				this.LogDebug($"OnMessageReceived with {jsonString}", SessionId);
 
 				this.LogDebug("Start transforming with Service...", SessionId);
+#if DEBUG
+				_stopwatch.Restart();
+
+#endif
 				var transformedObject = _transformerService.Transform(jsonString);
+#if DEBUG
+				_stopwatch.Stop();
+#endif
+				this.LogDebug($"Transforming took {_stopwatch.ElapsedMilliseconds}ms", SessionId);
 				AddTransformedObject(transformedObject);
 				this.LogDebug($"Finished and added: {transformedObject}", SessionId);
 
