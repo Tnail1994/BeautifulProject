@@ -1,6 +1,5 @@
 ﻿using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 using Core.Extensions;
 using Newtonsoft.Json;
 using Remote.Communication.Common.Client.Contracts;
@@ -24,16 +23,13 @@ namespace Remote.Communication
 
 		private IAsyncClient? _client;
 #if DEBUG
-		private Stopwatch _stopwatch;
+		private readonly Stopwatch _stopwatch = new();
 #endif
 
 		public CommunicationService(ITransformerService transformerService, ISessionKey sessionKey)
 		{
 			_transformerService = transformerService;
 			_sessionKey = sessionKey;
-#if DEBUG
-			_stopwatch = new Stopwatch();
-#endif
 		}
 
 		public bool IsClientSet => _client != null;
