@@ -54,11 +54,22 @@ The journey from our initial sketch to the final implementation underscores a fu
 
 ***Requirements analysis:*** The process begins with understanding user needs and translating them into detailed specifications. This includes identifying both functional requirements, which define what the system should do, and non-functional requirements, which address how the system performs its functions. This fundamental step ensures that our development efforts are aligned with user expectations and business goals.
 
+> **_Note:_** For this tutorial project, our specific requirements are: We'll ensure that interactions are efficient and non-blocking. Our system will seamlessly handle concurrent client connections. We'll focus on modularity and maintainability using Inversion of Control principles. We'll write tests to verify the reliability and correctness of our code. Include logging, error handling, and other essential features.
+
+These requirements form the foundation of our project and guide our design and implementation decisions. 
+
+
 ***High-level design (Sketching):*** Sketching allows us to quickly explore ideas without the constraints of code. It's where creativity flows freely and we can envision the big picture. In this phase, we define the overall architecture and identify key components and modules. High-level diagrams, such as UML diagrams, help visualize the structure of the system and address important factors such as scalability, maintainability, and performance. Our initial paper sketch sets the stage for multiple iterations as we refine our concept.
+
+> **_Note:_** [See the hand-drawn graphic in the previous chapter.](#the-first-idea)
 
 ***Detailed Design (Building):*** Building is where our ideas take shape in code. This phase involves breaking down the system into smaller, more manageable components and specifying interfaces, data structures, algorithms, and interactions. Detailed design includes creating class diagrams, sequence diagrams, and other views that provide a comprehensive understanding of the system. It's exciting to see concepts come to life, but it's also where we encounter unexpected challenges. Each build taught us something new about the behavior and performance of our system.
 
+> **_Note:_** [See How it really works](#how-it-really-works)
+
 ***Implementation (Building):*** With the detailed design as our blueprint, we begin to write the code. Adherence to coding standards and best practices is critical to ensuring that our implementation is reliable and maintainable. This phase is characterized by the transformation of theoretical designs into functional software components.
+
+> **_Note:_**  [See the ITransformerService example.](#asynchronous-communication-and-operations) 
 
 ***Testing and Validation (Breaking):*** Breaking may sound negative, but it's a critical part of the process. By pushing our system to its limits, we discover weaknesses in our design. Every "break" is an opportunity to learn and improve. This phase involves rigorous testing of individual components and the integrated system. We stress test our asynchronous communication, challenge our message transformation system, and scrutinize our session management. Identifying and fixing bugs is essential to ensuring that the software meets its specifications and performs reliably.
 
