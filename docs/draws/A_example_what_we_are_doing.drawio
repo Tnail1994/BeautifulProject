@@ -1,0 +1,28 @@
+<mxfile host="Electron" modified="2024-07-17T20:20:39.976Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/23.1.5 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="8EIR2faZmIOBqJySliOn" version="23.1.5" type="device">
+  <diagram name="Seite-1" id="ZzI0w3QSlML_kaGunaD2">
+    <mxGraphModel dx="1434" dy="884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-1" value="The fundament we are building. Depending on the application view, but generally said. Config, IoC and logging. More specifically said, we implemented the communication and its automatic transformation for server and client." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="316.5" width="406" height="59" as="geometry" />
+        </mxCell>
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-2" value="&lt;i&gt;This can be your pillars to define your system.&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="136.5" width="76" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-6" value="The interface?" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="96.5" width="406" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-7" value="The UI?" style="triangle;whiteSpace=wrap;html=1;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="182.5" y="-150" width="81" height="410" as="geometry" />
+        </mxCell>
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-8" value="&lt;i&gt;This can be your pillars to define your system.&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="136.5" width="76" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="xTj_lfzZ5j-ogcLz0Hvf-10" value="&lt;i&gt;This can be your pillars to define your system.&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="136.5" width="76" height="180" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

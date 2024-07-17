@@ -218,6 +218,8 @@ To mitigate these risks, consider the following strategies:
 - **Comprehensive Testing**: Thoroughly test async code, including stress tests.
 
 # And that's why we do this
+![image](draws/A_example_what_we_are_doing.png "This is an experimental graphic about what we built. We built a part of the fundament of an overall bigger picture.")
+
 
 # Statistics
 
