@@ -4,6 +4,6 @@ namespace Session.Common.Contracts.Services
 {
 	public interface IScopeFactory
 	{
-		IServiceScope? Create();
+		IServiceScope Create();
 	}
 }

@@ -4,12 +4,10 @@ using Core.Extensions;
 using Core.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
-using SharedBeautifulServices.Common;
 
 namespace Session
 {
@@ -20,19 +18,12 @@ namespace Session
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 		private readonly ConcurrentDictionary<string, ISession> _pendingSessions = new();
 
-		private readonly ISessionFactory _sessionFactory;
 		private readonly IScopeFactory _scopeFactory;
-		private readonly IAsyncClientFactory _asyncClientFactory;
 
-
-		public SessionManager(IAsyncServer asyncSocketServer, ISessionFactory sessionFactory,
-			IScopeFactory scopeFactory, IAsyncClientFactory asyncClientFactory)
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeFactory scopeFactory)
 		{
-			_sessionFactory = sessionFactory;
 			_scopeFactory = scopeFactory;
 			_asyncSocketServer = asyncSocketServer;
-			_asyncClientFactory = asyncClientFactory;
-
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
 		}
@@ -87,18 +78,8 @@ namespace Session
 			if (scope == null)
 				throw new SessionManagerException("Scope is not set.", 2);
 
-			this.LogDebug($"Creating session key.", "server");
-			var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
-			this.LogDebug($"Creating client.", "server");
-			var asyncClient = _asyncClientFactory.Create(client);
-			this.LogDebug($"Client {asyncClient.Id} matches to Session {sessionKey.SessionId}", "server");
-
-			var communicationService = scope.ServiceProvider.GetRequiredService<ICommunicationService>();
-			var checkAliveService = scope.ServiceProvider.GetRequiredService<ICheckAliveService>();
-			communicationService.SetClient(asyncClient);
-
-			var session = _sessionFactory.Create(communicationService, sessionKey, checkAliveService);
-			return session;
+			scope.ServiceProvider.GetRequiredService<IAsyncClientFactory>().Init(client);
+			return scope.ServiceProvider.GetRequiredService<ISession>();
 		}
 
 		private void OnSessionOnHold(object? sender, string e)

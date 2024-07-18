@@ -7,13 +7,13 @@ using SharedBeautifulServices.Common;
 
 namespace Session
 {
-	internal class Session : ISession, IDisposable
+	public class Session : ISession, IDisposable
 	{
 		private readonly ICommunicationService _communicationService;
 		private readonly ISessionKey _sessionKey;
 		private readonly ICheckAliveService _checkAliveService;
 
-		private Session(ICommunicationService communicationService, ISessionKey sessionKey,
+		public Session(ICommunicationService communicationService, ISessionKey sessionKey,
 			ICheckAliveService checkAliveService)
 		{
 			_sessionKey = sessionKey;
@@ -63,26 +63,7 @@ namespace Session
 
 		private void StartCommunicationService()
 		{
-			try
-			{
-				_communicationService.Start();
-			}
-			catch (NullReferenceException nullReferenceException)
-			{
-				this.LogError($"Cannot start communication for this session: {Id}" +
-				              $"Possible no client is set to the communication service. Check <cs_setClient>. Result = {_communicationService.IsClientSet}" +
-				              $"{nullReferenceException.Message}", Id);
-
-				if (!_communicationService.IsClientSet)
-				{
-					// Todo retry to set a client
-				}
-			}
-			catch (Exception ex)
-			{
-				this.LogFatal($"!!! Unexpected {Id}" +
-				              $"{ex.Message}", Id);
-			}
+			_communicationService.Start();
 		}
 
 		private void StartKeepAliveService()

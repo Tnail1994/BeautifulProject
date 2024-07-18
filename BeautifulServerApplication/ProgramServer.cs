@@ -104,8 +104,6 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
 
-					services.AddSingleton<ISessionFactory, SessionFactory>();
-					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 					services.AddSingleton<IScopeFactory, ScopeFactory>();
 
 					services.Configure<AsyncServerSettings>(
@@ -114,6 +112,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 					services.Configure<CheckAliveSettings>(
 						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
+					services.Configure<AsyncClientFactorySettings>(
+						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -121,11 +121,17 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
 					services.AddSingleton<ICheckAliveSettings>(provider =>
 						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
+					services.AddSingleton<IAsyncClientFactorySettings>(provider =>
+						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
 
 					// Session wide
+					services.AddScoped<ISession, Session.Session>();
 					services.AddScoped<ICommunicationService, CommunicationService>();
 					services.AddScoped<ISessionKey, SessionKey>();
 					services.AddScoped<ICheckAliveService, CheckAliveService>();
+					services.AddScoped<IAsyncClientFactory, AsyncClientFactory>();
+					services.AddScoped<IAsyncClient>(provider =>
+						provider.GetRequiredService<IAsyncClientFactory>().Create());
 				});
 	}
 }

@@ -19,22 +19,13 @@ namespace Tests.Remote.Communication
 		{
 			_transformerServiceMock = Substitute.For<ITransformerService>();
 			var sessionKeyMock = Substitute.For<ISessionKey>();
-			_communicationService = new CommunicationService(_transformerServiceMock, sessionKeyMock);
 			_client = Substitute.For<IAsyncClient>();
-		}
-
-		[Fact]
-		public void SetClient_WhenClientIsNotSet_ShouldSetClient()
-		{
-			Assert.False(_communicationService.IsClientSet);
-			SetClientToCommunicationService();
-			Assert.True(_communicationService.IsClientSet);
+			_communicationService = new CommunicationService(_client, _transformerServiceMock, sessionKeyMock);
 		}
 
 		[Fact]
 		public void Start_WhenClientIsSet_ShouldStartReceivingOnClient()
 		{
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			_client.Received(1).StartReceivingAsync();
 		}
@@ -49,7 +40,6 @@ namespace Tests.Remote.Communication
 		public void WhenMessagedReceivedEventOccurs_ThenTransform_OnTransformerServiceShouldGetCalled()
 		{
 			SetTransformerReturningValue();
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			RaiseMessageReceivedEvent();
 			_transformerServiceMock.Received(1).Transform(Arg.Any<string>());
@@ -59,7 +49,6 @@ namespace Tests.Remote.Communication
 		public async void ReceiveAsync_WhenSuitableTransformedMessageIsAdded_ThenShouldReturnThis()
 		{
 			SetTransformerReturningValue();
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			RaiseMessageReceivedEvent();
 
@@ -73,7 +62,6 @@ namespace Tests.Remote.Communication
 		public async void ReceiveAsync_WhenUnsuitableTransformedMessageIsAdded_ThenShouldWaitUntilSuitableMessageAdded()
 		{
 			SetTransformerReturningValue();
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			RaiseMessageReceivedEvent();
 
@@ -91,22 +79,14 @@ namespace Tests.Remote.Communication
 		[Fact]
 		public void SendAsync_WhenCalled_ShouldSendStringToClient()
 		{
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			_communicationService.SendAsync(TestMessage.Create());
 			_client.Received(1).Send(Arg.Any<string>());
 		}
 
 		[Fact]
-		public void SendAsync_WhenNoClientSet_ShouldRaiseNullReferenceException()
-		{
-			Assert.Throws<NullReferenceException>(() => _communicationService.SendAsync(TestMessage.Create()));
-		}
-
-		[Fact]
 		public void Dispose_WhenCalled_ShouldNotDisposeClient()
 		{
-			SetClientToCommunicationService();
 			StartCommunicationService();
 			_communicationService.Dispose();
 			_client.Received(1).Dispose();
@@ -128,11 +108,6 @@ namespace Tests.Remote.Communication
 
 			_transformerServiceMock.Transform(Arg.Any<string>())
 				.Returns(TransformedObject.Create(testMessage, testMessageName));
-		}
-
-		private void SetClientToCommunicationService()
-		{
-			_communicationService.SetClient(_client);
 		}
 
 		private void RaiseMessageReceivedEvent(string testMessageString = "")

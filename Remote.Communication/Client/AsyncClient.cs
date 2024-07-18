@@ -6,7 +6,7 @@ using Remote.Communication.Common.Client.Contracts;
 
 namespace Remote.Communication.Client
 {
-	internal class AsyncClient : IAsyncClient
+	public class AsyncClient : IAsyncClient
 	{
 		private readonly IClient _client;
 
@@ -17,7 +17,7 @@ namespace Remote.Communication.Client
 		private readonly int _port;
 		private readonly string _ip;
 
-		private AsyncClient(IClient client, IAsyncClientSettings settings)
+		public AsyncClient(IClient client, IAsyncClientSettings settings)
 		{
 			Id = GuidIdCreator.CreateString();
 

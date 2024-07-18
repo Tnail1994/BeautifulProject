@@ -80,17 +80,22 @@ namespace BeautifulClientApplication
 					services.AddSingleton<ITransformerService, TransformerService>();
 					services.AddSingleton<ICommunicationService, CommunicationService>();
 					services.AddSingleton<ICheckAliveService, CheckAliveService>();
-
+					services.AddSingleton<IAsyncClient>(provider =>
+						provider.GetRequiredService<IAsyncClientFactory>().Create());
 
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 					services.Configure<CheckAliveSettings>(
 						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
+					services.Configure<AsyncClientFactorySettings>(
+						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
 
 					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
 					services.AddSingleton<ICheckAliveSettings>(provider =>
 						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
+					services.AddSingleton<IAsyncClientFactorySettings>(provider =>
+						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
 				});
 	}
 }

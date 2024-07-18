@@ -17,54 +17,38 @@ namespace Remote.Communication
 		private readonly ConcurrentDictionary<string, TransformedObject> _transformedObjects = new();
 		private readonly ConcurrentDictionary<string, TransformedObjectWaiter> _transformedObjectWaiters = new();
 
+		private readonly IAsyncClient _asyncClient;
+
 		private readonly ITransformerService _transformerService;
 		private readonly ISessionKey _sessionKey;
 		private readonly CancellationTokenSource _ownCancellationReceivingTokenSource = new();
 
-		private IAsyncClient? _client;
 #if DEBUG
 		private readonly Stopwatch _stopwatch = new();
 #endif
 
-		public CommunicationService(ITransformerService transformerService, ISessionKey sessionKey)
+		public CommunicationService(IAsyncClient asyncClient, ITransformerService transformerService,
+			ISessionKey sessionKey)
 		{
+			_asyncClient = asyncClient;
 			_transformerService = transformerService;
 			_sessionKey = sessionKey;
 		}
 
-		public bool IsClientSet => _client != null;
-
-		private IAsyncClient Client => _client ??
-		                               throw new NullReferenceException(
-			                               "Client is null. No socket for communication available.");
 
 		public event EventHandler<string>? ConnectionLost;
 
 		private string SessionId => _sessionKey.SessionId;
 
-		public void SetClient(IAsyncClient client)
-		{
-			if (IsClientSet)
-			{
-				this.LogWarning("Client is already set. \n" +
-				                $"Set client: {Client.Id} \n" +
-				                $"New client: {client.Id} ", SessionId);
-				return;
-			}
-
-			_client = client;
-			this.LogDebug($"Set client. Code: <cs_setClient>" +
-			              $"Set client: {Client.Id}", SessionId);
-		}
 
 		public async Task Start()
 		{
-			Client.MessageReceived += OnMessageReceived;
-			Client.ConnectionLost += ConnectionLost;
+			_asyncClient.MessageReceived += OnMessageReceived;
+			_asyncClient.ConnectionLost += ConnectionLost;
 
-			if (Client.IsNotConnected)
+			if (_asyncClient.IsNotConnected)
 			{
-				var connectionResult = await Client.ConnectAsync();
+				var connectionResult = await _asyncClient.ConnectAsync();
 
 				if (!connectionResult)
 				{
@@ -74,7 +58,7 @@ namespace Remote.Communication
 				}
 			}
 
-			Client.StartReceivingAsync();
+			_asyncClient.StartReceivingAsync();
 		}
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage
@@ -107,7 +91,7 @@ namespace Remote.Communication
 		{
 			var jsonString = JsonConvert.SerializeObject(messageObj, JsonConfig.Settings);
 			this.LogDebug($"Sending {jsonString} to client.", SessionId);
-			Client.Send(jsonString);
+			_asyncClient.Send(jsonString);
 		}
 
 
@@ -213,11 +197,8 @@ namespace Remote.Communication
 			_transformedObjects.Clear();
 			_ownCancellationReceivingTokenSource.Dispose();
 
-			if (!IsClientSet)
-				return;
-
-			Client.Dispose();
-			Client.MessageReceived -= OnMessageReceived;
+			_asyncClient.MessageReceived -= OnMessageReceived;
+			_asyncClient.Dispose();
 		}
 	}
 }

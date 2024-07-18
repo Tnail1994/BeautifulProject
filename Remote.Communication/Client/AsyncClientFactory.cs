@@ -5,21 +5,35 @@ namespace Remote.Communication.Client
 {
 	public class AsyncClientFactory : IAsyncClientFactory
 	{
+		private readonly IAsyncClientFactorySettings _factorySettings;
 		private readonly IAsyncClientSettings _settings;
+		private TcpClient? _client;
 
-		public AsyncClientFactory(IAsyncClientSettings settings)
+		public AsyncClientFactory(IAsyncClientFactorySettings factorySettings, IAsyncClientSettings settings)
 		{
+			_factorySettings = factorySettings;
 			_settings = settings;
+		}
+
+		public void Init(TcpClient client)
+		{
+			if (_client != null)
+				return;
+
+			_client = client;
 		}
 
 		public IAsyncClient Create()
 		{
-			return AsyncClient.Create(ClientWrapper.Create(new TcpClient()), _settings);
-		}
+			if (_client == null)
+			{
+				if (!_factorySettings.AutoInit)
+					throw new InvalidOperationException("Client is not initialized");
 
-		public IAsyncClient Create(TcpClient client)
-		{
-			return AsyncClient.Create(ClientWrapper.Create(client), _settings);
+				_client = new TcpClient();
+			}
+
+			return AsyncClient.Create(ClientWrapper.Create(_client), _settings);
 		}
 	}
 }
