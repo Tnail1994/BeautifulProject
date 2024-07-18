@@ -3,24 +3,34 @@ using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData;
-using SharedBeautifulServices.Common;
 
 namespace Session
 {
 	public class Session : ISession, IDisposable
 	{
-		private readonly ICommunicationService _communicationService;
 		private readonly ISessionKey _sessionKey;
-		private readonly ICheckAliveService _checkAliveService;
+		private readonly IConnectionService _connectionService;
 
-		public Session(ICommunicationService communicationService, ISessionKey sessionKey,
-			ICheckAliveService checkAliveService)
+#if DEBUG
+		private readonly ICommunicationService _communicationService;
+#endif
+
+		public Session(ISessionKey sessionKey, IConnectionService connectionService
+#if DEBUG
+			, ICommunicationService communicationService
+#endif
+		)
 		{
 			_sessionKey = sessionKey;
-			_checkAliveService = checkAliveService;
-			_checkAliveService.ConnectionLost += OnCheckAliveServiceConnectionLost;
+			_connectionService = connectionService;
 			_communicationService = communicationService;
-			_communicationService.ConnectionLost += OnCommunicationServiceConnectionLost;
+			_connectionService.ConnectionLost += OnConnectionLost;
+			_connectionService.Reconnected += OnReconnected;
+		}
+
+		private void OnReconnected()
+		{
+			throw new NotImplementedException();
 		}
 
 		public string Id => _sessionKey.SessionId;
@@ -37,8 +47,7 @@ namespace Session
 
 			try
 			{
-				StartCommunicationService();
-				StartKeepAliveService();
+				_connectionService.Start();
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -60,33 +69,7 @@ namespace Session
 			Dispose();
 		}
 
-
-		private void StartCommunicationService()
-		{
-			_communicationService.Start();
-		}
-
-		private void StartKeepAliveService()
-		{
-			_checkAliveService.Start();
-		}
-
-		#region Factory
-
-		public static ISession Create(ICommunicationService communicationService, ISessionKey sessionKey,
-			ICheckAliveService checkAliveService)
-		{
-			return new Session(communicationService, sessionKey, checkAliveService);
-		}
-
-		#endregion
-
-		private void OnCheckAliveServiceConnectionLost()
-		{
-			InvokeSessionOnHold("Check alive did not receive answer.");
-		}
-
-		private void OnCommunicationServiceConnectionLost(object? sender, string reason)
+		private void OnConnectionLost(string reason)
 		{
 			InvokeSessionOnHold(reason);
 		}
@@ -98,7 +81,7 @@ namespace Session
 
 		public void Dispose()
 		{
-			_communicationService.Dispose();
+			_connectionService.Dispose();
 		}
 
 

@@ -112,5 +112,11 @@ namespace SharedBeautifulServices
 		{
 			_cts.Cancel();
 		}
+
+		public void Dispose()
+		{
+			_communicationService.Dispose();
+			_cts.Dispose();
+		}
 	}
 }

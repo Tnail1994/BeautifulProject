@@ -94,6 +94,11 @@ namespace Remote.Communication
 			_asyncClient.Send(jsonString);
 		}
 
+		public void Stop()
+		{
+			Dispose();
+		}
+
 
 		private async Task<T> WaitForReceive<T>() where T : IBaseMessage
 		{

@@ -126,6 +126,7 @@ namespace BeautifulServerApplication
 
 					// Session wide
 					services.AddScoped<ISession, Session.Session>();
+					services.AddScoped<IConnectionService, ConnectionService>();
 					services.AddScoped<ICommunicationService, CommunicationService>();
 					services.AddScoped<ISessionKey, SessionKey>();
 					services.AddScoped<ICheckAliveService, CheckAliveService>();
