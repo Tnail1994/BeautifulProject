@@ -29,7 +29,9 @@ namespace BeautifulClientApplication
 			_communicationService = host.Services.GetRequiredService<ICommunicationService>();
 			RunConsoleInteraction();
 
-			return host.StopAsync();
+			host.Dispose();
+
+			return Task.CompletedTask;
 		}
 
 		private static void RunConsoleInteraction()
