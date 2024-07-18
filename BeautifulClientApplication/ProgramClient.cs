@@ -78,6 +78,7 @@ namespace BeautifulClientApplication
 					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 
 					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddSingleton<IConnectionService, ConnectionService>();
 					services.AddSingleton<ICommunicationService, CommunicationService>();
 					services.AddSingleton<ICheckAliveService, CheckAliveService>();
 					services.AddSingleton<IAsyncClient>(provider =>

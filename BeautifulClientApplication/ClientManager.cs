@@ -3,23 +3,21 @@ using Microsoft.Extensions.Hosting;
 using Remote.Communication.Common.Contracts;
 using Serilog;
 using SharedBeautifulData;
-using SharedBeautifulServices.Common;
 
 namespace BeautifulClientApplication
 {
 	internal interface IClientManager : IHostedService;
 
-	internal class ClientManager(ICheckAliveService checkAliveService, ICommunicationService communicationService)
+	internal class ClientManager(IConnectionService connectionService)
 		: IClientManager
 	{
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
 			try
 			{
-				communicationService.ConnectionLost += OnCommunicationServiceConnectionLost;
-				checkAliveService.ConnectionLost += OnCheckAliveConnectionLost;
-				communicationService.Start();
-				checkAliveService.Start();
+				connectionService.Start();
+				connectionService.ConnectionLost += OnConnectionLost;
+				connectionService.Reconnected += OnReconnected;
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -35,20 +33,19 @@ namespace BeautifulClientApplication
 			return Task.CompletedTask;
 		}
 
-		private void OnCheckAliveConnectionLost()
+		private void OnConnectionLost(string obj)
 		{
 			Log.Debug($"On connection to server lost.");
 		}
 
-		private void OnCommunicationServiceConnectionLost(object? sender, string e)
+		private void OnReconnected()
 		{
-			Log.Debug($"On connection to server lost.");
+			throw new NotImplementedException();
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
-			communicationService.Dispose();
-			checkAliveService.Stop();
+			connectionService.Stop();
 			return Task.CompletedTask;
 		}
 	}
