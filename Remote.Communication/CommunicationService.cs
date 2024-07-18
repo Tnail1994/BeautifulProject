@@ -100,7 +100,6 @@ namespace Remote.Communication
 
 			_asyncClient.MessageReceived -= OnMessageReceived;
 			_asyncClient.ConnectionLost -= ConnectionLost;
-			_asyncClient.StopReceiving();
 
 			_running = false;
 		}

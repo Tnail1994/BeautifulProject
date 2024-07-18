@@ -37,6 +37,16 @@ namespace Remote.Communication.Client
 			return _client.Connected;
 		}
 
+		public void ResetSocket()
+		{
+			_client.Client = new TcpClient().Client;
+		}
+
+		public void Close()
+		{
+			_client.Close();
+		}
+
 		public void Dispose()
 		{
 			_client.Dispose();

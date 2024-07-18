@@ -97,11 +97,6 @@ namespace Session
 		{
 			_asyncSocketServer.NewConnectionOccured -= OnNewConnectionOccured;
 
-			//foreach (var session in _sessions)
-			//{
-			//	session.Value.Stop();
-			//}
-
 			_sessions.Clear();
 
 			return Task.CompletedTask;

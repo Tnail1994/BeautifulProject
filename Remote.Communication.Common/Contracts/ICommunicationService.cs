@@ -9,6 +9,5 @@ namespace Remote.Communication.Common.Contracts
 		Task<T> ReceiveAsync<T>() where T : IBaseMessage;
 		Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage;
 		void SendAsync(object messageObj);
-		void Stop();
 	}
 }

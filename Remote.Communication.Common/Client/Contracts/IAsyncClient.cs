@@ -11,6 +11,6 @@
 		Task<bool> ConnectAsync();
 		void StartReceivingAsync();
 		void Send(string message);
-		void StopReceiving();
+		void ResetSocket();
 	}
 }

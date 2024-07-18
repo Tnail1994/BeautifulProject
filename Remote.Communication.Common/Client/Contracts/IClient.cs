@@ -10,5 +10,6 @@ namespace Remote.Communication.Common.Client.Contracts
 
 		Task<int> SendAsync(byte[] buffer, SocketFlags socketFlags);
 		Task<bool> ConnectAsync(string ip, int port);
+		void ResetSocket();
 	}
 }

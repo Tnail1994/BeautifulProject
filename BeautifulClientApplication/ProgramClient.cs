@@ -92,6 +92,8 @@ namespace BeautifulClientApplication
 						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
 					services.Configure<AsyncClientFactorySettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
+					services.Configure<ConnectionSettings>(
+						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
 
 					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
@@ -99,6 +101,8 @@ namespace BeautifulClientApplication
 						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
 					services.AddSingleton<IAsyncClientFactorySettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
+					services.AddSingleton<IConnectionSettings>(provider =>
+						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
 				});
 	}
 }

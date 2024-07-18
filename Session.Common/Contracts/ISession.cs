@@ -6,7 +6,6 @@
 		string Id { get; }
 
 		void Start();
-		void Stop();
 
 #if DEBUG
 		void SendMessageToClient(object message);

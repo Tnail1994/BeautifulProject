@@ -119,6 +119,11 @@ namespace Remote.Communication.Client
 			_receivingCancellationTokenSource.Cancel();
 		}
 
+		public void ResetSocket()
+		{
+			_client.ResetSocket();
+		}
+
 		public void Dispose()
 		{
 			StopReceiving();

@@ -26,11 +26,6 @@ namespace Session
 			_communicationService = communicationService;
 		}
 
-		private void OnReconnected()
-		{
-			throw new NotImplementedException();
-		}
-
 		public string Id => _sessionKey.SessionId;
 		public event EventHandler<string>? SessionStopped;
 
@@ -38,7 +33,6 @@ namespace Session
 		{
 			this.LogDebug($"Starting session {Id}", Id);
 			_connectionService.ConnectionLost += OnConnectionLost;
-			_connectionService.Reconnected += OnReconnected;
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
@@ -66,8 +60,6 @@ namespace Session
 		{
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
-			_connectionService.Reconnected -= OnReconnected;
-			_connectionService.Stop();
 		}
 
 		private void OnConnectionLost(string reason)
@@ -77,7 +69,6 @@ namespace Session
 
 		private void InvokeSessionOnHold(string reason)
 		{
-			Stop();
 			SessionStopped?.Invoke(this, $"Connection lost: {reason}");
 		}
 

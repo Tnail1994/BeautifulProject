@@ -112,6 +112,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
 					services.Configure<AsyncClientFactorySettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
+					services.Configure<ConnectionSettings>(
+						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -121,6 +123,8 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
 					services.AddSingleton<IAsyncClientFactorySettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
+					services.AddSingleton<IConnectionSettings>(provider =>
+						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ISession, Session.Session>();

@@ -1,4 +1,5 @@
-﻿using Core.Extensions;
+﻿using System.Net.Sockets;
+using Core.Extensions;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Implementations;
@@ -12,17 +13,19 @@ namespace Remote.Communication
 		private readonly ICommunicationService _communicationService;
 		private readonly ICheckAliveService _checkAliveService;
 		private readonly ISessionKey _sessionKey;
+		private readonly IConnectionSettings _connectionSettings;
 		public event Action<string>? ConnectionLost;
 		public event Action? Reconnected;
 		private bool _running;
 
 		public ConnectionService(IAsyncClient asyncClient, ICommunicationService communicationService,
-			ICheckAliveService checkAliveService, ISessionKey sessionKey)
+			ICheckAliveService checkAliveService, ISessionKey sessionKey, IConnectionSettings connectionSettings)
 		{
 			_asyncClient = asyncClient;
 			_communicationService = communicationService;
 			_checkAliveService = checkAliveService;
 			_sessionKey = sessionKey;
+			_connectionSettings = connectionSettings;
 
 			_communicationService.ConnectionLost += OnConnectionLost;
 			_checkAliveService.ConnectionLost += OnConnectionLost;
@@ -64,14 +67,11 @@ namespace Remote.Communication
 
 		public void Stop()
 		{
-			if (!_running)
-			{
-				this.LogVerbose("ConnectionService not running", _sessionKey.SessionId);
-				return;
-			}
-
-			_communicationService.Stop();
-			_checkAliveService.Stop();
+			//if (!_running)
+			//{
+			//	this.LogVerbose("ConnectionService not running", _sessionKey.SessionId);
+			//	return;
+			//}
 
 			_running = false;
 		}
@@ -81,11 +81,53 @@ namespace Remote.Communication
 			InvokeOnConnectionLost(reason);
 		}
 
-		private void InvokeOnConnectionLost(string reason)
+		private async void InvokeOnConnectionLost(string reason)
 		{
 			ConnectionLost?.Invoke(reason);
-			this.LogDebug("Try to reconnect");
-			// Todo
+
+			if (!_connectionSettings.ReconnectActivated)
+				return;
+
+			await TryReconnecting();
+		}
+
+		private async Task TryReconnecting(int attempts = 0)
+		{
+			this.LogDebug("Try to reconnect", _sessionKey.SessionId);
+
+			if (attempts == 0)
+				_asyncClient.ResetSocket();
+
+			var reconnectAttempt = attempts;
+			try
+			{
+				while (reconnectAttempt < _connectionSettings.ReconnectAttempts)
+				{
+					if (reconnectAttempt > 0)
+						await Task.Delay(_connectionSettings.ReconnectDelayInSeconds * 1000);
+
+					var connectResult = await ConnectAsync();
+
+					if (connectResult)
+					{
+						Reconnected?.Invoke();
+						return;
+					}
+
+					reconnectAttempt++;
+				}
+			}
+			catch (SocketException)
+			{
+				reconnectAttempt++;
+				await TryReconnecting(reconnectAttempt);
+			}
+			catch (Exception e)
+			{
+				this.LogFatal($"!!! Unexpected error while reconnecting\n" +
+				              $"Message: {e.Message}\n" +
+				              $"Stacktrace: {e.StackTrace}\n", _sessionKey.SessionId);
+			}
 		}
 
 		private void OnConnectionLost()

@@ -8,16 +8,24 @@ namespace BeautifulClientApplication
 {
 	internal interface IClientManager : IHostedService;
 
-	internal class ClientManager(IConnectionService connectionService)
-		: IClientManager
+	internal class ClientManager : IClientManager
 	{
+		private readonly IConnectionService _connectionService;
+		private CancellationToken _cancellationToken;
+
+		public ClientManager(IConnectionService connectionService)
+		{
+			_connectionService = connectionService;
+			_connectionService.ConnectionLost += OnConnectionLost;
+			_connectionService.Reconnected += OnReconnected;
+		}
+
 		public Task StartAsync(CancellationToken cancellationToken)
 		{
 			try
 			{
-				connectionService.Start();
-				connectionService.ConnectionLost += OnConnectionLost;
-				connectionService.Reconnected += OnReconnected;
+				_connectionService.Start();
+				_cancellationToken = cancellationToken;
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -40,12 +48,14 @@ namespace BeautifulClientApplication
 
 		private void OnReconnected()
 		{
-			throw new NotImplementedException();
+			this.LogDebug($"On reconnected to server.");
+			StartAsync(_cancellationToken);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
-			connectionService.Stop();
+			_connectionService.ConnectionLost -= OnConnectionLost;
+			_connectionService.Reconnected -= OnReconnected;
 			return Task.CompletedTask;
 		}
 	}

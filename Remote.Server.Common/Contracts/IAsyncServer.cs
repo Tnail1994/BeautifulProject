@@ -6,6 +6,5 @@ namespace Remote.Server.Common.Contracts
 	{
 		event Action<TcpClient> NewConnectionOccured;
 		Task StartAsync();
-		void Stop();
 	}
 }
