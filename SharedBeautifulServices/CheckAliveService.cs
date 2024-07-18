@@ -31,6 +31,8 @@ namespace SharedBeautifulServices
 			if (_settings.FrequencyInSeconds < MinFrequencyInSeconds)
 				throw new CheckAliveException("FrequencyInSeconds must be at least 20", 0);
 
+			_cts.TryReset();
+
 			switch (_settings.Mode)
 			{
 				case 0:
