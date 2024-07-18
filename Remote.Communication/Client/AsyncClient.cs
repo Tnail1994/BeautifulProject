@@ -34,6 +34,7 @@ namespace Remote.Communication.Client
 		public string Id { get; }
 
 		public bool IsNotConnected => _client.IsNotConnected;
+		public bool IsConnected => !IsNotConnected;
 
 		public event Action<string>? MessageReceived;
 		public event EventHandler<string>? ConnectionLost;

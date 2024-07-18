@@ -41,23 +41,10 @@ namespace Remote.Communication
 		private string SessionId => _sessionKey.SessionId;
 
 
-		public async Task Start()
+		public void Start()
 		{
 			_asyncClient.MessageReceived += OnMessageReceived;
 			_asyncClient.ConnectionLost += ConnectionLost;
-
-			if (_asyncClient.IsNotConnected)
-			{
-				var connectionResult = await _asyncClient.ConnectAsync();
-
-				if (!connectionResult)
-				{
-					this.LogError("Connection to client failed. \n" +
-					              "Check connection settings and try again.", SessionId);
-					return;
-				}
-			}
-
 			_asyncClient.StartReceivingAsync();
 		}
 

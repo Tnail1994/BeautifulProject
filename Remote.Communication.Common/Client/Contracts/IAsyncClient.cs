@@ -4,6 +4,7 @@
 	{
 		string Id { get; }
 		bool IsNotConnected { get; }
+		bool IsConnected { get; }
 		event Action<string> MessageReceived;
 		event EventHandler<string> ConnectionLost;
 

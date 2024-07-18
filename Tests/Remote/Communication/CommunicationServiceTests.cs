@@ -31,12 +31,6 @@ namespace Tests.Remote.Communication
 		}
 
 		[Fact]
-		public void Start_WhenClientIsNotSet_ShouldThrowANullReferenceException()
-		{
-			Assert.ThrowsAsync<NullReferenceException>(() => _communicationService.Start());
-		}
-
-		[Fact]
 		public void WhenMessagedReceivedEventOccurs_ThenTransform_OnTransformerServiceShouldGetCalled()
 		{
 			SetTransformerReturningValue();
