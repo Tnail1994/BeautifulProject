@@ -1,6 +1,6 @@
 ﻿namespace SharedBeautifulServices.Common
 {
-	public interface ICheckAliveService : IDisposable
+	public interface ICheckAliveService
 	{
 		event Action ConnectionLost;
 		void Start();

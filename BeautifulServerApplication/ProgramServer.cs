@@ -12,9 +12,7 @@ using Remote.Server;
 using Remote.Server.Common.Contracts;
 using Session;
 using Session.Common.Contracts;
-using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
-using Session.Services;
 using SharedBeautifulData;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
@@ -44,9 +42,9 @@ namespace BeautifulServerApplication
 
 			RunConsoleInteraction();
 
-			return host.StopAsync();
+			host.Dispose();
+			return Task.CompletedTask;
 		}
-
 
 		private static void RunConsoleInteraction()
 		{
@@ -104,7 +102,7 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
 
-					services.AddSingleton<IScopeFactory, ScopeFactory>();
+					services.AddSingleton<IScopeManager, ScopeManager>();
 
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));

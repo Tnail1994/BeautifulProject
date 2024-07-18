@@ -23,10 +23,20 @@ namespace Tests.Session
 		}
 
 		[Fact]
-		public void WhenStartingSession_ThenCommunicationServiceShouldStartAsWell()
+		public void WhenStartingSession_ThenConnectionServiceShouldStartAsWellAndSubscribeToEvents()
 		{
 			_session.Start();
 			_connectionServiceMock.Received(1).Start();
+			_connectionServiceMock.Received(1).ConnectionLost += Arg.Any<Action<string>>();
+			_connectionServiceMock.Received(1).Reconnected += Arg.Any<Action>();
+		}
+
+		[Fact]
+		public void WhenConnectionLostEventIsRaised_ThenSessionShouldStopAndCallStopOfConnectionService()
+		{
+			_session.Start();
+			_connectionServiceMock.ConnectionLost += Raise.Event<Action<string>>("Error message");
+			_connectionServiceMock.Received(1).Stop();
 		}
 	}
 }

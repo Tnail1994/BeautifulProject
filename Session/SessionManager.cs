@@ -2,11 +2,9 @@
 using System.Net.Sockets;
 using Core.Extensions;
 using Core.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
-using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 
 namespace Session
@@ -18,11 +16,11 @@ namespace Session
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 		private readonly ConcurrentDictionary<string, ISession> _pendingSessions = new();
 
-		private readonly IScopeFactory _scopeFactory;
+		private readonly IScopeManager _scopeManager;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeFactory scopeFactory)
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager)
 		{
-			_scopeFactory = scopeFactory;
+			_scopeManager = scopeManager;
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -30,23 +28,8 @@ namespace Session
 
 		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			StartServices();
-			await StartServer();
-		}
-
-		#region Start
-
-		private void StartServices()
-		{
-			this.LogInfo("Starting services...", "server");
-		}
-
-		private async Task StartServer()
-		{
 			await _asyncSocketServer.StartAsync();
 		}
-
-		#endregion
 
 		private void OnNewConnectionOccured(TcpClient client)
 		{
@@ -58,7 +41,7 @@ namespace Session
 		{
 			var session = BuildSession(client);
 
-			session.SessionOnHold += OnSessionOnHold;
+			session.SessionStopped += OnSessionStopped;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 
 			_sessions.TryAdd(session.Id, session);
@@ -70,7 +53,7 @@ namespace Session
 
 		private ISession BuildSession(TcpClient client)
 		{
-			var scope = _scopeFactory.Create();
+			var scope = _scopeManager.Create();
 
 			if (client == null)
 				throw new SessionManagerException("Socket is not set.", 1);
@@ -78,11 +61,11 @@ namespace Session
 			if (scope == null)
 				throw new SessionManagerException("Scope is not set.", 2);
 
-			scope.ServiceProvider.GetRequiredService<IAsyncClientFactory>().Init(client);
-			return scope.ServiceProvider.GetRequiredService<ISession>();
+			scope.GetService<IAsyncClientFactory>().Init(client);
+			return scope.GetService<ISession>();
 		}
 
-		private void OnSessionOnHold(object? sender, string e)
+		private void OnSessionStopped(object? sender, string e)
 		{
 			if (sender is not ISession session)
 			{
@@ -100,8 +83,6 @@ namespace Session
 				return;
 			}
 
-			session.Stop();
-
 			if (pendingSession == null)
 			{
 				this.LogWarning($"Cannot pend session.", "server");
@@ -117,28 +98,16 @@ namespace Session
 		{
 			_asyncSocketServer.NewConnectionOccured -= OnNewConnectionOccured;
 
-			StopServices();
-			StopServer();
-			return Task.CompletedTask;
-		}
-
-		#region Stop
-
-		private void StopServices()
-		{
-			this.LogInfo("Stopping services...");
-		}
-
-		private void StopServer()
-		{
-			_asyncSocketServer.Stop();
 			foreach (var session in _sessions)
 			{
 				session.Value.Stop();
 			}
-		}
 
-		#endregion
+			_sessions.Clear();
+			_pendingSessions.Clear();
+
+			return Task.CompletedTask;
+		}
 
 #if DEBUG
 		public void SendMessageToRandomClient(object messageObject)

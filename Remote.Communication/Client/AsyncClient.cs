@@ -6,7 +6,7 @@ using Remote.Communication.Common.Client.Contracts;
 
 namespace Remote.Communication.Client
 {
-	public class AsyncClient : IAsyncClient
+	public class AsyncClient : IAsyncClient, IDisposable
 	{
 		private readonly IClient _client;
 
@@ -114,10 +114,16 @@ namespace Remote.Communication.Client
 			this.LogDebug($"Send {sendingResult}. Id: {Id}");
 		}
 
+		public void StopReceiving()
+		{
+			_receivingCancellationTokenSource.Cancel();
+		}
+
 		public void Dispose()
 		{
+			StopReceiving();
 			_receivingCancellationTokenSource.Dispose();
-			_client.Dispose();
+			_client.Dispose(); // the only special to call Dispose directly, because IClient is not registered in DI
 		}
 	}
 }

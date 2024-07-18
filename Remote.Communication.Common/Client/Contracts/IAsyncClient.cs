@@ -1,6 +1,6 @@
 ﻿namespace Remote.Communication.Common.Client.Contracts
 {
-	public interface IAsyncClient : IDisposable
+	public interface IAsyncClient
 	{
 		string Id { get; }
 		bool IsNotConnected { get; }
@@ -11,5 +11,6 @@
 		Task<bool> ConnectAsync();
 		void StartReceivingAsync();
 		void Send(string message);
+		void StopReceiving();
 	}
 }

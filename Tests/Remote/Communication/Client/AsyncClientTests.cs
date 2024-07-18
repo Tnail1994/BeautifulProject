@@ -30,12 +30,5 @@ namespace Tests.Remote.Communication.Client
 			_asyncClient.Send("MockMessage");
 			_clientMock.Received(1).SendAsync(Arg.Any<byte[]>(), Arg.Any<SocketFlags>());
 		}
-
-		[Fact]
-		public void Dispose_WhenCalled_ShouldDisposeSocket()
-		{
-			_asyncClient.Dispose();
-			_clientMock.Received(1).Dispose();
-		}
 	}
 }

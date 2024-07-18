@@ -2,7 +2,7 @@
 
 namespace Remote.Communication.Common.Contracts
 {
-	public interface ICommunicationService : IDisposable
+	public interface ICommunicationService
 	{
 		event EventHandler<string>? ConnectionLost;
 		void Start();

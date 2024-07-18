@@ -6,7 +6,7 @@ using SharedBeautifulServices.Common;
 
 namespace Remote.Communication
 {
-	public class ConnectionService : IConnectionService
+	public class ConnectionService : IConnectionService, IDisposable
 	{
 		private readonly IAsyncClient _asyncClient;
 		private readonly ICommunicationService _communicationService;
@@ -78,8 +78,7 @@ namespace Remote.Communication
 
 		public void Dispose()
 		{
-			_communicationService.Dispose();
-			_checkAliveService.Dispose();
+			Stop();
 		}
 	}
 }

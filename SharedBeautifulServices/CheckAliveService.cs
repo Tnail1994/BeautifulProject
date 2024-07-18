@@ -5,7 +5,7 @@ using SharedBeautifulServices.Common;
 
 namespace SharedBeautifulServices
 {
-	public class CheckAliveService : ICheckAliveService
+	public class CheckAliveService : ICheckAliveService, IDisposable
 	{
 		private const int MinFrequencyInSeconds = 20;
 
@@ -17,7 +17,6 @@ namespace SharedBeautifulServices
 		{
 			_settings = settings;
 			_communicationService = communicationService;
-			_communicationService.ConnectionLost += OnConnectionLost;
 		}
 
 
@@ -31,6 +30,7 @@ namespace SharedBeautifulServices
 			if (_settings.FrequencyInSeconds < MinFrequencyInSeconds)
 				throw new CheckAliveException("FrequencyInSeconds must be at least 20", 0);
 
+			_communicationService.ConnectionLost += OnConnectionLost;
 			_cts.TryReset();
 
 			switch (_settings.Mode)
@@ -110,12 +110,13 @@ namespace SharedBeautifulServices
 
 		public void Stop()
 		{
+			_communicationService.ConnectionLost -= OnConnectionLost;
 			_cts.Cancel();
 		}
 
 		public void Dispose()
 		{
-			_communicationService.Dispose();
+			Stop();
 			_cts.Dispose();
 		}
 	}

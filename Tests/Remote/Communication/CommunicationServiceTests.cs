@@ -78,21 +78,6 @@ namespace Tests.Remote.Communication
 			_client.Received(1).Send(Arg.Any<string>());
 		}
 
-		[Fact]
-		public void Dispose_WhenCalled_ShouldNotDisposeClient()
-		{
-			StartCommunicationService();
-			_communicationService.Dispose();
-			_client.Received(1).Dispose();
-		}
-
-		[Fact]
-		public void Dispose_WhenCalledAndNotClientSet_ShouldNotDisposeClient()
-		{
-			_communicationService.Dispose();
-			_transformerServiceMock.DidNotReceive().Dispose();
-		}
-
 		#region Helper
 
 		private void SetTransformerReturningValue(object? testMessage = null, string? testMessageName = null)

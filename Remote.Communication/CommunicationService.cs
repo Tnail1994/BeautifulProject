@@ -12,7 +12,7 @@ using Session.Common.Implementations;
 
 namespace Remote.Communication
 {
-	public class CommunicationService : ICommunicationService
+	public class CommunicationService : ICommunicationService, IDisposable
 	{
 		private readonly ConcurrentDictionary<string, TransformedObject> _transformedObjects = new();
 		private readonly ConcurrentDictionary<string, TransformedObjectWaiter> _transformedObjectWaiters = new();
@@ -83,7 +83,9 @@ namespace Remote.Communication
 
 		public void Stop()
 		{
-			Dispose();
+			_asyncClient.MessageReceived -= OnMessageReceived;
+			_asyncClient.ConnectionLost -= ConnectionLost;
+			_asyncClient.StopReceiving();
 		}
 
 
@@ -180,6 +182,8 @@ namespace Remote.Communication
 
 		public void Dispose()
 		{
+			Stop();
+
 			foreach (var waiter in _transformedObjectWaiters)
 			{
 				waiter.Value.TaskCompletionSource.SetCanceled();
@@ -188,9 +192,6 @@ namespace Remote.Communication
 			_transformedObjectWaiters.Clear();
 			_transformedObjects.Clear();
 			_ownCancellationReceivingTokenSource.Dispose();
-
-			_asyncClient.MessageReceived -= OnMessageReceived;
-			_asyncClient.Dispose();
 		}
 	}
 }

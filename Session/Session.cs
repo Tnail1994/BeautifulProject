@@ -24,8 +24,6 @@ namespace Session
 			_sessionKey = sessionKey;
 			_connectionService = connectionService;
 			_communicationService = communicationService;
-			_connectionService.ConnectionLost += OnConnectionLost;
-			_connectionService.Reconnected += OnReconnected;
 		}
 
 		private void OnReconnected()
@@ -34,11 +32,13 @@ namespace Session
 		}
 
 		public string Id => _sessionKey.SessionId;
-		public event EventHandler<string>? SessionOnHold;
+		public event EventHandler<string>? SessionStopped;
 
 		public void Start()
 		{
 			this.LogDebug($"Starting session {Id}", Id);
+			_connectionService.ConnectionLost += OnConnectionLost;
+			_connectionService.Reconnected += OnReconnected;
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
@@ -65,8 +65,9 @@ namespace Session
 		public void Stop()
 		{
 			this.LogDebug($"Stopping session {Id}", Id);
-
-			Dispose();
+			_connectionService.ConnectionLost -= OnConnectionLost;
+			_connectionService.Reconnected -= OnReconnected;
+			_connectionService.Stop();
 		}
 
 		private void OnConnectionLost(string reason)
@@ -76,12 +77,13 @@ namespace Session
 
 		private void InvokeSessionOnHold(string reason)
 		{
-			SessionOnHold?.Invoke(this, $"Connection lost: {reason}");
+			Stop();
+			SessionStopped?.Invoke(this, $"Connection lost: {reason}");
 		}
 
 		public void Dispose()
 		{
-			_connectionService.Dispose();
+			Stop();
 		}
 
 

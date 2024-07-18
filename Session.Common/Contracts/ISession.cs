@@ -2,7 +2,7 @@
 {
 	public interface ISession
 	{
-		event EventHandler<string>? SessionOnHold;
+		event EventHandler<string>? SessionStopped;
 		string Id { get; }
 
 		void Start();
