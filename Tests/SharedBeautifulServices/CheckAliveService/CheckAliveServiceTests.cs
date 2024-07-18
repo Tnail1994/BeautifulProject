@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
+using Session.Common.Implementations;
 using SharedBeautifulData;
 using SharedBeautifulServices;
 
@@ -8,6 +9,8 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 	public class CheckAliveServiceTests
 	{
 		private readonly ICommunicationService _communicationServiceMock = Substitute.For<ICommunicationService>();
+		private readonly ISessionKey _sessionKeyMock = Substitute.For<ISessionKey>();
+
 
 		[Fact]
 		public void
@@ -20,9 +23,16 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 				FrequencyInSeconds = 1000
 			};
 
-			var checkAliveService =
-				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock);
+			var checkAliveService = CreateCheckAliveService(settings);
 			Assert.Throws<CheckAliveException>(() => checkAliveService.Start());
+		}
+
+		private global::SharedBeautifulServices.CheckAliveService CreateCheckAliveService(CheckAliveSettings settings)
+		{
+			var checkAliveService =
+				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock,
+					_sessionKeyMock);
+			return checkAliveService;
 		}
 
 		[Fact]
@@ -36,8 +46,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 				FrequencyInSeconds = 10
 			};
 
-			var checkAliveService =
-				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock);
+			var checkAliveService = CreateCheckAliveService(settings);
 			Assert.Throws<CheckAliveException>(() => checkAliveService.Start());
 		}
 
@@ -52,8 +61,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 				FrequencyInSeconds = 1000
 			};
 
-			var checkAliveService =
-				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock);
+			var checkAliveService = CreateCheckAliveService(settings);
 
 			_communicationServiceMock.ReceiveAsync<CheckAliveMessage>(Arg.Any<CancellationToken>())
 				.Returns(Task.FromResult(new CheckAliveMessage()));
@@ -86,8 +94,8 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 				FrequencyInSeconds = 20
 			};
 
-			var checkAliveService =
-				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock);
+			var checkAliveService = CreateCheckAliveService(settings);
+
 
 			_communicationServiceMock.ReceiveAsync<CheckAliveReplyMessage>(Arg.Any<CancellationToken>())
 				.Returns(Task.FromResult(new CheckAliveReplyMessage()));

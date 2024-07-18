@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Core.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Session.Common.Contracts;
 
@@ -17,7 +16,7 @@ namespace Session
 
 		public IScope Create()
 		{
-			var scope = Scope.Create(GuidIdCreator.CreateString(), _serviceProvider.CreateScope());
+			var scope = Scope.Create(_serviceProvider.CreateScope());
 			_createdScopes.TryAdd(scope.Id, scope);
 			return scope;
 		}

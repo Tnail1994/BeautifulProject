@@ -22,6 +22,7 @@ namespace Remote.Communication
 		private readonly ITransformerService _transformerService;
 		private readonly ISessionKey _sessionKey;
 		private readonly CancellationTokenSource _ownCancellationReceivingTokenSource = new();
+		private bool _running;
 
 #if DEBUG
 		private readonly Stopwatch _stopwatch = new();
@@ -43,9 +44,17 @@ namespace Remote.Communication
 
 		public void Start()
 		{
+			if (_running)
+			{
+				this.LogVerbose("CommunicationService already running", SessionId);
+				return;
+			}
+
 			_asyncClient.MessageReceived += OnMessageReceived;
 			_asyncClient.ConnectionLost += ConnectionLost;
 			_asyncClient.StartReceivingAsync();
+
+			_running = true;
 		}
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage
@@ -83,9 +92,17 @@ namespace Remote.Communication
 
 		public void Stop()
 		{
+			if (!_running)
+			{
+				this.LogVerbose("CommunicationService not running", SessionId);
+				return;
+			}
+
 			_asyncClient.MessageReceived -= OnMessageReceived;
 			_asyncClient.ConnectionLost -= ConnectionLost;
 			_asyncClient.StopReceiving();
+
+			_running = false;
 		}
 
 

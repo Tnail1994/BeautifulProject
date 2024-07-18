@@ -14,7 +14,6 @@ namespace Session
 		private readonly IAsyncServer _asyncSocketServer;
 
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
-		private readonly ConcurrentDictionary<string, ISession> _pendingSessions = new();
 
 		private readonly IScopeManager _scopeManager;
 
@@ -75,7 +74,7 @@ namespace Session
 				return;
 			}
 
-			var removeResult = _sessions.TryRemove(session.Id, out var pendingSession);
+			var removeResult = _sessions.TryRemove(session.Id, out _);
 
 			if (!removeResult)
 			{
@@ -83,28 +82,27 @@ namespace Session
 				return;
 			}
 
-			if (pendingSession == null)
-			{
-				this.LogWarning($"Cannot pend session.", "server");
-				return;
-			}
+			HandleStoppedSession(session);
+		}
 
-			this.LogDebug($"Pending session {pendingSession.Id}, for possibly restart this session.",
-				"server");
-			_pendingSessions.TryAdd(pendingSession.Id, pendingSession);
+		private void HandleStoppedSession(ISession session)
+		{
+			// Here we determine some state and safe it to the database
+
+			// After that state saving handle, we can dispose the scope
+			_scopeManager.Destroy(session.Id);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
 			_asyncSocketServer.NewConnectionOccured -= OnNewConnectionOccured;
 
-			foreach (var session in _sessions)
-			{
-				session.Value.Stop();
-			}
+			//foreach (var session in _sessions)
+			//{
+			//	session.Value.Stop();
+			//}
 
 			_sessions.Clear();
-			_pendingSessions.Clear();
 
 			return Task.CompletedTask;
 		}

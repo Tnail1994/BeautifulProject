@@ -1,5 +1,6 @@
 ﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
+using Session.Common.Implementations;
 using SharedBeautifulData;
 using SharedBeautifulServices.Common;
 
@@ -11,12 +12,17 @@ namespace SharedBeautifulServices
 
 		private readonly ICheckAliveSettings _settings;
 		private readonly ICommunicationService _communicationService;
+		private readonly ISessionKey _sessionKey;
 		private readonly CancellationTokenSource _cts = new();
 
-		public CheckAliveService(ICheckAliveSettings settings, ICommunicationService communicationService)
+		private bool _running;
+
+		public CheckAliveService(ICheckAliveSettings settings, ICommunicationService communicationService,
+			ISessionKey sessionKey)
 		{
 			_settings = settings;
 			_communicationService = communicationService;
+			_sessionKey = sessionKey;
 		}
 
 
@@ -24,6 +30,12 @@ namespace SharedBeautifulServices
 
 		public void Start()
 		{
+			if (_running)
+			{
+				this.LogVerbose("CheckAliveService allready running", _sessionKey.SessionId);
+				return;
+			}
+
 			if (!_settings.Enabled)
 				return;
 
@@ -44,6 +56,8 @@ namespace SharedBeautifulServices
 				default:
 					throw new CheckAliveException("Invalid mode", 1);
 			}
+
+			_running = true;
 		}
 
 
@@ -110,8 +124,16 @@ namespace SharedBeautifulServices
 
 		public void Stop()
 		{
+			if (!_running)
+			{
+				this.LogVerbose("CheckAliveService not running", _sessionKey.SessionId);
+				return;
+			}
+
 			_communicationService.ConnectionLost -= OnConnectionLost;
 			_cts.Cancel();
+
+			_running = false;
 		}
 
 		public void Dispose()

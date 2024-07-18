@@ -14,6 +14,7 @@ namespace Remote.Communication
 		private readonly ISessionKey _sessionKey;
 		public event Action<string>? ConnectionLost;
 		public event Action? Reconnected;
+		private bool _running;
 
 		public ConnectionService(IAsyncClient asyncClient, ICommunicationService communicationService,
 			ICheckAliveService checkAliveService, ISessionKey sessionKey)
@@ -29,6 +30,12 @@ namespace Remote.Communication
 
 		public async void Start()
 		{
+			if (_running)
+			{
+				this.LogVerbose("ConnectionService already running", _sessionKey.SessionId);
+				return;
+			}
+
 			var connectResult = await ConnectAsync();
 
 			if (!connectResult)
@@ -36,6 +43,8 @@ namespace Remote.Communication
 
 			_communicationService.Start();
 			_checkAliveService.Start();
+
+			_running = true;
 		}
 
 		private async Task<bool> ConnectAsync()
@@ -55,8 +64,16 @@ namespace Remote.Communication
 
 		public void Stop()
 		{
+			if (!_running)
+			{
+				this.LogVerbose("ConnectionService not running", _sessionKey.SessionId);
+				return;
+			}
+
 			_communicationService.Stop();
 			_checkAliveService.Stop();
+
+			_running = false;
 		}
 
 		private void OnConnectionLost(object? sender, string reason)

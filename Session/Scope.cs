@@ -1,27 +1,31 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 
 namespace Session
 {
 	public class Scope : IScope
 	{
-		private Scope(string id, IServiceScope serviceScope)
+		private readonly ISessionKey _sessionKey;
+
+		private Scope(IServiceScope serviceScope, ISessionKey sessionKey)
 		{
-			Id = id;
+			_sessionKey = sessionKey;
 			ServiceScope = serviceScope;
 		}
 
-		public string Id { get; }
 		public IServiceScope ServiceScope { get; }
+		public string Id => _sessionKey.SessionId;
 
 		public T GetService<T>() where T : class
 		{
 			return ServiceScope.ServiceProvider.GetRequiredService<T>();
 		}
 
-		public static Scope Create(string id, IServiceScope scope)
+		public static Scope Create(IServiceScope scope)
 		{
-			return new Scope(id, scope);
+			var sessionKey = scope.ServiceProvider.GetRequiredService<ISessionKey>();
+			return new Scope(scope, sessionKey);
 		}
 
 		public void Dispose()
