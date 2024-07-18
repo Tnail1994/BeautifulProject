@@ -45,6 +45,9 @@ namespace Session
 
 			_sessions.TryAdd(session.Id, session);
 
+			// todo; Check if the session is a pending session registered in the database
+			// todo; if so, then reestablish the session with the provided context
+
 			session.Start();
 
 			this.LogInfo($"New session with Id {session.Id} started.", "server");
@@ -87,7 +90,7 @@ namespace Session
 
 		private void HandleStoppedSession(ISession session)
 		{
-			// Here we determine some state and safe it to the database
+			// todo; Here we determine some state and safe it to the database
 
 			// After that state saving handle, we can dispose the scope
 			_scopeManager.Destroy(session.Id);
