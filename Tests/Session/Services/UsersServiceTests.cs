@@ -19,7 +19,7 @@ namespace Tests.Session.Services
 		[Fact]
 		public void DoesUsernameExist_WhenEntitiesAreNull_ReturnsFalse()
 		{
-			_dbManagerMock.GetEntities<UserDto>().Returns((IEnumerable<UserDto>)null);
+			_dbManagerMock.GetEntities<UserDto>().Returns((IEnumerable<UserDto>)null!);
 
 			var result = _usersService.DoesUsernameExist("username");
 
