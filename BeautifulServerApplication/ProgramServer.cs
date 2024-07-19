@@ -17,10 +17,8 @@ using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Core;
-using SharedBeautifulData.Messages;
 using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Messages.Login;
-using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -59,6 +57,9 @@ namespace BeautifulServerApplication
 
 			while (!ServerProgramCancellationTokenSource.IsCancellationRequested)
 			{
+				var testMessage = new CheckAliveReply()
+					{ Success = false };
+
 				var input = Console.ReadLine();
 				if (input == "-e")
 				{
@@ -68,13 +69,11 @@ namespace BeautifulServerApplication
 #if DEBUG
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToRandomClient(new UserMessage
-						{ User = User.Create("1") });
+					_sessionManager.SendMessageToRandomClient(testMessage);
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToAllClients(new UserMessage
-						{ User = User.Create("2") });
+					_sessionManager.SendMessageToAllClients(testMessage);
 				}
 #endif
 				else
@@ -104,7 +103,6 @@ namespace BeautifulServerApplication
 					services.AddHostedService<SessionManager>();
 
 					// Server wide
-					services.AddTransient<IBaseMessage, UserMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveRequest>();
 					services.AddTransient<IBaseMessage, CheckAliveReply>();
 					services.AddTransient<IBaseMessage, LoginReply>();

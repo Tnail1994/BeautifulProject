@@ -9,10 +9,8 @@ using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
-using SharedBeautifulData.Messages;
 using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Messages.Login;
-using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -56,7 +54,7 @@ namespace BeautifulClientApplication
 				}
 				else if (_communicationService != null)
 				{
-					_communicationService.SendAsync(new UserMessage { User = User.Create("tk") });
+					_communicationService.SendAsync(new CheckAliveRequest());
 				}
 			}
 		}
@@ -75,7 +73,6 @@ namespace BeautifulClientApplication
 				{
 					services.AddHostedService<ClientManager>();
 
-					services.AddTransient<IBaseMessage, UserMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveRequest>();
 					services.AddTransient<IBaseMessage, CheckAliveReply>();
 					services.AddTransient<IBaseMessage, LoginReply>();
