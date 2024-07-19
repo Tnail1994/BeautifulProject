@@ -49,7 +49,7 @@ namespace Tests.Remote.Communication
 			var result = await _communicationService.ReceiveAsync<TestMessage>();
 
 			Assert.NotNull(result);
-			Assert.Equal("MockMessage", result.TestObject?.MockObj);
+			Assert.Equal("MockMessage", result.TestObject.MockObj);
 		}
 
 		[Fact]
@@ -67,7 +67,7 @@ namespace Tests.Remote.Communication
 			var result = await task;
 
 			Assert.NotNull(result);
-			Assert.Equal("MockMessage2", result.TestObject?.MockObj);
+			Assert.Equal("MockMessage2", result.TestObject.MockObj);
 		}
 
 		[Fact]

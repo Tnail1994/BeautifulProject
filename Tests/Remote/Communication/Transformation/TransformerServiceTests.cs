@@ -33,9 +33,9 @@ namespace Tests.Remote.Communication.Transformation
 			Assert.NotNull(transformedObject);
 			Assert.NotNull((TestMessage)transformedObject.Object);
 			Assert.NotNull(((TestMessage)transformedObject.Object).TestObject);
-			Assert.NotNull(((TestMessage)transformedObject.Object).TestObject?.MockObj);
-			Assert.Equal(TestMessage.Create().TestObject?.MockObj,
-				((TestMessage)transformedObject.Object).TestObject?.MockObj);
+			Assert.NotNull(((TestMessage)transformedObject.Object).TestObject.MockObj);
+			Assert.Equal(TestMessage.Create().TestObject.MockObj,
+				((TestMessage)transformedObject.Object).TestObject.MockObj);
 		}
 
 		[Fact]

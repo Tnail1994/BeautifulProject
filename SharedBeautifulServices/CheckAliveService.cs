@@ -87,16 +87,16 @@ namespace SharedBeautifulServices
 			}
 		}
 
-		private Task<CheckAliveMessage> ReceiveAndSendAsync(CheckAliveReplyMessage checkAliveReplyMessage)
+		private Task<CheckAliveRequestMessage> ReceiveAndSendAsync(CheckAliveReplyMessage checkAliveReplyMessage)
 		{
-			return _communicationService.ReceiveAndSendAsync<CheckAliveMessage>(checkAliveReplyMessage);
+			return _communicationService.ReceiveAndSendAsync<CheckAliveRequestMessage>(checkAliveReplyMessage);
 		}
 
 		private async void SendCheckAlive()
 		{
 			try
 			{
-				var checkAliveMessage = new CheckAliveMessage() { Success = true };
+				var checkAliveMessage = new CheckAliveRequestMessage() { Success = true };
 
 				while (!_cts.IsCancellationRequested)
 				{
@@ -119,7 +119,7 @@ namespace SharedBeautifulServices
 			}
 		}
 
-		private Task<CheckAliveReplyMessage> SendAndReceiveAsync(CheckAliveMessage checkAliveMessage)
+		private Task<CheckAliveReplyMessage> SendAndReceiveAsync(CheckAliveRequestMessage checkAliveMessage)
 		{
 			return _communicationService.SendAndReceiveAsync<CheckAliveReplyMessage>(checkAliveMessage);
 		}

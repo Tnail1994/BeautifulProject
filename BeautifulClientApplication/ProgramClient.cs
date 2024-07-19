@@ -73,7 +73,7 @@ namespace BeautifulClientApplication
 					services.AddHostedService<ClientManager>();
 
 					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveRequestMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();

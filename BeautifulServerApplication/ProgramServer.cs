@@ -102,7 +102,7 @@ namespace BeautifulServerApplication
 
 					// Server wide
 					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveRequestMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 

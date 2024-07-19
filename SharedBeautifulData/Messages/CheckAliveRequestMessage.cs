@@ -3,7 +3,7 @@ using Remote.Communication.Common.Implementations;
 
 namespace SharedBeautifulData.Messages
 {
-	public class CheckAliveMessage : BaseMessage<bool>
+	public class CheckAliveRequestMessage : BaseMessage<bool>
 	{
 		[JsonIgnore]
 		public bool Success
