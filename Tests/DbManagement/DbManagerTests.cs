@@ -9,7 +9,7 @@ namespace Tests.DbManagement
 {
 	public class DbManagerTests
 	{
-		public IDbManager? Manager { get; private set; }
+		private IDbManager? Manager { get; set; }
 		private readonly IDbContextResolver _dbContextResolverMock = Substitute.For<IDbContextResolver>();
 		private readonly IMemoryCache _dbCacheMock = Substitute.For<IMemoryCache>();
 		private readonly IDbSettings _dbSettingsMock = DbSettings.Default;
