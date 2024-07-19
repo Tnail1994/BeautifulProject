@@ -10,6 +10,7 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
@@ -73,8 +74,8 @@ namespace BeautifulClientApplication
 					services.AddHostedService<ClientManager>();
 
 					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveRequestMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveRequest>();
+					services.AddTransient<IBaseMessage, CheckAliveReply>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

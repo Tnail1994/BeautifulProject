@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Remote.Communication.Common.Implementations;
 
-namespace SharedBeautifulData.Messages
+namespace SharedBeautifulData.Messages.Login
 {
-	public class CheckAliveReplyMessage : BaseMessage<bool>
+	public class LoginReply : BaseMessage<string>
 	{
 		[JsonIgnore]
-		public bool Success
+		public string? Token
 		{
 			get => MessageObject;
 			set => MessageObject = value;

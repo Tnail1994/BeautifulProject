@@ -17,6 +17,7 @@ using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
@@ -102,8 +103,8 @@ namespace BeautifulServerApplication
 
 					// Server wide
 					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveRequestMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveRequest>();
+					services.AddTransient<IBaseMessage, CheckAliveReply>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();

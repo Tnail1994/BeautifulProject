@@ -2,7 +2,7 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Exceptions;
-using SharedBeautifulData.Messages;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulServices.Common;
 
 namespace SharedBeautifulServices
@@ -66,7 +66,7 @@ namespace SharedBeautifulServices
 		{
 			try
 			{
-				var checkAliveReplyMessage = new CheckAliveReplyMessage() { Success = true };
+				var checkAliveReplyMessage = new CheckAliveReply() { Success = true };
 
 				while (!_cts.IsCancellationRequested)
 				{
@@ -87,16 +87,16 @@ namespace SharedBeautifulServices
 			}
 		}
 
-		private Task<CheckAliveRequestMessage> ReceiveAndSendAsync(CheckAliveReplyMessage checkAliveReplyMessage)
+		private Task<CheckAliveRequest> ReceiveAndSendAsync(CheckAliveReply checkAliveReplyMessage)
 		{
-			return _communicationService.ReceiveAndSendAsync<CheckAliveRequestMessage>(checkAliveReplyMessage);
+			return _communicationService.ReceiveAndSendAsync<CheckAliveRequest>(checkAliveReplyMessage);
 		}
 
 		private async void SendCheckAlive()
 		{
 			try
 			{
-				var checkAliveMessage = new CheckAliveRequestMessage() { Success = true };
+				var checkAliveMessage = new CheckAliveRequest() { Success = true };
 
 				while (!_cts.IsCancellationRequested)
 				{
@@ -119,9 +119,9 @@ namespace SharedBeautifulServices
 			}
 		}
 
-		private Task<CheckAliveReplyMessage> SendAndReceiveAsync(CheckAliveRequestMessage checkAliveMessage)
+		private Task<CheckAliveReply> SendAndReceiveAsync(CheckAliveRequest checkAliveMessage)
 		{
-			return _communicationService.SendAndReceiveAsync<CheckAliveReplyMessage>(checkAliveMessage);
+			return _communicationService.SendAndReceiveAsync<CheckAliveReply>(checkAliveMessage);
 		}
 
 		private void OnConnectionLost(object? sender, string e)

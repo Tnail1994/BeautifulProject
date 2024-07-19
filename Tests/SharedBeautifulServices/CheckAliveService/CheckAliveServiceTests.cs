@@ -2,7 +2,7 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Exceptions;
-using SharedBeautifulData.Messages;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulServices;
 
 namespace Tests.SharedBeautifulServices.CheckAliveService
@@ -64,8 +64,8 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 
 			var checkAliveService = CreateCheckAliveService(settings);
 
-			_communicationServiceMock.ReceiveAsync<CheckAliveRequestMessage>(Arg.Any<CancellationToken>())
-				.Returns(Task.FromResult(new CheckAliveRequestMessage()));
+			_communicationServiceMock.ReceiveAsync<CheckAliveRequest>(Arg.Any<CancellationToken>())
+				.Returns(Task.FromResult(new CheckAliveRequest()));
 
 			// For the moq framework, interesting!
 			//_communicationServiceMock.Setup(m => m.ReceiveAsync<CheckAliveMessage>(It.IsAny<CancellationToken>()))
@@ -75,7 +75,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			await Task.Delay(1);
 			checkAliveService.Stop();
 
-			await _communicationServiceMock.Received().ReceiveAndSendAsync<CheckAliveRequestMessage>(Arg.Any<object>());
+			await _communicationServiceMock.Received().ReceiveAndSendAsync<CheckAliveRequest>(Arg.Any<object>());
 
 			// For the moq framework, interesting!
 			//_communicationServiceMock.Verify(
@@ -97,8 +97,8 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			var checkAliveService = CreateCheckAliveService(settings);
 
 
-			_communicationServiceMock.ReceiveAsync<CheckAliveReplyMessage>(Arg.Any<CancellationToken>())
-				.Returns(Task.FromResult(new CheckAliveReplyMessage { Success = true }));
+			_communicationServiceMock.ReceiveAsync<CheckAliveReply>(Arg.Any<CancellationToken>())
+				.Returns(Task.FromResult(new CheckAliveReply { Success = true }));
 
 			// For the moq framework, interesting!
 			//_communicationServiceMock.Setup(m => m.SendAsync(It.IsAny<CheckAliveMessage>()));
@@ -110,7 +110,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			checkAliveService.Stop();
 
 			await _communicationServiceMock.Received()
-				.SendAndReceiveAsync<CheckAliveReplyMessage>(Arg.Any<object>());
+				.SendAndReceiveAsync<CheckAliveReply>(Arg.Any<object>());
 		}
 	}
 }
