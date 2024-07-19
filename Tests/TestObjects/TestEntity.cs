@@ -1,4 +1,4 @@
-﻿using SharedBeautifulData.Objects;
+﻿using SharedBeautifulData.Contracts;
 
 namespace Tests.TestObjects
 {

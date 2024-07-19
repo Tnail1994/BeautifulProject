@@ -1,4 +1,6 @@
-﻿namespace SharedBeautifulData.Objects
+﻿using SharedBeautifulData.Contracts;
+
+namespace SharedBeautifulData.Objects
 {
 	public class User : IEntity
 	{
