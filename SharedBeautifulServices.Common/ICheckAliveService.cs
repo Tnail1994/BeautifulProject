@@ -4,5 +4,6 @@
 	{
 		event Action ConnectionLost;
 		void Start();
+		void Stop();
 	}
 }

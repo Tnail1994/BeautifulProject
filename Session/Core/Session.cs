@@ -51,6 +51,10 @@ namespace Session.Core
 			{
 				this.LogError($"CheckAliveService failed to start. {checkAliveException.Message}", Id);
 			}
+			catch (OperationCanceledException)
+			{
+				this.LogInfo("Session was stopped", Id);
+			}
 			catch (Exception e)
 			{
 				this.LogFatal($"!!! Unexpected error while Start inside Session event\n" +
