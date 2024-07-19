@@ -1,4 +1,5 @@
 ﻿using DbManagement.Common.Contracts;
+using DbManagement.Contexts;
 using Session.Common.Contracts;
 using SharedBeautifulData.Objects;
 
@@ -15,12 +16,18 @@ namespace Session
 
 		public bool DoesUsernameExist(string username)
 		{
-			var entities = _dbManager.GetEntities<User>();
+			var entities = _dbManager.GetEntities<UserDto>()?.Select(Map);
+			return entities != null && entities.Any(user => user.Name == username);
+		}
 
-			if (entities == null)
-				return false;
+		private UserDto Map(User user)
+		{
+			return new UserDto(user.Name);
+		}
 
-			return entities.Any(user => user.Username == username);
+		private User Map(UserDto userDto)
+		{
+			return User.Create(userDto.Name);
 		}
 	}
 }

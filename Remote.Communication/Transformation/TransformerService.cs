@@ -14,10 +14,10 @@ namespace Remote.Communication.Transformation
 
 		public TransformerService(IServiceProvider serviceProvider)
 		{
-			RegisterAllBaseMessages(serviceProvider);
+			RegisterAllBaseMessagesTransformMethod(serviceProvider);
 		}
 
-		private void RegisterAllBaseMessages(IServiceProvider serviceProvider)
+		private void RegisterAllBaseMessagesTransformMethod(IServiceProvider serviceProvider)
 		{
 			var baseMessageTypes = serviceProvider.GetServices<IBaseMessage>()
 				.Select(m => m.GetType())

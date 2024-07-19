@@ -1,6 +1,5 @@
 ﻿using DbManagement;
 using DbManagement.Common.Contracts;
-using DbManagement.Common.Implementations;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 using Tests.TestObjects;
@@ -26,7 +25,7 @@ namespace Tests.DbManagement
 		public void WhenDbResolverContainsData_ThenThisGetsCache_AndShouldCallSetOfCache()
 		{
 			var dbContextMock = Substitute.For<IDbContext>();
-			var testEntities = new List<EntityDto>
+			var testEntities = new List<TestEntityDto>
 			{
 				new TestEntityDto()
 			};
@@ -44,7 +43,7 @@ namespace Tests.DbManagement
 		public void WhenDbResolverContainsData_AndKeyIsCorrect_ThenGetEntities_ShouldNotBeEmpty()
 		{
 			var dbContextMock = Substitute.For<IDbContext>();
-			var testEntities = new List<EntityDto>
+			var testEntities = new List<TestEntityDto>
 			{
 				new TestEntityDto()
 			};
@@ -55,7 +54,7 @@ namespace Tests.DbManagement
 			var cache = new MemoryCache(new MemoryCacheOptions());
 			Manager = new DbManager(_dbContextResolverMock, _dbSettingsMock, cache);
 
-			var getEntities = Manager.GetEntities<TestEntity>();
+			var getEntities = Manager.GetEntities<TestEntityDto>();
 
 			Assert.NotNull(getEntities);
 			Assert.NotEmpty(getEntities);
@@ -72,8 +71,8 @@ namespace Tests.DbManagement
 
 			Manager = new DbManager(_dbContextResolverMock, _dbSettingsMock, _dbCacheMock);
 
-			var getEntities = Manager.GetEntities<TestEntity>();
-			_dbCacheMock.Received(1).TryGetValue<List<EntityDto>>(Arg.Any<string>(), out _);
+			var getEntities = Manager.GetEntities<TestEntityDto>();
+			_dbCacheMock.Received(1).TryGetValue<List<TestEntityDto>>(Arg.Any<string>(), out _);
 			Assert.NotNull(getEntities);
 			Assert.Empty(getEntities);
 		}
@@ -82,7 +81,7 @@ namespace Tests.DbManagement
 		public void WhenDbResolverContainsData_ButKeyIsWrong_ThenGetEntities_ShouldBeEmpty()
 		{
 			var dbContextMock = Substitute.For<IDbContext>();
-			var testEntities = new List<EntityDto>
+			var testEntities = new List<TestEntityDto>
 			{
 				new TestEntityDto()
 			};
@@ -93,7 +92,7 @@ namespace Tests.DbManagement
 			var cache = new MemoryCache(new MemoryCacheOptions());
 			Manager = new DbManager(_dbContextResolverMock, _dbSettingsMock, cache);
 
-			var getEntities = Manager.GetEntities<TestEntity>();
+			var getEntities = Manager.GetEntities<TestEntityDto>();
 
 			Assert.NotNull(getEntities);
 			Assert.Empty(getEntities);

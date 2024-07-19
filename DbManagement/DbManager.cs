@@ -1,47 +1,15 @@
-﻿using System.Collections.Concurrent;
+﻿using Core.Extensions;
 using DbManagement.Common.Contracts;
-using System.Reflection;
-using Core.Extensions;
+using DbManagement.Common.Implementations;
 using Microsoft.Extensions.Caching.Memory;
 using Session.Common.Implementations;
-using DbManagement.Common.Implementations;
-using SharedBeautifulData.Objects;
+using System.Collections.Concurrent;
 
 namespace DbManagement
 {
 	public class DbManager : IDbManager
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
-
-		private static class EntityMapper
-		{
-			public static TTarget Map<TSource, TTarget>(TSource source)
-				where TSource : class
-				where TTarget : class, new()
-			{
-				if (source == null)
-					throw new ArgumentNullException(nameof(source));
-
-				var sourceProperties = typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-				var targetProperties = typeof(TTarget).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-				var target = new TTarget();
-
-				foreach (var sourceProperty in sourceProperties)
-				{
-					var targetProperty = targetProperties.FirstOrDefault(p =>
-						p.Name == sourceProperty.Name && p.PropertyType == sourceProperty.PropertyType);
-
-					if (targetProperty == null || !targetProperty.CanWrite)
-						continue;
-
-					var value = sourceProperty.GetValue(source);
-					targetProperty.SetValue(target, value);
-				}
-
-				return target;
-			}
-		}
 
 		private readonly ConcurrentDictionary<string, IDbContext> _dbContexts;
 
@@ -87,10 +55,11 @@ namespace DbManagement
 
 		private static string CreateCacheKey(string name, string? sessionId = null)
 		{
-			return $"{sessionId ?? CacheKey}_{name}".Replace("Dto", "");
+			var cleanTypeName = CleanTypeName(name);
+			return $"{sessionId ?? CacheKey}_{cleanTypeName}";
 		}
 
-		public IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : Entity, new()
+		public IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : EntityDto
 		{
 			var requestedType = typeof(T);
 			var cacheKey = CreateCacheKey(requestedType.Name, sessionKey?.SessionId);
@@ -99,7 +68,7 @@ namespace DbManagement
 			{
 				entities =
 					_dbContexts.Values.FirstOrDefault(dbContext => dbContext.GetEntities() is IEnumerable<T>)
-						?.GetEntities() as List<EntityDto>;
+						?.GetEntities() as List<T>;
 
 				if (entities == null)
 				{
@@ -110,7 +79,17 @@ namespace DbManagement
 				UpdateCache(cacheKey, entities);
 			}
 
-			return entities?.Select(EntityMapper.Map<EntityDto, T>).ToList();
+			return entities?.Cast<T>();
+		}
+
+		/// <summary>
+		/// Removes the Dto suffix from the typeName
+		/// </summary>
+		/// <param name="typeName">The name to prepare</param>
+		/// <returns>Returns the prepared name</returns>
+		private static string CleanTypeName(string typeName)
+		{
+			return typeName.Replace("Dto", "");
 		}
 	}
 }

@@ -2,7 +2,6 @@
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
 using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Core;
@@ -89,7 +88,6 @@ namespace Tests.Session
 			var dummySocket = CreateDummySocket();
 
 			_scopeManagerMock.Create().Returns(null as IScope);
-			var communicationServiceMock = Substitute.For<ICommunicationService>();
 			// We're assuming an InvalidOperationException because the Substitute framework mocks
 			// ServiceProvider. But cannot resolve ICommunicationService from ServiceProvider.
 			Assert.Throws<SessionManagerException>(() => RaiseNewConnectionEvent(dummySocket));

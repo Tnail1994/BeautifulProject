@@ -2,8 +2,5 @@
 {
 	public class EntityDto
 	{
-		protected EntityDto()
-		{
-		}
 	}
 }

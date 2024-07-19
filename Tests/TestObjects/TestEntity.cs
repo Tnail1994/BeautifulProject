@@ -2,7 +2,7 @@
 
 namespace Tests.TestObjects
 {
-    public class TestEntity : Entity
+	public class TestEntity : IEntity
 	{
 		// ReSharper disable once EmptyConstructor
 		public TestEntity()

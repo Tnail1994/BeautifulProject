@@ -1,14 +1,14 @@
 ﻿namespace SharedBeautifulData.Objects
 {
-	public class User : Entity
+	public class User : IEntity
 	{
 		public User()
 		{
 		}
 
-		private User(string username)
+		private User(string name)
 		{
-			Username = username;
+			Name = name;
 		}
 
 		public static User Create(string username)
@@ -16,6 +16,6 @@
 			return new User(username);
 		}
 
-		public string Username { get; set; } = null!;
+		public string Name { get; set; } = null!;
 	}
 }

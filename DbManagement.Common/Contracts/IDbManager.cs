@@ -1,10 +1,10 @@
-﻿using Session.Common.Implementations;
-using SharedBeautifulData.Objects;
+﻿using DbManagement.Common.Implementations;
+using Session.Common.Implementations;
 
 namespace DbManagement.Common.Contracts
 {
-    public interface IDbManager
+	public interface IDbManager
 	{
-		IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : Entity, new();
+		IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : EntityDto;
 	}
 }

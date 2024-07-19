@@ -31,7 +31,6 @@ namespace Session
 				return false;
 			}
 
-			// todo: Check it with the db entry and return true or false
 			if (!_usersService.DoesUsernameExist(username))
 			{
 				this.LogWarning($"User with name {username} does not exist.", "server");
