@@ -2,10 +2,12 @@
 using System.Net.Sockets;
 using Core.Extensions;
 using Core.Helpers;
+using DbManagement.Common.Contracts;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using SharedBeautifulData;
 
 namespace Session
 {
@@ -16,10 +18,12 @@ namespace Session
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
 		private readonly IScopeManager _scopeManager;
+		private readonly IDbManager _dbManager;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager)
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager, IDbManager dbManager)
 		{
 			_scopeManager = scopeManager;
+			_dbManager = dbManager;
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -39,6 +43,11 @@ namespace Session
 		private void StartNewSession(TcpClient client)
 		{
 			var session = BuildSession(client);
+
+			// Todo authorize
+			if (_dbManager.GetEntities<User>() != null)
+			{
+			}
 
 			session.SessionStopped += OnSessionStopped;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");

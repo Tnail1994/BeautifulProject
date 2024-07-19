@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DbManagement;
+using DbManagement.Common.Contracts;
+using DbManagement.Contexts;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Remote.Communication;
@@ -62,12 +65,12 @@ namespace BeautifulServerApplication
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
 					_sessionManager.SendMessageToRandomClient(new UserMessage
-						{ MessageObject = User.Create("1", "1") });
+						{ MessageObject = User.Create("1") });
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
 					_sessionManager.SendMessageToAllClients(new UserMessage
-						{ MessageObject = User.Create("2", "2") });
+						{ MessageObject = User.Create("2") });
 				}
 #endif
 				else
@@ -92,15 +95,20 @@ namespace BeautifulServerApplication
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
+					services.AddMemoryCache();
+
 					services.AddHostedService<SessionManager>();
 
 					// Server wide
 					services.AddTransient<IBaseMessage, UserMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
+					services.AddTransient<IDbContext, UsersDbContext>();
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddSingleton<IDbManager, DbManager>();
+					services.AddSingleton<IDbContextResolver, DbContextResolver>();
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
 
@@ -114,6 +122,10 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
 					services.Configure<ConnectionSettings>(
 						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
+					services.Configure<DbSettings>(
+						hostContext.Configuration.GetSection(nameof(DbSettings)));
+					services.Configure<DbContextSettings>(
+						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -125,6 +137,10 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
 					services.AddSingleton<IConnectionSettings>(provider =>
 						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
+					services.AddSingleton<IDbSettings>(provider =>
+						provider.GetRequiredService<IOptions<DbSettings>>().Value);
+					services.AddSingleton<IDbContextSettings>(provider =>
+						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ISession, Session.Session>();

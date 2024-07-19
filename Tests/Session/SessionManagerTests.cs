@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
+using DbManagement.Common.Contracts;
 using Remote.Communication.Common.Client.Contracts;
 using Session;
 using Session.Common.Contracts;
@@ -23,10 +24,11 @@ namespace Tests.Session
 			_asyncSocketServerMock = Substitute.For<IAsyncServer>();
 			_scopeManagerMock = Substitute.For<IScopeManager>();
 			_asyncClientMock = Substitute.For<IAsyncClientFactory>();
+			var dbManagerMock = Substitute.For<IDbManager>();
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock);
+			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock, dbManagerMock);
 		}
 
 		private void BaseProviderMocking()

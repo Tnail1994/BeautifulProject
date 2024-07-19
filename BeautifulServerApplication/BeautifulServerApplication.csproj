@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DbManagement.Common\DbManagement.Common.csproj" />
+    <ProjectReference Include="..\DbManagement\DbManagement.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
     <ProjectReference Include="..\Session\Session.csproj" />
@@ -40,7 +42,7 @@
 
   <ItemGroup>
     <None Update="appsettings.Development.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

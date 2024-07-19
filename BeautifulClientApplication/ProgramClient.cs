@@ -52,7 +52,7 @@ namespace BeautifulClientApplication
 				}
 				else if (_communicationService != null)
 				{
-					_communicationService.SendAsync(new UserMessage { MessageObject = User.Create("tk", "ms") });
+					_communicationService.SendAsync(new UserMessage { MessageObject = User.Create("tk") });
 				}
 			}
 		}

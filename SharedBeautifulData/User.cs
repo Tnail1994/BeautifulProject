@@ -1,19 +1,21 @@
 ﻿namespace SharedBeautifulData
 {
-	public class User
+	public class User : Entity
 	{
-		public User(string username, string password)
+		public User()
+		{
+		}
+
+		public User(string username)
 		{
 			Username = username;
-			Password = password;
 		}
 
-		public static User Create(string username, string password)
+		public static User Create(string username)
 		{
-			return new User(username, password);
+			return new User(username);
 		}
 
-		public string Username { get; set; }
-		public string Password { get; set; }
+		public string Username { get; set; } = null!;
 	}
 }

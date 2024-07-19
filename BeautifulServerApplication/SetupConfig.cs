@@ -14,23 +14,26 @@ namespace BeautifulServerApplication
 
 		public static void Initialize()
 		{
+			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+
 			var currentDirectory = Directory.GetCurrentDirectory();
-			var basePath = Directory.GetParent(currentDirectory)?.Parent?.Parent?.ToString();
+			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 			try
 			{
-				if (!string.IsNullOrEmpty(basePath))
+				if (!string.IsNullOrEmpty(currentDirectory))
 				{
 					new ConfigurationBuilder()
-						.SetBasePath(basePath)
+						.SetBasePath(currentDirectory)
 						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						.AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
 						.AddEnvironmentVariables()
 						.Build();
 				}
 			}
 			catch (ArgumentException argumentException)
 			{
-				Log.Error($"Wrong basePath: {basePath}\n" +
+				Log.Error($"Wrong basePath: {currentDirectory}\n" +
 				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
 				          " ||{SessionKey}||", "server");
 			}
