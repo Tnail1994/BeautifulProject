@@ -20,10 +20,10 @@ namespace Session
 			return entities != null && entities.Any(user => user.Name == username);
 		}
 
-		private UserDto Map(User user)
-		{
-			return new UserDto(user.Name);
-		}
+		//private UserDto Map(User user)
+		//{
+		//	return new UserDto(user.Name);
+		//}
 
 		private User Map(UserDto userDto)
 		{

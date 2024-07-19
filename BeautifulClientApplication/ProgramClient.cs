@@ -70,7 +70,7 @@ namespace BeautifulClientApplication
 				}
 				else if (completedTask == receiveMessageTask)
 				{
-					var loginRequestMessage = await receiveMessageTask;
+					await receiveMessageTask;
 					Console.WriteLine("Please login with your username:");
 					var readLine = await readLineTask;
 					communicationService?.SendAsync(new LoginReply

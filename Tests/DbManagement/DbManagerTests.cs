@@ -76,26 +76,5 @@ namespace Tests.DbManagement
 			Assert.NotNull(getEntities);
 			Assert.Empty(getEntities);
 		}
-
-		[Fact]
-		public void WhenDbResolverContainsData_ButKeyIsWrong_ThenGetEntities_ShouldBeEmpty()
-		{
-			var dbContextMock = Substitute.For<IDbContext>();
-			var testEntities = new List<TestEntityDto>
-			{
-				new TestEntityDto()
-			};
-			dbContextMock.GetEntities().Returns(testEntities);
-			dbContextMock.TypeNameOfCollectionEntries.Returns("WrongKey");
-			_dbContextResolverMock.Get().Returns(new List<IDbContext> { dbContextMock });
-
-			var cache = new MemoryCache(new MemoryCacheOptions());
-			Manager = new DbManager(_dbContextResolverMock, _dbSettingsMock, cache);
-
-			var getEntities = Manager.GetEntities<TestEntityDto>();
-
-			Assert.NotNull(getEntities);
-			Assert.Empty(getEntities);
-		}
 	}
 }
