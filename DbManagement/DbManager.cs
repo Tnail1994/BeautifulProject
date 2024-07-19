@@ -9,7 +9,7 @@ using SharedBeautifulData.Objects;
 
 namespace DbManagement
 {
-    public class DbManager : IDbManager
+	public class DbManager : IDbManager
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
 
@@ -85,15 +85,15 @@ namespace DbManagement
 			_cache.Set(cacheKey, dbContextEntities.ToList(), _cacheOptions);
 		}
 
-		private static string CreateCacheKey(string name)
+		private static string CreateCacheKey(string name, string? sessionId = null)
 		{
-			return $"{CacheKey}_{name}".Replace("Dto", "");
+			return $"{sessionId ?? CacheKey}_{name}".Replace("Dto", "");
 		}
 
 		public IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : Entity, new()
 		{
 			var requestedType = typeof(T);
-			var cacheKey = sessionKey?.SessionId ?? CreateCacheKey(requestedType.Name);
+			var cacheKey = CreateCacheKey(requestedType.Name, sessionKey?.SessionId);
 
 			if (!_cache.TryGetValue(cacheKey, out IEnumerable<EntityDto>? entities))
 			{
