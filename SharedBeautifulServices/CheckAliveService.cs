@@ -1,7 +1,8 @@
 ﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Exceptions;
+using SharedBeautifulData.Messages;
 using SharedBeautifulServices.Common;
 
 namespace SharedBeautifulServices
@@ -65,13 +66,13 @@ namespace SharedBeautifulServices
 		{
 			try
 			{
-				var checkAliveReplyMessage = new CheckAliveReplyMessage() { MessageObject = true };
+				var checkAliveReplyMessage = new CheckAliveReplyMessage() { Success = true };
 
 				while (!_cts.IsCancellationRequested)
 				{
 					var checkAliveMessage = await ReceiveAndSendAsync(checkAliveReplyMessage);
 
-					if (!checkAliveMessage.MessageObject)
+					if (!checkAliveMessage.Success)
 						ConnectionLost?.Invoke();
 				}
 			}
@@ -95,13 +96,13 @@ namespace SharedBeautifulServices
 		{
 			try
 			{
-				var checkAliveMessage = new CheckAliveMessage() { MessageObject = true };
+				var checkAliveMessage = new CheckAliveMessage() { Success = true };
 
 				while (!_cts.IsCancellationRequested)
 				{
 					var checkAliveReplyMessage = await SendAndReceiveAsync(checkAliveMessage);
 
-					if (!checkAliveReplyMessage.MessageObject)
+					if (!checkAliveReplyMessage.Success)
 						ConnectionLost?.Invoke();
 
 					await Task.Delay(_settings.FrequencyInSeconds * 1000, _cts.Token);

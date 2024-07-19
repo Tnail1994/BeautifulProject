@@ -1,7 +1,8 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Exceptions;
+using SharedBeautifulData.Messages;
 using SharedBeautifulServices;
 
 namespace Tests.SharedBeautifulServices.CheckAliveService
@@ -74,8 +75,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			await Task.Delay(1);
 			checkAliveService.Stop();
 
-			await _communicationServiceMock.Received().ReceiveAsync<CheckAliveMessage>(Arg.Any<CancellationToken>());
-			_communicationServiceMock.Received().SendAsync(Arg.Any<CheckAliveReplyMessage>());
+			await _communicationServiceMock.Received().ReceiveAndSendAsync<CheckAliveMessage>(Arg.Any<object>());
 
 			// For the moq framework, interesting!
 			//_communicationServiceMock.Verify(
@@ -98,7 +98,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 
 
 			_communicationServiceMock.ReceiveAsync<CheckAliveReplyMessage>(Arg.Any<CancellationToken>())
-				.Returns(Task.FromResult(new CheckAliveReplyMessage()));
+				.Returns(Task.FromResult(new CheckAliveReplyMessage { Success = true }));
 
 			// For the moq framework, interesting!
 			//_communicationServiceMock.Setup(m => m.SendAsync(It.IsAny<CheckAliveMessage>()));
@@ -110,8 +110,7 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			checkAliveService.Stop();
 
 			await _communicationServiceMock.Received()
-				.ReceiveAsync<CheckAliveReplyMessage>(Arg.Any<CancellationToken>());
-			_communicationServiceMock.Received().SendAsync(Arg.Any<CheckAliveMessage>());
+				.SendAndReceiveAsync<CheckAliveReplyMessage>(Arg.Any<object>());
 		}
 	}
 }

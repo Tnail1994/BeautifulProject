@@ -1,9 +1,9 @@
 ﻿using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Objects;
 
 namespace DbManagement.Common.Contracts
 {
-	public interface IDbManager
+    public interface IDbManager
 	{
 		IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : Entity, new();
 	}

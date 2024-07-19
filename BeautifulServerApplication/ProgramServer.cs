@@ -16,7 +16,8 @@ using Remote.Server.Common.Contracts;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Messages;
+using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -65,12 +66,12 @@ namespace BeautifulServerApplication
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
 					_sessionManager.SendMessageToRandomClient(new UserMessage
-						{ MessageObject = User.Create("1") });
+						{ User = User.Create("1") });
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
 					_sessionManager.SendMessageToAllClients(new UserMessage
-						{ MessageObject = User.Create("2") });
+						{ User = User.Create("2") });
 				}
 #endif
 				else

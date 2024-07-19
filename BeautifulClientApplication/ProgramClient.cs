@@ -9,7 +9,8 @@ using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Messages;
+using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -52,7 +53,7 @@ namespace BeautifulClientApplication
 				}
 				else if (_communicationService != null)
 				{
-					_communicationService.SendAsync(new UserMessage { MessageObject = User.Create("tk") });
+					_communicationService.SendAsync(new UserMessage { User = User.Create("tk") });
 				}
 			}
 		}

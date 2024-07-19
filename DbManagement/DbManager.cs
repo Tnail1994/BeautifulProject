@@ -3,13 +3,13 @@ using DbManagement.Common.Contracts;
 using System.Reflection;
 using Core.Extensions;
 using Microsoft.Extensions.Caching.Memory;
-using SharedBeautifulData;
 using Session.Common.Implementations;
 using DbManagement.Common.Implementations;
+using SharedBeautifulData.Objects;
 
 namespace DbManagement
 {
-	public class DbManager : IDbManager
+    public class DbManager : IDbManager
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
 

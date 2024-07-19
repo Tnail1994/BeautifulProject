@@ -2,11 +2,11 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Exceptions;
 
 namespace Session
 {
-	public class Session : ISession, IDisposable
+    public class Session : ISession, IDisposable
 	{
 		private readonly ISessionKey _sessionKey;
 		private readonly IConnectionService _connectionService;

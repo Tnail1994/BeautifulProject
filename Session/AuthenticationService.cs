@@ -15,8 +15,8 @@ namespace Session
 
 		public async Task<bool> Authorize(ICommunicationService communicationService)
 		{
-			await Task.Delay(1000);
 			// Send login message to client and wait for reply
+
 			// Then read the reply (Username)
 			// Check it with the db entry and return true or false
 			return true;
