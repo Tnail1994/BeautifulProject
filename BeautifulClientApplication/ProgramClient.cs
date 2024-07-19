@@ -11,6 +11,7 @@ using Remote.Communication.Transformation;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.Login;
 using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
@@ -29,6 +30,7 @@ namespace BeautifulClientApplication
 
 			host.RunAsync(ClientProgramCancellationTokenSource.Token);
 			_communicationService = host.Services.GetRequiredService<ICommunicationService>();
+
 			RunConsoleInteraction();
 
 			host.Dispose();
@@ -76,6 +78,8 @@ namespace BeautifulClientApplication
 					services.AddTransient<IBaseMessage, UserMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveRequest>();
 					services.AddTransient<IBaseMessage, CheckAliveReply>();
+					services.AddTransient<IBaseMessage, LoginReply>();
+					services.AddTransient<IBaseMessage, LoginRequest>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

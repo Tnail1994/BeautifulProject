@@ -6,7 +6,7 @@ using SharedBeautifulData.Exceptions;
 
 namespace BeautifulClientApplication
 {
-    internal interface IClientManager : IHostedService;
+	internal interface IClientManager : IHostedService;
 
 	internal class ClientManager : IClientManager
 	{

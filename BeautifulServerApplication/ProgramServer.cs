@@ -16,8 +16,10 @@ using Remote.Server.Common.Contracts;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using Session.Core;
 using SharedBeautifulData.Messages;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.Login;
 using SharedBeautifulData.Objects;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
@@ -105,6 +107,8 @@ namespace BeautifulServerApplication
 					services.AddTransient<IBaseMessage, UserMessage>();
 					services.AddTransient<IBaseMessage, CheckAliveRequest>();
 					services.AddTransient<IBaseMessage, CheckAliveReply>();
+					services.AddTransient<IBaseMessage, LoginReply>();
+					services.AddTransient<IBaseMessage, LoginRequest>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 
 					services.AddSingleton<IAsyncServer, AsyncServer>();
@@ -112,6 +116,7 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IDbManager, DbManager>();
 					services.AddSingleton<IDbContextResolver, DbContextResolver>();
 					services.AddSingleton<IAuthenticationService, AuthenticationService>();
+					services.AddSingleton<IUsersService, UsersService>();
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
 
@@ -146,7 +151,7 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
 
 					// Session wide
-					services.AddScoped<ISession, Session.Session>();
+					services.AddScoped<ISession, Session.Core.Session>();
 					services.AddScoped<IConnectionService, ConnectionService>();
 					services.AddScoped<ICommunicationService, CommunicationService>();
 					services.AddScoped<ISessionKey, SessionKey>();

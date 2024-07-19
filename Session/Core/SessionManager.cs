@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 using System.Net.Sockets;
 using Remote.Communication.Common.Contracts;
 
-namespace Session
+namespace Session.Core
 {
 	public class SessionManager : ISessionManager
 	{

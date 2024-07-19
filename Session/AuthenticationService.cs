@@ -1,5 +1,4 @@
 ﻿using Core.Extensions;
-using DbManagement.Common.Contracts;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using SharedBeautifulData.Messages.Login;
@@ -8,11 +7,11 @@ namespace Session
 {
 	public class AuthenticationService : IAuthenticationService
 	{
-		private readonly IDbManager _dbManager;
+		private readonly IUsersService _usersService;
 
-		public AuthenticationService(IDbManager dbManager)
+		public AuthenticationService(IUsersService usersService)
 		{
-			_dbManager = dbManager;
+			_usersService = usersService;
 		}
 
 		public async Task<bool> Authorize(ICommunicationService communicationService)
@@ -33,6 +32,11 @@ namespace Session
 			}
 
 			// todo: Check it with the db entry and return true or false
+			if (!_usersService.DoesUsernameExist(username))
+			{
+				this.LogWarning($"User with name {username} does not exist.", "server");
+				return false;
+			}
 
 			return true;
 		}

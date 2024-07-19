@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Session.Common.Contracts;
 
-namespace Session
+namespace Session.Core
 {
 	public class ScopeManager : IScopeManager, IDisposable
 	{

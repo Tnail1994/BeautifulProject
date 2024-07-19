@@ -15,7 +15,7 @@ namespace Tests.Session
 			var communicationServiceMock = Substitute.For<ICommunicationService>();
 			_connectionServiceMock = Substitute.For<IConnectionService>();
 			var sessionKeyMock = Substitute.For<ISessionKey>();
-			_session = new global::Session.Session(sessionKeyMock, _connectionServiceMock
+			_session = new global::Session.Core.Session(sessionKeyMock, _connectionServiceMock
 #if DEBUG
 				, communicationServiceMock
 #endif
