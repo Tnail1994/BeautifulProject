@@ -18,7 +18,7 @@ namespace DbManagement.Common.Implementations
 		}
 
 
-		public DbSet<T>? Set { get; set; }
+		protected DbSet<T>? Set { get; set; }
 
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder
 			.UseNpgsql(

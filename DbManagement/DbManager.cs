@@ -50,9 +50,11 @@ namespace DbManagement
 
 		public DbManager(IDbContextResolver dbContextResolver, IDbSettings dbSettings, IMemoryCache cache)
 		{
+			var dbContexts = dbContextResolver.Get();
 			_dbContexts =
 				new ConcurrentDictionary<string, IDbContext>(
-					dbContextResolver.Get().ToDictionary(context => context.Id));
+					dbContexts.ToDictionary(context => context.Id));
+
 			_cache = cache;
 
 			_cacheOptions = new MemoryCacheEntryOptions()
