@@ -1,8 +1,8 @@
 ﻿using NSubstitute;
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
-using DbManagement.Common.Contracts;
 using Remote.Communication.Common.Client.Contracts;
+using Remote.Communication.Common.Contracts;
 using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
@@ -18,17 +18,18 @@ namespace Tests.Session
 
 		private IScope? _scopeMock;
 		private readonly IAsyncClientFactory _asyncClientMock;
+		private readonly IAuthenticationService _authenticationServiceMock;
 
 		public SessionManagerTests()
 		{
 			_asyncSocketServerMock = Substitute.For<IAsyncServer>();
 			_scopeManagerMock = Substitute.For<IScopeManager>();
 			_asyncClientMock = Substitute.For<IAsyncClientFactory>();
-			var dbManagerMock = Substitute.For<IDbManager>();
+			_authenticationServiceMock = Substitute.For<IAuthenticationService>();
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock, dbManagerMock);
+			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock, _authenticationServiceMock);
 		}
 
 		private void BaseProviderMocking()
@@ -76,7 +77,6 @@ namespace Tests.Session
 			return dummySocket;
 		}
 
-		// Assert exceptions for not set socket and scope
 		[Fact]
 		public void WhenNewConnectionOccuredWithNullSocket_ThenShouldThrowSessionManagerException()
 		{
@@ -91,6 +91,8 @@ namespace Tests.Session
 			var dummySocket = CreateDummySocket();
 
 			_scopeManagerMock.Create().Returns(null as IScope);
+			var communicationServiceMock = Substitute.For<ICommunicationService>();
+			_authenticationServiceMock.Authorize(communicationServiceMock).Returns(Task.FromResult(true));
 			// We're assuming an InvalidOperationException because the Substitute framework mocks
 			// ServiceProvider. But cannot resolve ICommunicationService from ServiceProvider.
 			Assert.Throws<SessionManagerException>(() => RaiseNewConnectionEvent(dummySocket));

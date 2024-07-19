@@ -90,6 +90,23 @@ namespace Remote.Communication
 			_asyncClient.Send(jsonString);
 		}
 
+		public Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageToSend)
+			where TReplyMessageType : IBaseMessage
+		{
+			SendAsync(messageToSend);
+			return ReceiveAsync<TReplyMessageType>();
+		}
+
+
+		public async Task<TAwaitMessageType>
+			ReceiveAndSendAsync<TAwaitMessageType>(object messageToSend)
+			where TAwaitMessageType : IBaseMessage
+		{
+			var awaitMessage = await ReceiveAsync<TAwaitMessageType>();
+			SendAsync(messageToSend);
+			return awaitMessage;
+		}
+
 		public void Stop()
 		{
 			if (!_running)

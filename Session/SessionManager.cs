@@ -1,13 +1,12 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Sockets;
-using Core.Extensions;
+﻿using Core.Extensions;
 using Core.Helpers;
-using DbManagement.Common.Contracts;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using System.Collections.Concurrent;
+using System.Net.Sockets;
+using Remote.Communication.Common.Contracts;
 
 namespace Session
 {
@@ -18,12 +17,13 @@ namespace Session
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
 		private readonly IScopeManager _scopeManager;
-		private readonly IDbManager _dbManager;
+		private readonly IAuthenticationService _authenticationService;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager, IDbManager dbManager)
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager,
+			IAuthenticationService authenticationService)
 		{
 			_scopeManager = scopeManager;
-			_dbManager = dbManager;
+			_authenticationService = authenticationService;
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -42,10 +42,12 @@ namespace Session
 
 		private void StartNewSession(TcpClient client)
 		{
-			var session = BuildSession(client);
+			var tupleSessionAndCommunication = BuildSession(client);
 
-			// Todo authorize
-			if (_dbManager.GetEntities<User>() != null)
+			var session = tupleSessionAndCommunication.Item1;
+			var communicationService = tupleSessionAndCommunication.Item2;
+
+			if (_authenticationService.Authorize(communicationService).Result)
 			{
 			}
 
@@ -62,7 +64,7 @@ namespace Session
 			this.LogInfo($"New session with Id {session.Id} started.", "server");
 		}
 
-		private ISession BuildSession(TcpClient client)
+		private (ISession, ICommunicationService) BuildSession(TcpClient client)
 		{
 			var scope = _scopeManager.Create();
 
@@ -73,7 +75,7 @@ namespace Session
 				throw new SessionManagerException("Scope is not set.", 2);
 
 			scope.GetService<IAsyncClientFactory>().Init(client);
-			return scope.GetService<ISession>();
+			return (scope.GetService<ISession>(), scope.GetService<ICommunicationService>());
 		}
 
 		private void OnSessionStopped(object? sender, string e)

@@ -69,12 +69,10 @@ namespace SharedBeautifulServices
 
 				while (!_cts.IsCancellationRequested)
 				{
-					var checkAliveMessage = await _communicationService.ReceiveAsync<CheckAliveMessage>(_cts.Token);
+					var checkAliveMessage = await ReceiveAndSendAsync(checkAliveReplyMessage);
 
 					if (!checkAliveMessage.MessageObject)
 						ConnectionLost?.Invoke();
-
-					_communicationService.SendAsync(checkAliveReplyMessage);
 				}
 			}
 			catch (OperationCanceledException oce)
@@ -88,6 +86,11 @@ namespace SharedBeautifulServices
 			}
 		}
 
+		private Task<CheckAliveMessage> ReceiveAndSendAsync(CheckAliveReplyMessage checkAliveReplyMessage)
+		{
+			return _communicationService.ReceiveAndSendAsync<CheckAliveMessage>(checkAliveReplyMessage);
+		}
+
 		private async void SendCheckAlive()
 		{
 			try
@@ -96,9 +99,7 @@ namespace SharedBeautifulServices
 
 				while (!_cts.IsCancellationRequested)
 				{
-					_communicationService.SendAsync(checkAliveMessage);
-					var checkAliveReplyMessage =
-						await _communicationService.ReceiveAsync<CheckAliveReplyMessage>(_cts.Token);
+					var checkAliveReplyMessage = await SendAndReceiveAsync(checkAliveMessage);
 
 					if (!checkAliveReplyMessage.MessageObject)
 						ConnectionLost?.Invoke();
@@ -115,6 +116,11 @@ namespace SharedBeautifulServices
 				this.LogFatal($"!!! Unexpected error in SendCheckAlive loop: {ex.Message}+" +
 				              $"Stacktrace: {ex.StackTrace}");
 			}
+		}
+
+		private Task<CheckAliveReplyMessage> SendAndReceiveAsync(CheckAliveMessage checkAliveMessage)
+		{
+			return _communicationService.SendAndReceiveAsync<CheckAliveReplyMessage>(checkAliveMessage);
 		}
 
 		private void OnConnectionLost(object? sender, string e)

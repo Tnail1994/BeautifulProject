@@ -109,6 +109,7 @@ namespace BeautifulServerApplication
 					services.AddSingleton<ITransformerService, TransformerService>();
 					services.AddSingleton<IDbManager, DbManager>();
 					services.AddSingleton<IDbContextResolver, DbContextResolver>();
+					services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
 
