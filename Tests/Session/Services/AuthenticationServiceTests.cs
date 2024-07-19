@@ -1,10 +1,10 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
-using Session;
 using Session.Common.Contracts;
+using Session.Services;
 using SharedBeautifulData.Messages.Login;
 
-namespace Tests.Session
+namespace Tests.Session.Services
 {
 	public class AuthenticationServiceTests
 	{

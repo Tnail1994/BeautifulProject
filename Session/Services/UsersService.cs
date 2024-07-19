@@ -3,7 +3,7 @@ using DbManagement.Contexts;
 using Session.Common.Contracts;
 using SharedBeautifulData.Objects;
 
-namespace Session
+namespace Session.Services
 {
 	public class UsersService : IUsersService
 	{

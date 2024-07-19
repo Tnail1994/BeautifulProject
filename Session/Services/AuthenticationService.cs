@@ -3,7 +3,7 @@ using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using SharedBeautifulData.Messages.Login;
 
-namespace Session
+namespace Session.Services
 {
 	public class AuthenticationService : IAuthenticationService
 	{

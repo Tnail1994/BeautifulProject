@@ -6,7 +6,7 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Core;
 
-namespace Tests.Session
+namespace Tests.Session.Core
 {
 	public class SessionManagerTests
 	{
