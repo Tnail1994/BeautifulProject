@@ -26,7 +26,7 @@ namespace Session.Core
 		public string Id => _sessionKey.SessionId;
 		public event EventHandler<string>? SessionStopped;
 
-		public void Start()
+		public async void Start()
 		{
 			this.LogDebug($"Starting session {Id}", Id);
 			_connectionService.ConnectionLost += OnConnectionLost;
@@ -40,7 +40,7 @@ namespace Session.Core
 			{
 				_connectionService.Start();
 
-				if (_authenticationService.Authorize(_communicationService).Result)
+				if (await _authenticationService.Authorize(_communicationService))
 				{
 				}
 
