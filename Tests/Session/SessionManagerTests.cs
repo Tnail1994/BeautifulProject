@@ -18,18 +18,16 @@ namespace Tests.Session
 
 		private IScope? _scopeMock;
 		private readonly IAsyncClientFactory _asyncClientMock;
-		private readonly IAuthenticationService _authenticationServiceMock;
 
 		public SessionManagerTests()
 		{
 			_asyncSocketServerMock = Substitute.For<IAsyncServer>();
 			_scopeManagerMock = Substitute.For<IScopeManager>();
 			_asyncClientMock = Substitute.For<IAsyncClientFactory>();
-			_authenticationServiceMock = Substitute.For<IAuthenticationService>();
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock, _authenticationServiceMock);
+			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock);
 		}
 
 		private void BaseProviderMocking()
@@ -92,7 +90,6 @@ namespace Tests.Session
 
 			_scopeManagerMock.Create().Returns(null as IScope);
 			var communicationServiceMock = Substitute.For<ICommunicationService>();
-			_authenticationServiceMock.Authorize(communicationServiceMock).Returns(Task.FromResult(true));
 			// We're assuming an InvalidOperationException because the Substitute framework mocks
 			// ServiceProvider. But cannot resolve ICommunicationService from ServiceProvider.
 			Assert.Throws<SessionManagerException>(() => RaiseNewConnectionEvent(dummySocket));

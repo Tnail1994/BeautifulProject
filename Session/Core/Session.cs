@@ -10,19 +10,16 @@ namespace Session.Core
 	{
 		private readonly ISessionKey _sessionKey;
 		private readonly IConnectionService _connectionService;
+		private readonly IAuthenticationService _authenticationService;
 
-#if DEBUG
 		private readonly ICommunicationService _communicationService;
-#endif
 
-		public Session(ISessionKey sessionKey, IConnectionService connectionService
-#if DEBUG
-			, ICommunicationService communicationService
-#endif
-		)
+		public Session(ISessionKey sessionKey, IConnectionService connectionService,
+			IAuthenticationService authenticationService, ICommunicationService communicationService)
 		{
 			_sessionKey = sessionKey;
 			_connectionService = connectionService;
+			_authenticationService = authenticationService;
 			_communicationService = communicationService;
 		}
 
@@ -42,6 +39,13 @@ namespace Session.Core
 			try
 			{
 				_connectionService.Start();
+
+				if (_authenticationService.Authorize(_communicationService).Result)
+				{
+				}
+
+				// todo; Check if the session is a pending session registered in the database
+				// todo; if so, then reestablish the session with the provided context
 			}
 			catch (CheckAliveException checkAliveException)
 			{

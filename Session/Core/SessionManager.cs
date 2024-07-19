@@ -6,7 +6,6 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
-using Remote.Communication.Common.Contracts;
 
 namespace Session.Core
 {
@@ -17,13 +16,10 @@ namespace Session.Core
 		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
 		private readonly IScopeManager _scopeManager;
-		private readonly IAuthenticationService _authenticationService;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager,
-			IAuthenticationService authenticationService)
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager)
 		{
 			_scopeManager = scopeManager;
-			_authenticationService = authenticationService;
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -42,29 +38,19 @@ namespace Session.Core
 
 		private void StartNewSession(TcpClient client)
 		{
-			var tupleSessionAndCommunication = BuildSession(client);
-
-			var session = tupleSessionAndCommunication.Item1;
-			var communicationService = tupleSessionAndCommunication.Item2;
-
-			if (_authenticationService.Authorize(communicationService).Result)
-			{
-			}
+			var session = BuildSession(client);
 
 			session.SessionStopped += OnSessionStopped;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 
 			_sessions.TryAdd(session.Id, session);
 
-			// todo; Check if the session is a pending session registered in the database
-			// todo; if so, then reestablish the session with the provided context
-
 			session.Start();
 
 			this.LogInfo($"New session with Id {session.Id} started.", "server");
 		}
 
-		private (ISession, ICommunicationService) BuildSession(TcpClient client)
+		private ISession BuildSession(TcpClient client)
 		{
 			var scope = _scopeManager.Create();
 
@@ -75,7 +61,7 @@ namespace Session.Core
 				throw new SessionManagerException("Scope is not set.", 2);
 
 			scope.GetService<IAsyncClientFactory>().Init(client);
-			return (scope.GetService<ISession>(), scope.GetService<ICommunicationService>());
+			return scope.GetService<ISession>();
 		}
 
 		private void OnSessionStopped(object? sender, string e)

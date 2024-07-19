@@ -15,7 +15,12 @@ namespace Session
 
 		public bool DoesUsernameExist(string username)
 		{
-			return _dbManager.GetEntities<User>()?.Any(user => user.Username == username) == true;
+			var entities = _dbManager.GetEntities<User>();
+
+			if (entities == null)
+				return false;
+
+			return entities.Any(user => user.Username == username);
 		}
 	}
 }

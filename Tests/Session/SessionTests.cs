@@ -9,22 +9,26 @@ namespace Tests.Session
 	{
 		private readonly ISession _session;
 		private readonly IConnectionService _connectionServiceMock;
+		private readonly IAuthenticationService _authenticationServiceMock;
+		private readonly ICommunicationService _communicationServiceMock;
 
 		public SessionTests()
 		{
-			var communicationServiceMock = Substitute.For<ICommunicationService>();
+			_communicationServiceMock = Substitute.For<ICommunicationService>();
 			_connectionServiceMock = Substitute.For<IConnectionService>();
 			var sessionKeyMock = Substitute.For<ISessionKey>();
-			_session = new global::Session.Core.Session(sessionKeyMock, _connectionServiceMock
-#if DEBUG
-				, communicationServiceMock
-#endif
+			_authenticationServiceMock = Substitute.For<IAuthenticationService>();
+
+			_session = new global::Session.Core.Session(sessionKeyMock, _connectionServiceMock,
+				_authenticationServiceMock, _communicationServiceMock
 			);
 		}
 
 		[Fact]
 		public void WhenStartingSession_ThenConnectionServiceShouldStartAsWellAndSubscribeToEvents()
 		{
+			_authenticationServiceMock.Authorize(_communicationServiceMock).Returns(Task.FromResult(true));
+
 			_session.Start();
 			_connectionServiceMock.Received(1).Start();
 			_connectionServiceMock.Received(1).ConnectionLost += Arg.Any<Action<string>>();

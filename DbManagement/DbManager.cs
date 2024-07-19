@@ -110,7 +110,7 @@ namespace DbManagement
 				UpdateCache(cacheKey, entities);
 			}
 
-			return entities?.Select(EntityMapper.Map<EntityDto, T>);
+			return entities?.Select(EntityMapper.Map<EntityDto, T>).ToList();
 		}
 	}
 }
