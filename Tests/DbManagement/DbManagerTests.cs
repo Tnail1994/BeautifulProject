@@ -3,7 +3,6 @@ using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
-using Session.Common.Implementations;
 using Tests.TestObjects;
 
 namespace Tests.DbManagement
