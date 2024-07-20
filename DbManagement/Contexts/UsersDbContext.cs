@@ -21,5 +21,20 @@ namespace DbManagement.Contexts
 		}
 
 		[Key] [Column("Name")] public string Name { get; set; }
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is UserDto dto)
+			{
+				return dto.Name == Name;
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode()
+		{
+			return Name.GetHashCode();
+		}
 	}
 }

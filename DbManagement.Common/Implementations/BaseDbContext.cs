@@ -1,11 +1,12 @@
-﻿using Core.Helpers;
+﻿using Core.Extensions;
+using Core.Helpers;
 using DbManagement.Common.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DbManagement.Common.Implementations
 {
-	public abstract class BaseDbContext<T> : DbContext, IDbContext where T : class
+	public abstract class BaseDbContext<T> : DbContext, IDbContext where T : EntityDto
 	{
 		private readonly IDbContextSettings _dbContextSettings;
 
@@ -28,6 +29,47 @@ namespace DbManagement.Common.Implementations
 
 		public string Id { get; }
 		public string TypeNameOfCollectionEntries { get; }
+
+		public IEnumerable<TDto> GetEntities<TDto>() where TDto : EntityDto
+		{
+			if (Set == null)
+			{
+				this.LogError($"Cannot get entities because Set is not initialized ", "server");
+				return Enumerable.Empty<TDto>();
+			}
+
+			return Set.Cast<TDto>();
+		}
+
+		public void AddEntity<TDto>(TDto dto) where TDto : EntityDto
+		{
+			var entityDto = dto as T;
+
+			if (entityDto == null)
+			{
+				this.LogWarning($"Cannot add because dto is not {typeof(T)}", "server");
+				return;
+			}
+
+			if (Set == null)
+			{
+				this.LogError($"Cannot add because Set is not initialized ", "server");
+				return;
+			}
+
+			if (Set.Contains(entityDto))
+			{
+				this.LogDebug($"Updating type {typeof(T)}, with {entityDto}");
+				Set.Update(entityDto);
+			}
+			else
+			{
+				this.LogDebug($"Adding type {typeof(T)}, with {entityDto}");
+				Set.Add(entityDto);
+			}
+
+			SaveChanges();
+		}
 
 		public IEnumerable<object>? GetEntities()
 		{

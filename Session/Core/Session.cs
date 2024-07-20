@@ -13,14 +13,21 @@ namespace Session.Core
 		private readonly IAuthenticationService _authenticationService;
 
 		private readonly ICommunicationService _communicationService;
+		private readonly ISessionsService _sessionsService;
+
+		private readonly SessionInfo _sessionInfo;
 
 		public Session(ISessionKey sessionKey, IConnectionService connectionService,
-			IAuthenticationService authenticationService, ICommunicationService communicationService)
+			IAuthenticationService authenticationService, ICommunicationService communicationService,
+			ISessionsService sessionsService)
 		{
 			_sessionKey = sessionKey;
 			_connectionService = connectionService;
 			_authenticationService = authenticationService;
 			_communicationService = communicationService;
+			_sessionsService = sessionsService;
+
+			_sessionInfo = SessionInfo.Create(_sessionKey.SessionId, string.Empty);
 		}
 
 		public string Id => _sessionKey.SessionId;
@@ -40,12 +47,26 @@ namespace Session.Core
 			{
 				_connectionService.Start();
 
-				if (await _authenticationService.Authorize(_communicationService))
-				{
-				}
-
 				// todo; Check if the session is a pending session registered in the database
 				// todo; if so, then reestablish the session with the provided context
+				// otherwise we go the normal way
+
+				SetState(SessionState.Authorizing);
+
+				var authorizationInfo = await _authenticationService.Authorize(_communicationService);
+
+				SetInfo(authorizationInfo);
+
+				if (!authorizationInfo.IsAuthorized)
+				{
+					_sessionInfo.SetState(SessionState.FailedAuthorization);
+					this.LogInfo("Retry authentication", Id);
+
+					// todo: Retry authentication
+					return;
+				}
+
+				SetState(SessionState.Running);
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -63,11 +84,34 @@ namespace Session.Core
 			}
 		}
 
+		private void SetInfo(IAuthorizationInfo authorizationInfo)
+		{
+			_sessionInfo.SetUsername(authorizationInfo.Username);
+			_sessionInfo.SetAuthorized(authorizationInfo.IsAuthorized);
 
-		public void Stop()
+			SaveSessionInfo();
+		}
+
+		private void SetState(SessionState state)
+		{
+			_sessionInfo.SetState(state);
+
+			SaveSessionInfo();
+		}
+
+		private void Stop()
 		{
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
+
+			_sessionInfo.SetState(SessionState.Stopped);
+
+			SaveSessionInfo();
+		}
+
+		private void SaveSessionInfo()
+		{
+			_sessionsService.SaveSessionInfo(_sessionInfo);
 		}
 
 		private void OnConnectionLost(string reason)

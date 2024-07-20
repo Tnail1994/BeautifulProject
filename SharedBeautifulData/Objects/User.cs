@@ -4,10 +4,6 @@ namespace SharedBeautifulData.Objects
 {
 	public class User : IEntity
 	{
-		public User()
-		{
-		}
-
 		private User(string name)
 		{
 			Name = name;
@@ -18,6 +14,6 @@ namespace SharedBeautifulData.Objects
 			return new User(username);
 		}
 
-		public string Name { get; set; } = null!;
+		public string Name { get; set; }
 	}
 }

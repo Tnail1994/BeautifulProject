@@ -3,7 +3,7 @@ using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using SharedBeautifulData.Messages.Login;
 
-namespace Session.Services
+namespace Session.Services.Authorization
 {
 	public class AuthenticationService : IAuthenticationService
 	{
@@ -14,7 +14,7 @@ namespace Session.Services
 			_usersService = usersService;
 		}
 
-		public async Task<bool> Authorize(ICommunicationService communicationService)
+		public async Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService)
 		{
 			// Send login request message to client and wait for reply
 			var loginReply =
@@ -28,16 +28,16 @@ namespace Session.Services
 			if (string.IsNullOrEmpty(username))
 			{
 				this.LogWarning("Cannot authorize user with empty name.", "server");
-				return false;
+				return AuthorizationInfo.Failed;
 			}
 
 			if (!_usersService.DoesUsernameExist(username))
 			{
 				this.LogWarning($"User with name {username} does not exist.", "server");
-				return false;
+				return AuthorizationInfo.Failed;
 			}
 
-			return true;
+			return AuthorizationInfo.Create(username);
 		}
 	}
 }

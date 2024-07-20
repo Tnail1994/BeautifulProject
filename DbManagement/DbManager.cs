@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 
 namespace DbManagement
 {
-	public class DbManager : IDbManager
+	public class DbManager : IDbManager, IDisposable
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
 
@@ -33,24 +33,39 @@ namespace DbManagement
 
 		private void CacheDbContext()
 		{
-			foreach (var dbContext in _dbContexts.Values)
+			try
 			{
-				var dbContextType = dbContext.GetType();
-
-				if (dbContext.GetEntities() is not IEnumerable<EntityDto> dbContextEntities)
+				foreach (var dbContext in _dbContexts.Values)
 				{
-					this.LogError($"No entities found in {dbContextType.Name}");
-					continue;
-				}
+					var dbContextType = dbContext.GetType();
 
-				var cacheKey = CreateCacheKey(dbContext.TypeNameOfCollectionEntries);
-				UpdateCache(cacheKey, dbContextEntities);
+					if (dbContext.GetEntities() is not IEnumerable<EntityDto> dbContextEntities)
+					{
+						this.LogError($"No entities found in {dbContextType.Name}");
+						continue;
+					}
+
+					var entitiesList = dbContextEntities.ToList();
+
+					if (!entitiesList.Any())
+					{
+						this.LogWarning($"No entities found in {dbContextType.Name}");
+						continue;
+					}
+
+					var cacheKey = CreateCacheKey(dbContext.TypeNameOfCollectionEntries);
+					UpdateCache(cacheKey, entitiesList);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogError($"Error caching DbContexts: {ex.Message}", "server");
 			}
 		}
 
-		private void UpdateCache(string cacheKey, IEnumerable<EntityDto> dbContextEntities)
+		private void UpdateCache(string cacheKey, List<EntityDto> dbContextEntities)
 		{
-			_cache.Set(cacheKey, dbContextEntities.ToList(), _cacheOptions);
+			_cache.Set(cacheKey, dbContextEntities, _cacheOptions);
 		}
 
 		private static string CreateCacheKey(string name, string? sessionId = null)
@@ -76,10 +91,38 @@ namespace DbManagement
 					return Enumerable.Empty<T>();
 				}
 
-				UpdateCache(cacheKey, entities);
+				UpdateCache(cacheKey, entities.ToList());
 			}
 
 			return entities?.Cast<T>();
+		}
+
+		public void AddEntity<T>(T dto, ISessionKey? sessionKey = null) where T : EntityDto
+		{
+			var requestedTypeName = CleanTypeName(typeof(T).Name);
+			var cacheKey = CreateCacheKey(requestedTypeName, sessionKey?.SessionId);
+
+			var foundDbContext = _dbContexts.Values.FirstOrDefault(dbContext =>
+				dbContext.GetEntities() is IEnumerable<T> &&
+				CleanTypeName(dbContext.TypeNameOfCollectionEntries) == requestedTypeName);
+
+			if (foundDbContext == null)
+			{
+				this.LogError($"No DbContext found for {requestedTypeName}");
+				return;
+			}
+
+			foundDbContext.AddEntity(dto);
+
+			var entities = foundDbContext.GetEntities()?.Cast<EntityDto>().ToList();
+
+			if (entities == null)
+			{
+				this.LogError($"No entities found for {requestedTypeName}");
+				return;
+			}
+
+			UpdateCache(cacheKey, entities);
 		}
 
 		/// <summary>
@@ -90,6 +133,11 @@ namespace DbManagement
 		private static string CleanTypeName(string typeName)
 		{
 			return typeName.Replace("Dto", "");
+		}
+
+		public void Dispose()
+		{
+			_cache.Dispose();
 		}
 	}
 }

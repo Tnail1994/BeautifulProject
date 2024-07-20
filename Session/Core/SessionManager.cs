@@ -4,7 +4,6 @@ using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 namespace Session.Core
@@ -13,13 +12,16 @@ namespace Session.Core
 	{
 		private readonly IAsyncServer _asyncSocketServer;
 
-		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
 
 		private readonly IScopeManager _scopeManager;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager)
+		private readonly ISessionsService _sessionsService;
+
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager,
+			ISessionsService sessionsService)
 		{
 			_scopeManager = scopeManager;
+			_sessionsService = sessionsService;
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -43,7 +45,7 @@ namespace Session.Core
 			session.SessionStopped += OnSessionStopped;
 			this.LogInfo($"New session with Id {session.Id} created.", "server");
 
-			_sessions.TryAdd(session.Id, session);
+			_sessionsService.TryAdd(session.Id, session);
 
 			session.Start();
 
@@ -74,7 +76,7 @@ namespace Session.Core
 				return;
 			}
 
-			var removeResult = _sessions.TryRemove(session.Id, out _);
+			var removeResult = _sessionsService.TryRemove(session.Id);
 
 			if (!removeResult)
 			{
@@ -82,38 +84,27 @@ namespace Session.Core
 				return;
 			}
 
-			HandleStoppedSession(session);
-		}
-
-		private void HandleStoppedSession(ISession session)
-		{
-			// todo; Here we determine some state and safe it to the database
-
-			// After that state saving handle, we can dispose the scope
 			_scopeManager.Destroy(session.Id);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
 			_asyncSocketServer.NewConnectionOccured -= OnNewConnectionOccured;
-
-			_sessions.Clear();
-
 			return Task.CompletedTask;
 		}
 
 #if DEBUG
 		public void SendMessageToRandomClient(object messageObject)
 		{
-			var randomSession = _sessions.Values.MinBy(_ => GuidIdCreator.CreateString());
+			var randomSession = _sessionsService.GetSessions().MinBy(_ => GuidIdCreator.CreateString());
 			randomSession?.SendMessageToClient(messageObject);
 		}
 
 		public void SendMessageToAllClients(object messageObject)
 		{
-			foreach (var session in _sessions)
+			foreach (var session in _sessionsService.GetSessions())
 			{
-				session.Value.SendMessageToClient(messageObject);
+				session.SendMessageToClient(messageObject);
 			}
 		}
 #endif

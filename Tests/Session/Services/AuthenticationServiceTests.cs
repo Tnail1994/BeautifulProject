@@ -1,7 +1,7 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
-using Session.Services;
+using Session.Services.Authorization;
 using SharedBeautifulData.Messages.Login;
 
 namespace Tests.Session.Services
@@ -20,32 +20,26 @@ namespace Tests.Session.Services
 		[Fact]
 		public async Task Authorize_WhenUsernameIsEmpty_ReturnsFalse()
 		{
-			// Arrange
 			var communicationService = Substitute.For<ICommunicationService>();
 			var loginReply = new LoginReply { Token = string.Empty };
 			communicationService.SendAndReceiveAsync<LoginReply>(Arg.Any<LoginRequest>()).Returns(loginReply);
 
-			// Act
 			var result = await _authenticationService.Authorize(communicationService);
 
-			// Assert
-			Assert.False(result);
+			Assert.False(result.IsAuthorized);
 		}
 
 		[Fact]
 		public async Task Authorize_WhenUsernameDoesNotExist_ReturnsFalse()
 		{
-			// Arrange
 			var communicationService = Substitute.For<ICommunicationService>();
 			var loginReply = new LoginReply { Token = "username" };
 			communicationService.SendAndReceiveAsync<LoginReply>(Arg.Any<LoginRequest>()).Returns(loginReply);
 			_userServiceMock.DoesUsernameExist("username").Returns(false);
 
-			// Act
 			var result = await _authenticationService.Authorize(communicationService);
 
-			// Assert
-			Assert.False(result);
+			Assert.False(result.IsAuthorized);
 		}
 
 		[Fact]
@@ -58,7 +52,7 @@ namespace Tests.Session.Services
 
 			var result = await _authenticationService.Authorize(communicationService);
 
-			Assert.True(result);
+			Assert.True(result.IsAuthorized);
 		}
 	}
 }

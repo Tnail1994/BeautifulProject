@@ -4,6 +4,6 @@ namespace Session.Common.Contracts
 {
 	public interface IAuthenticationService
 	{
-		Task<bool> Authorize(ICommunicationService communicationService);
+		Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService);
 	}
 }
