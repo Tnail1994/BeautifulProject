@@ -67,6 +67,11 @@ namespace BeautifulClientApplication
 					{
 						PlotInfo();
 					}
+					else
+					{
+						// Send dummy message
+						communicationService?.SendAsync(new CheckAliveRequest());
+					}
 				}
 				else if (completedTask == receiveMessageTask)
 				{
