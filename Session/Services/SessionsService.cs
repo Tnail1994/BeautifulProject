@@ -94,11 +94,6 @@ namespace Session.Services
 			return bundle.SessionInfo?.Username == username;
 		}
 
-		private IEnumerable<ISessionInfo>? GetSessionInfosDto()
-		{
-			return _dbManager.GetEntities<SessionInfoDto>()?.Select(Map);
-		}
-
 		public void SaveSessionInfo(ISessionInfo sessionInfo)
 		{
 			var dto = Map(sessionInfo);

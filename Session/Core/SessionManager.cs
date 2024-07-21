@@ -75,7 +75,7 @@ namespace Session.Core
 
 		private void OnSessionStopped(object? sender, SessionStoppedEventArgs sessionStoppedEventArgs)
 		{
-			if (sender is not ISession session)
+			if (sender is not ISession)
 			{
 				this.LogFatal(
 					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!",
