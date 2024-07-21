@@ -2,6 +2,7 @@
 using DbManagement.Contexts;
 using Session.Common.Contracts;
 using System.Collections.Concurrent;
+using Core.Extensions;
 using Session.Common.Implementations;
 using Session.Core;
 
@@ -9,9 +10,24 @@ namespace Session.Services
 {
 	public class SessionsService : ISessionsService
 	{
+		private class SessionBundle
+		{
+			public static SessionBundle Create(ISession session)
+			{
+				return new SessionBundle
+				{
+					Session = session
+				};
+			}
+
+			public ISession? Session { get; set; }
+			public ISessionInfo? SessionInfo { get; set; }
+			public SessionInfoDto? SessionInfoDto { get; set; }
+		}
+
 		private readonly IDbManager _dbManager;
 
-		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
+		private readonly ConcurrentDictionary<string, SessionBundle> _sessionBundles = new();
 
 		public SessionsService(IDbManager dbManager)
 		{
@@ -20,17 +36,24 @@ namespace Session.Services
 
 		public void TryAdd(string sessionId, ISession session)
 		{
-			_sessions.TryAdd(sessionId, session);
+			_sessionBundles.TryAdd(session.Id, SessionBundle.Create(session));
 		}
 
 		public bool TryRemove(string sessionId)
 		{
-			return _sessions.TryRemove(sessionId, out _);
+			var tryRemoveResult = _sessionBundles.TryRemove(sessionId, out _);
+
+			if (!tryRemoveResult)
+			{
+				this.LogError($"Cannot remove session with Id {sessionId} from dictionary.", "server");
+			}
+
+			return tryRemoveResult;
 		}
 
 		public IEnumerable<ISession> GetSessions()
 		{
-			return _sessions.Values;
+			return _sessionBundles.Values.Select(bundle => bundle.Session).OfType<ISession>();
 		}
 
 		private IEnumerable<ISessionInfo>? GetSessionInfosDto()
@@ -41,7 +64,31 @@ namespace Session.Services
 		public void SaveSessionInfo(ISessionInfo sessionInfo)
 		{
 			var dto = Map(sessionInfo);
-			_dbManager.AddEntity(dto);
+
+			if (_sessionBundles.TryGetValue(sessionInfo.Id, out var bundle))
+			{
+				UpdateSessionInfo(sessionInfo, bundle);
+				UpdateSessionInfoDto(bundle, dto);
+			}
+
+			_dbManager.SaveChanges(dto);
+		}
+
+		private static void UpdateSessionInfo(ISessionInfo sessionInfo, SessionBundle bundle)
+		{
+			bundle.SessionInfo = sessionInfo;
+		}
+
+		private static void UpdateSessionInfoDto(SessionBundle bundle, SessionInfoDto dto)
+		{
+			if (bundle.SessionInfoDto == null)
+				bundle.SessionInfoDto = dto;
+			else
+			{
+				bundle.SessionInfoDto.Username = dto.Username;
+				bundle.SessionInfoDto.SessionState = dto.SessionState;
+				bundle.SessionInfoDto.Authorized = dto.Authorized;
+			}
 		}
 
 		private ISessionInfo Map(SessionInfoDto dto)

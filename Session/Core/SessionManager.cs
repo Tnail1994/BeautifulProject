@@ -1,5 +1,9 @@
 ﻿using Core.Extensions;
+
+#if DEBUG
 using Core.Helpers;
+#endif
+
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
@@ -11,17 +15,24 @@ namespace Session.Core
 	public class SessionManager : ISessionManager
 	{
 		private readonly IAsyncServer _asyncSocketServer;
-
-
 		private readonly IScopeManager _scopeManager;
 
+#if DEBUG
 		private readonly ISessionsService _sessionsService;
+#endif
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager,
-			ISessionsService sessionsService)
+
+		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager
+#if DEBUG
+			, ISessionsService sessionsService
+#endif
+		)
 		{
 			_scopeManager = scopeManager;
+#if DEBUG
 			_sessionsService = sessionsService;
+#endif
+
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -43,12 +54,8 @@ namespace Session.Core
 			var session = BuildSession(client);
 
 			session.SessionStopped += OnSessionStopped;
-			this.LogInfo($"New session with Id {session.Id} created.", "server");
-
-			_sessionsService.TryAdd(session.Id, session);
 
 			session.Start();
-
 			this.LogInfo($"New session with Id {session.Id} started.", "server");
 		}
 
@@ -73,14 +80,6 @@ namespace Session.Core
 				this.LogFatal(
 					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!",
 					"server");
-				return;
-			}
-
-			var removeResult = _sessionsService.TryRemove(session.Id);
-
-			if (!removeResult)
-			{
-				this.LogError($"Cannot remove session with Id {session.Id} from dictionary.", "server");
 				return;
 			}
 

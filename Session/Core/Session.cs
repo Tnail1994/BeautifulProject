@@ -35,27 +35,20 @@ namespace Session.Core
 
 		public async void Start()
 		{
+			_sessionsService.TryAdd(Id, this);
+
 			this.LogDebug($"Starting session {Id}", Id);
 			_connectionService.ConnectionLost += OnConnectionLost;
-
-			// From here the session can be used to communicate with the client.
-			// All what happens here, should happen parallel to the main thread.
-			// So beware of writing to the console or doing other blocking operations.
-			// Need to define an own logging system for this session overall.
 
 			try
 			{
 				_connectionService.Start();
 
-				// todo; Check if the session is a pending session registered in the database
-				// todo; if so, then reestablish the session with the provided context
-				// otherwise we go the normal way
-
-				SetState(SessionState.Authorizing);
+				SetState(SessionState.Authorizing, false);
 
 				var authorizationInfo = await _authenticationService.Authorize(_communicationService);
 
-				SetInfo(authorizationInfo);
+				SetInfo(authorizationInfo, false);
 
 				if (!authorizationInfo.IsAuthorized)
 				{
@@ -66,7 +59,16 @@ namespace Session.Core
 					return;
 				}
 
+				// todo; Check if the session is a pending session registered in the database
+				// todo; if so, then reestablish the session with the provided context
+				// otherwise we go the normal way
+
 				SetState(SessionState.Running);
+
+				// From here the session can be used to communicate with the client.
+				// All what happens here, should happen parallel to the main thread.
+				// So beware of writing to the console or doing other blocking operations.
+				// Need to define an own logging system for this session overall.
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -84,19 +86,21 @@ namespace Session.Core
 			}
 		}
 
-		private void SetInfo(IAuthorizationInfo authorizationInfo)
+		private void SetInfo(IAuthorizationInfo authorizationInfo, bool save = true)
 		{
 			_sessionInfo.SetUsername(authorizationInfo.Username);
 			_sessionInfo.SetAuthorized(authorizationInfo.IsAuthorized);
 
-			SaveSessionInfo();
+			if (save)
+				SaveSession();
 		}
 
-		private void SetState(SessionState state)
+		private void SetState(SessionState state, bool save = true)
 		{
 			_sessionInfo.SetState(state);
 
-			SaveSessionInfo();
+			if (save)
+				SaveSession();
 		}
 
 		private void Stop()
@@ -104,12 +108,16 @@ namespace Session.Core
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
 
-			_sessionInfo.SetState(SessionState.Stopped);
-
-			SaveSessionInfo();
+			SetState(SessionState.Stopped);
+			TryRemoveSession();
 		}
 
-		private void SaveSessionInfo()
+		private void TryRemoveSession()
+		{
+			_sessionsService.TryRemove(Id);
+		}
+
+		private void SaveSession()
 		{
 			_sessionsService.SaveSessionInfo(_sessionInfo);
 		}

@@ -97,7 +97,7 @@ namespace DbManagement
 			return entities?.Cast<T>();
 		}
 
-		public void AddEntity<T>(T dto, ISessionKey? sessionKey = null) where T : EntityDto
+		public void SaveChanges<T>(T dto, ISessionKey? sessionKey = null) where T : EntityDto
 		{
 			var requestedTypeName = CleanTypeName(typeof(T).Name);
 			var cacheKey = CreateCacheKey(requestedTypeName, sessionKey?.SessionId);

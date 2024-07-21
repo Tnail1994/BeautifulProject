@@ -147,16 +147,18 @@ namespace Remote.Communication
 			{
 				this.LogDebug($"OnMessageReceived with {jsonString}", SessionId);
 
-				this.LogDebug("Start transforming with Service...", SessionId);
 #if DEBUG
+				this.LogDebug("Start transforming with Service...", SessionId);
 				_stopwatch.Restart();
 
 #endif
+
 				var transformedObject = _transformerService.Transform(jsonString);
+
 #if DEBUG
 				_stopwatch.Stop();
-#endif
 				this.LogDebug($"Transforming took {_stopwatch.ElapsedMilliseconds}ms", SessionId);
+#endif
 				AddTransformedObject(transformedObject);
 				this.LogDebug($"Finished and added: {transformedObject}", SessionId);
 

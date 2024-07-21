@@ -58,9 +58,6 @@ namespace BeautifulServerApplication
 
 			while (!ServerProgramCancellationTokenSource.IsCancellationRequested)
 			{
-				var testMessage = new CheckAliveReply()
-					{ Success = false };
-
 				var input = Console.ReadLine();
 				if (input == "-e")
 				{
@@ -70,10 +67,12 @@ namespace BeautifulServerApplication
 #if DEBUG
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
+					var testMessage = new CheckAliveReply(){ Success = false };
 					_sessionManager.SendMessageToRandomClient(testMessage);
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
+					var testMessage = new CheckAliveReply() { Success = false };
 					_sessionManager.SendMessageToAllClients(testMessage);
 				}
 #endif

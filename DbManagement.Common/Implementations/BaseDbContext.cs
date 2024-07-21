@@ -57,12 +57,7 @@ namespace DbManagement.Common.Implementations
 				return;
 			}
 
-			if (Set.Contains(entityDto))
-			{
-				this.LogDebug($"Updating type {typeof(T)}, with {entityDto}");
-				Set.Update(entityDto);
-			}
-			else
+			if (!Set.Contains(entityDto))
 			{
 				this.LogDebug($"Adding type {typeof(T)}, with {entityDto}");
 				Set.Add(entityDto);
