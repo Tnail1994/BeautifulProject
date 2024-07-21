@@ -73,7 +73,7 @@ namespace Session.Core
 			return scope.GetService<ISession>();
 		}
 
-		private void OnSessionStopped(object? sender, string e)
+		private void OnSessionStopped(object? sender, SessionStoppedEventArgs sessionStoppedEventArgs)
 		{
 			if (sender is not ISession session)
 			{
@@ -83,7 +83,7 @@ namespace Session.Core
 				return;
 			}
 
-			_scopeManager.Destroy(session.Id);
+			_scopeManager.Destroy(sessionStoppedEventArgs.SessionKey);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)

@@ -118,7 +118,7 @@ namespace Session.Services
 				bundle.SessionInfo?.Username == username && bundle.SessionInfo?.SessionState == SessionState.Stopped);
 		}
 
-		public bool TryMergeSession(string username, out ISessionInfo sessionInfo)
+		public bool TryGetSessionInfo(string username, out ISessionInfo sessionInfo)
 		{
 			if (HasPendingSession(username))
 			{

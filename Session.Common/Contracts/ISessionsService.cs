@@ -8,6 +8,6 @@
 		IEnumerable<ISession> GetSessions();
 #endif
 		void SaveSessionInfo(ISessionInfo sessionInfo);
-		bool TryMergeSession(string username, out ISessionInfo sessionInfo);
+		bool TryGetSessionInfo(string username, out ISessionInfo sessionInfo);
 	}
 }

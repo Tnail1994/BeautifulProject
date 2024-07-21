@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using Microsoft.Extensions.DependencyInjection;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 
 namespace Session.Core
 {
@@ -21,9 +22,9 @@ namespace Session.Core
 			return scope;
 		}
 
-		public void Destroy(string id)
+		public void Destroy(ISessionKey sessionKey)
 		{
-			if (_createdScopes.TryRemove(id, out var scope))
+			if (_createdScopes.TryRemove(sessionKey.InstantiatedSessionId, out var scope))
 			{
 				scope.ServiceScope.Dispose();
 			}

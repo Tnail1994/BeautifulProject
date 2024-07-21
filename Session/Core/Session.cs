@@ -31,7 +31,7 @@ namespace Session.Core
 		}
 
 		public string Id => _sessionKey.SessionId;
-		public event EventHandler<string>? SessionStopped;
+		public event EventHandler<SessionStoppedEventArgs>? SessionStopped;
 
 		public async void Start()
 		{
@@ -55,7 +55,7 @@ namespace Session.Core
 					return;
 				}
 
-				if (_sessionsService.TryMergeSession(authorizationInfo.Username, out ISessionInfo sessionInfo))
+				if (_sessionsService.TryGetSessionInfo(authorizationInfo.Username, out ISessionInfo sessionInfo))
 				{
 					ReestablishSession(sessionInfo);
 				}
@@ -86,7 +86,6 @@ namespace Session.Core
 		{
 			_sessionInfo.SetUsername(sessionInfo.Username);
 			_sessionInfo.SetAuthorized(sessionInfo.Authorized);
-			_sessionKey.Update(sessionInfo);
 
 			this.LogDebug($"Reestablishing session {Id}", Id);
 		}
@@ -144,7 +143,7 @@ namespace Session.Core
 
 		private void InvokeSessionOnHold(string reason)
 		{
-			SessionStopped?.Invoke(this, $"Connection lost: {reason}");
+			SessionStopped?.Invoke(this, SessionStoppedEventArgs.Create(_sessionKey, $"Connection lost: {reason}"));
 		}
 
 		public void Dispose()
