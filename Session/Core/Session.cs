@@ -52,7 +52,7 @@ namespace Session.Core
 
 				if (!authorizationInfo.IsAuthorized)
 				{
-					_sessionInfo.SetState(SessionState.FailedAuthorization);
+					SetState(SessionState.FailedAuthorization);
 					return;
 				}
 
