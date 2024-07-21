@@ -67,7 +67,7 @@ namespace BeautifulServerApplication
 #if DEBUG
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
-					var testMessage = new CheckAliveReply(){ Success = false };
+					var testMessage = new CheckAliveReply() { Success = false };
 					_sessionManager.SendMessageToRandomClient(testMessage);
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
@@ -134,6 +134,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(DbSettings)));
 					services.Configure<DbContextSettings>(
 						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
+					services.Configure<AuthenticationSettings>(
+						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -149,6 +151,8 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<DbSettings>>().Value);
 					services.AddSingleton<IDbContextSettings>(provider =>
 						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
+					services.AddSingleton<IAuthenticationSettings>(provider =>
+						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ISession, Session.Core.Session>();

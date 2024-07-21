@@ -53,9 +53,6 @@ namespace Session.Core
 				if (!authorizationInfo.IsAuthorized)
 				{
 					_sessionInfo.SetState(SessionState.FailedAuthorization);
-					this.LogInfo("Retry authentication", Id);
-
-					// todo: Retry authentication
 					return;
 				}
 

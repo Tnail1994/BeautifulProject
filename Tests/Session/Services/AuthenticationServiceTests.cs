@@ -14,7 +14,13 @@ namespace Tests.Session.Services
 		public AuthenticationServiceTests()
 		{
 			_userServiceMock = Substitute.For<IUsersService>();
-			_authenticationService = new AuthenticationService(_userServiceMock);
+			var authenticationSettingsMock = new AuthenticationSettings
+			{
+				AuthTimeoutInMinutes = 0,
+				MaxAuthAttempts = 0
+			};
+
+			_authenticationService = new AuthenticationService(_userServiceMock, authenticationSettingsMock);
 		}
 
 		[Fact]
