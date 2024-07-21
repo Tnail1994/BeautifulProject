@@ -17,6 +17,8 @@ namespace Session.Core
 			SessionState sessionState = SessionState.Starting) =>
 			new(id, username, sessionState);
 
+		public static SessionInfo Empty => new(string.Empty, string.Empty, SessionState.Empty);
+
 		public string Id { get; }
 		public string Username { get; private set; }
 		public SessionState SessionState { get; private set; }

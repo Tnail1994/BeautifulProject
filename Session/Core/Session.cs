@@ -37,7 +37,6 @@ namespace Session.Core
 		{
 			_sessionsService.TryAdd(Id, this);
 
-			this.LogDebug($"Starting session {Id}", Id);
 			_connectionService.ConnectionLost += OnConnectionLost;
 
 			try
@@ -56,16 +55,16 @@ namespace Session.Core
 					return;
 				}
 
-				// todo; Check if the session is a pending session registered in the database
-				// todo; if so, then reestablish the session with the provided context
-				// otherwise we go the normal way
+				if (_sessionsService.TryMergeSession(authorizationInfo.Username, out ISessionInfo sessionInfo))
+				{
+					ReestablishSession(sessionInfo);
+				}
+				else
+				{
+					RunSession();
+				}
 
 				SetState(SessionState.Running);
-
-				// From here the session can be used to communicate with the client.
-				// All what happens here, should happen parallel to the main thread.
-				// So beware of writing to the console or doing other blocking operations.
-				// Need to define an own logging system for this session overall.
 			}
 			catch (CheckAliveException checkAliveException)
 			{
@@ -81,6 +80,25 @@ namespace Session.Core
 				              $"Message: {e.Message}\n" +
 				              $"Stacktrace: {e.StackTrace}\n", Id);
 			}
+		}
+
+		private void ReestablishSession(ISessionInfo sessionInfo)
+		{
+			_sessionInfo.SetUsername(sessionInfo.Username);
+			_sessionInfo.SetAuthorized(sessionInfo.Authorized);
+			_sessionKey.Update(sessionInfo);
+
+			this.LogDebug($"Reestablishing session {Id}", Id);
+		}
+
+		private void RunSession()
+		{
+			this.LogDebug($"Running session {Id}", Id);
+
+			// From here the session can be used to communicate with the client.
+			// All what happens here, should happen parallel to the main thread.
+			// So beware of writing to the console or doing other blocking operations.
+			// Need to define an own logging system for this session overall.
 		}
 
 		private void SetInfo(IAuthorizationInfo authorizationInfo, bool save = true)

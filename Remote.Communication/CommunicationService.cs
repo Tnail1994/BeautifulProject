@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
+#if DEBUG
 using System.Diagnostics;
+#endif
 using Core.Extensions;
 using Newtonsoft.Json;
 using Remote.Communication.Common.Client.Contracts;
