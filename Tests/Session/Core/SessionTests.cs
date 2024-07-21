@@ -2,6 +2,7 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using Session.Core;
 using Session.Services.Authorization;
 
 namespace Tests.Session.Core
@@ -27,7 +28,8 @@ namespace Tests.Session.Core
 		}
 
 		[Fact]
-		public void WhenStartingSession_ThenConnectionServiceShouldStartAsWellAndSubscribeToEvents()
+		public void
+			WhenStartingSession_ThenConnectionServiceShouldStartAsWellAndSubscribeToEventsAndReceiveAuthorizeCall()
 		{
 			_authenticationServiceMock.Authorize(_communicationServiceMock)
 				.Returns(Task.FromResult(AuthorizationInfo.Create("any")));
@@ -35,6 +37,31 @@ namespace Tests.Session.Core
 			_session.Start();
 			_connectionServiceMock.Received(1).Start();
 			_connectionServiceMock.Received(1).ConnectionLost += Arg.Any<Action<string>>();
+			_authenticationServiceMock.Received(1).Authorize(_communicationServiceMock);
+		}
+
+		[Fact]
+		public void WhenStartingSession_ThenSessionAddsItselfToSessionsService_TryAddShouldCalled()
+		{
+			_session.Start();
+			_sessionsServiceMock.Received(1).TryAdd(_session);
+		}
+
+		[Fact]
+		public void WhenAuthorizationSucceed_ThenItTryToReestablishSessionByTryGettingSessionInfo()
+		{
+			_authenticationServiceMock.Authorize(_communicationServiceMock)
+				.Returns(Task.FromResult(AuthorizationInfo.Create("mockName")));
+			_session.Start();
+			_sessionsServiceMock.Received(1).TryGetSessionInfo("mockName", out Arg.Any<ISessionInfo>());
+		}
+
+		[Fact]
+		public void WhenDisposing_ThenShouldCallTryRemoveAndSaveSessionInfo()
+		{
+			((global::Session.Core.Session)_session).Dispose();
+			_sessionsServiceMock.Received(1).TryRemove(Arg.Any<string>());
+			_sessionsServiceMock.Received(1).SaveSessionInfo(Arg.Any<SessionInfo>());
 		}
 	}
 }

@@ -2,7 +2,7 @@
 {
 	public interface ISessionsService
 	{
-		void TryAdd(string sessionId, ISession session);
+		void TryAdd(ISession session);
 		bool TryRemove(string sessionId);
 #if DEBUG
 		IEnumerable<ISession> GetSessions();

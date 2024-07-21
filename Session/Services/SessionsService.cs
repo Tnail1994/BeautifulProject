@@ -61,7 +61,7 @@ namespace Session.Services
 			}
 		}
 
-		public void TryAdd(string sessionId, ISession session)
+		public void TryAdd(ISession session)
 		{
 			_sessionBundles.TryAdd(session.Id, SessionBundle.Create(session));
 		}

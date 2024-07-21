@@ -35,7 +35,7 @@ namespace Session.Core
 
 		public async void Start()
 		{
-			_sessionsService.TryAdd(Id, this);
+			_sessionsService.TryAdd(this);
 
 			_connectionService.ConnectionLost += OnConnectionLost;
 
@@ -128,7 +128,7 @@ namespace Session.Core
 
 		private void TryRemoveSession()
 		{
-			_sessionsService.TryRemove(Id);
+			_sessionsService.TryRemove(_sessionKey.InstantiatedSessionId);
 		}
 
 		private void SaveSession()
