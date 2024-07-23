@@ -60,7 +60,7 @@ namespace BeautifulClientApplication
 					var input = await readLineTask;
 					if (input == "e")
 					{
-						ClientProgramCancellationTokenSource.Cancel();
+						await ClientProgramCancellationTokenSource.CancelAsync();
 						break;
 					}
 					else if (input == "i")
