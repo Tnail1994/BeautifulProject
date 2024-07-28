@@ -23,17 +23,12 @@ namespace Tests.Session.Core
 			_asyncSocketServerMock = Substitute.For<IAsyncServer>();
 			_scopeManagerMock = Substitute.For<IScopeManager>();
 			_asyncClientMock = Substitute.For<IAsyncClientFactory>();
-#if DEBUG
+
 			var sessionsServiceMock = Substitute.For<ISessionsService>();
-#endif
 
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock
-#if DEBUG
-				, sessionsServiceMock
-#endif
-			);
+			_sessionManager = new SessionManager(_asyncSocketServerMock, sessionsServiceMock, _scopeManagerMock);
 		}
 
 		private void BaseProviderMocking()

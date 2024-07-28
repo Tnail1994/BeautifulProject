@@ -89,6 +89,10 @@ namespace Remote.Communication
 		{
 			var jsonString = JsonConvert.SerializeObject(messageObj, JsonConfig.Settings);
 			this.LogDebug($"Sending {jsonString} to client.", SessionId);
+
+			if (_asyncClient.IsNotConnected)
+				throw new CommunicationServiceException("AsyncClient is not connected", 0);
+
 			_asyncClient.Send(jsonString);
 		}
 

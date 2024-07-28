@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Remote.Communication.Common.Implementations;
 
-namespace SharedBeautifulData.Messages.Login
+namespace SharedBeautifulData.Messages.Authorize
 {
 	public class LoginReply : BaseMessage<string>
 	{

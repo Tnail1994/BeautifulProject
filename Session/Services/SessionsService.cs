@@ -29,6 +29,7 @@ namespace Session.Services
 				};
 			}
 
+			// ReSharper disable once UnusedAutoPropertyAccessor.Local
 			public ISession? Session { get; set; }
 			public ISessionInfo? SessionInfo { get; set; }
 			public SessionInfoDto? SessionInfoDto { get; set; }

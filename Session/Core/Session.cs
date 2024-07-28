@@ -122,6 +122,8 @@ namespace Session.Core
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
 
+			_authenticationService.UnAuthorize(_communicationService, _sessionInfo.Username);
+
 			SetState(SessionState.Stopped);
 			TryRemoveSession();
 		}

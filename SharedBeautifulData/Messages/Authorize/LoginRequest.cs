@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Remote.Communication.Common.Implementations;
 
-namespace SharedBeautifulData.Messages.Login
+namespace SharedBeautifulData.Messages.Authorize
 {
 	public enum LoginRequestType
 	{

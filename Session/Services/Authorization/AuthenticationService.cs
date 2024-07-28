@@ -1,7 +1,8 @@
 ﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
+using Remote.Communication.Common.Implementations;
 using Session.Common.Contracts;
-using SharedBeautifulData.Messages.Login;
+using SharedBeautifulData.Messages.Authorize;
 
 namespace Session.Services.Authorization
 {
@@ -43,9 +44,9 @@ namespace Session.Services.Authorization
 				return AuthorizationInfo.Failed;
 			}
 
-			if (!_usersService.DoesUsernameExist(username))
+			if (!_usersService.DoesUsernameExist(username) || _usersService.IsUsernameActive(username))
 			{
-				this.LogWarning($"User with name {username} does not exist.", "server");
+				this.LogWarning($"User with name {username} does not exist or is already active.", "server");
 
 				if (attempts < _settings.MaxAuthAttempts)
 					return await Authorize(communicationService, attempts + 1);
@@ -53,7 +54,40 @@ namespace Session.Services.Authorization
 				return AuthorizationInfo.Failed;
 			}
 
+			_usersService.SetUsersActiveState(username, true);
+
 			return AuthorizationInfo.Create(username);
+		}
+
+		public async Task UnAuthorize(ICommunicationService communicationService, string username)
+		{
+			try
+			{
+				var logoutReply = await communicationService.SendAndReceiveAsync<LogoutReply>(new LogoutRequest());
+
+				if (!logoutReply.IsOk)
+				{
+					this.LogWarning($"Logging out fo user {username} was not successful on client side...");
+				}
+			}
+			catch (CommunicationServiceException communicationServiceException)
+			{
+				this.LogDebug(
+					$"Communication exception code: {communicationServiceException.ErrorCode}; Message: {communicationServiceException.Message}");
+			}
+			catch (ObjectDisposedException objectDisposedException)
+			{
+				this.LogDebug($"CommunicationService already disposed. ExMsg: {objectDisposedException.Message}");
+			}
+			catch (Exception exception)
+			{
+				this.LogError($"Unknown error inside AuthenticationService: {exception.Message}" +
+				              $"\n Stacktrace: {exception.StackTrace}");
+			}
+			finally
+			{
+				_usersService.SetUsersActiveState(username, false);
+			}
 		}
 	}
 }

@@ -2,7 +2,7 @@
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Services.Authorization;
-using SharedBeautifulData.Messages.Login;
+using SharedBeautifulData.Messages.Authorize;
 
 namespace Tests.Session.Services
 {

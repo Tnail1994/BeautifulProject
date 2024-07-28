@@ -18,8 +18,8 @@ using Session.Common.Implementations;
 using Session.Core;
 using Session.Services;
 using Session.Services.Authorization;
+using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulData.Messages.Login;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -110,6 +110,7 @@ namespace BeautifulServerApplication
 					services.AddTransient<IDbContext, UsersDbContext>();
 					services.AddTransient<IDbContext, SessionsDbContext>();
 
+					services.AddSingleton<IScopeManager, ScopeManager>();
 					services.AddSingleton<IAsyncServer, AsyncServer>();
 					services.AddSingleton<ITransformerService, TransformerService>();
 					services.AddSingleton<IDbManager, DbManager>();
@@ -118,7 +119,6 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IUsersService, UsersService>();
 					services.AddSingleton<ISessionsService, SessionsService>();
 
-					services.AddSingleton<IScopeManager, ScopeManager>();
 
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));

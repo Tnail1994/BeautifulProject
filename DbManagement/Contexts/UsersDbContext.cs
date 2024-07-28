@@ -21,6 +21,7 @@ namespace DbManagement.Contexts
 		}
 
 		[Key] [Column("Name")] public string Name { get; set; }
+		[Column("Active")] public bool IsActive { get; set; }
 
 		public override bool Equals(object? obj)
 		{

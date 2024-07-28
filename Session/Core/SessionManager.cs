@@ -21,16 +21,21 @@ namespace Session.Core
 		private readonly ISessionsService _sessionsService;
 #endif
 
-
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager
-#if DEBUG
-			, ISessionsService sessionsService
-#endif
-		)
+		/// <summary>
+		/// The ctor of the host. The host must instantiate ISessionService first, because there is a reference to the IDbManager.
+		/// The IDbManager must be resolved before the IScopeManager for disposing purposes. Dispose first all scopes via IScopeManager
+		/// and then the others. IoC container of .Net disposing order is:
+		/// 1. Objects created last are disposed first.
+		/// 2. Objects with shorter lifetimes are disposed before objects with longer lifetimes.
+		/// </summary>
+		public SessionManager(IAsyncServer asyncSocketServer, ISessionsService sessionsService,
+			IScopeManager scopeManager)
 		{
 			_scopeManager = scopeManager;
 #if DEBUG
 			_sessionsService = sessionsService;
+#else
+			_ = sessionsService;
 #endif
 
 			_asyncSocketServer = asyncSocketServer;
