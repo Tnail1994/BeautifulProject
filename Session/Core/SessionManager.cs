@@ -2,6 +2,7 @@
 
 #if DEBUG
 using Core.Helpers;
+using Microsoft.Extensions.Hosting;
 #endif
 
 using Remote.Communication.Common.Client.Contracts;
@@ -12,7 +13,7 @@ using System.Net.Sockets;
 
 namespace Session.Core
 {
-	public class SessionManager : ISessionManager
+	public class SessionManager : ISessionManager, IHostedService
 	{
 		private readonly IAsyncServer _asyncSocketServer;
 		private readonly IScopeManager _scopeManager;

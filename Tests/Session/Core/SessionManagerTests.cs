@@ -10,7 +10,7 @@ namespace Tests.Session.Core
 {
 	public class SessionManagerTests
 	{
-		private readonly ISessionManager _sessionManager;
+		private readonly SessionManager _sessionManager;
 		private readonly IAsyncServer _asyncSocketServerMock;
 		private readonly IScopeManager _scopeManagerMock;
 		private readonly CancellationTokenSource _cancelledTokenSource;

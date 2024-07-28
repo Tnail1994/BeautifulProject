@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
-
-namespace Session.Common.Contracts
+﻿namespace Session.Common.Contracts
 {
-	public interface ISessionManager : IHostedService
+	public interface ISessionManager
 	{
 #if DEBUG
 		void SendMessageToRandomClient(object messageObject);
