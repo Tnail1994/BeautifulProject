@@ -13,6 +13,7 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
+using Serilog;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Core;
@@ -32,24 +33,50 @@ namespace BeautifulServerApplication
 #if DEBUG
 		private static IServiceProvider? _serviceProvider;
 		private static ISessionManager? _sessionManager;
+		private static IHost? _host;
 #endif
 
 		static Task Main(string[] args)
 		{
-			var host = CreateHostBuilder(args)
+			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+			AppDomain.CurrentDomain.ProcessExit += OnAppShutdown;
+
+			_host = CreateHostBuilder(args)
 				.Build();
 
-			host.RunAsync(ServerProgramCancellationTokenSource.Token);
+
+			_host.RunAsync(ServerProgramCancellationTokenSource.Token);
 
 #if DEBUG
-			_serviceProvider = host.Services;
+			_serviceProvider = _host.Services;
 			_sessionManager = _serviceProvider.GetRequiredService<IHostedService>() as ISessionManager;
 #endif
 
 			RunConsoleInteraction();
 
-			host.Dispose();
+			Dispose();
 			return Task.CompletedTask;
+		}
+
+		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			var eExceptionObject = ((Exception)e.ExceptionObject);
+			Log.Fatal($"Unhandled exception occured! \n" +
+			          $"Terminating: {e.IsTerminating} \n" +
+			          $"Message: {eExceptionObject.Message} \n" +
+			          $"Stacktrace: {eExceptionObject.StackTrace}");
+			Dispose();
+		}
+
+		private static void Dispose()
+		{
+			_host?.Dispose();
+		}
+
+		private static void OnAppShutdown(object? sender, EventArgs e)
+		{
+			Dispose();
+			ServerProgramCancellationTokenSource.Cancel();
 		}
 
 		private static void RunConsoleInteraction()
