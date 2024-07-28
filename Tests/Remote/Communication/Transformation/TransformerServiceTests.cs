@@ -32,10 +32,10 @@ namespace Tests.Remote.Communication.Transformation
 			var transformedObject = transformerService.Transform(TestMessage.CreateString());
 			Assert.NotNull(transformedObject);
 			Assert.NotNull((TestMessage)transformedObject.Object);
-			Assert.NotNull(((TestMessage)transformedObject.Object).MessageObject);
-			Assert.NotNull(((TestMessage)transformedObject.Object).MessageObject?.MockObj);
-			Assert.Equal(TestMessage.Create().MessageObject?.MockObj,
-				((TestMessage)transformedObject.Object).MessageObject?.MockObj);
+			Assert.NotNull(((TestMessage)transformedObject.Object).TestObject);
+			Assert.NotNull(((TestMessage)transformedObject.Object).TestObject.MockObj);
+			Assert.Equal(TestMessage.Create().TestObject.MockObj,
+				((TestMessage)transformedObject.Object).TestObject.MockObj);
 		}
 
 		[Fact]

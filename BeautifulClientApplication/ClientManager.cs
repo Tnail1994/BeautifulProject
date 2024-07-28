@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Remote.Communication.Common.Contracts;
 using Serilog;
-using SharedBeautifulData;
+using SharedBeautifulData.Exceptions;
 
 namespace BeautifulClientApplication
 {

@@ -1,8 +1,10 @@
-﻿namespace Session.Common.Contracts
+﻿using Session.Common.Implementations;
+
+namespace Session.Common.Contracts
 {
 	public interface IScopeManager
 	{
 		IScope Create();
-		void Destroy(string id);
+		void Destroy(ISessionKey sessionKey);
 	}
 }

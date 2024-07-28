@@ -14,38 +14,41 @@ namespace BeautifulServerApplication
 
 		public static void Initialize()
 		{
+			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+
 			var currentDirectory = Directory.GetCurrentDirectory();
-			var basePath = Directory.GetParent(currentDirectory)?.Parent?.Parent?.ToString();
+			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 			try
 			{
-				if (!string.IsNullOrEmpty(basePath))
+				if (!string.IsNullOrEmpty(currentDirectory))
 				{
 					new ConfigurationBuilder()
-						.SetBasePath(basePath)
+						.SetBasePath(currentDirectory)
 						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						.AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
 						.AddEnvironmentVariables()
 						.Build();
 				}
 			}
 			catch (ArgumentException argumentException)
 			{
-				Log.Error($"Wrong basePath: {basePath}\n" +
+				Log.Error($"Wrong basePath: {currentDirectory}\n" +
 				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "server_config");
 			}
 			catch (FileNotFoundException fileNotFoundException)
 			{
 				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
 				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "server_config");
 			}
 			catch (Exception ex)
 			{
 				Log.Fatal("!!! Unexpected error\n" +
 				          "Base path is null or empty. Cannot load configuration." +
 				          $"{ex.Message}" +
-				          " ||{SessionKey}||", "server");
+				          " ||{SessionKey}||", "server_config");
 			}
 		}
 	}

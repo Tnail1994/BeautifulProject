@@ -6,6 +6,13 @@ namespace Tests.TestObjects
 {
 	public class TestMessage : BaseMessage<TestObject>
 	{
+		[JsonIgnore]
+		public TestObject TestObject
+		{
+			get => MessageObject ?? throw new InvalidOperationException("[TestMessage] TestObject is not set.");
+			set => MessageObject = value;
+		}
+
 		public static string CreateString()
 		{
 			return JsonConvert.SerializeObject(Create(), JsonConfig.Settings);

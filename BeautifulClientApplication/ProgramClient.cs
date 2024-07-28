@@ -9,7 +9,8 @@ using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using SharedBeautifulData.Messages.Authorize;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -18,41 +19,69 @@ namespace BeautifulClientApplication
 	internal class ProgramClient
 	{
 		private static readonly CancellationTokenSource ClientProgramCancellationTokenSource = new();
-		private static ICommunicationService? _communicationService;
+		private static IHost? _host;
 
-		static Task Main(string[] args)
+		static async Task Main(string[] args)
 		{
-			var host = CreateHostBuilder(args)
+			_host = CreateHostBuilder(args)
 				.Build();
 
-			host.RunAsync(ClientProgramCancellationTokenSource.Token);
-			_communicationService = host.Services.GetRequiredService<ICommunicationService>();
 			RunConsoleInteraction();
 
-			host.Dispose();
+			await _host.RunAsync(ClientProgramCancellationTokenSource.Token);
 
-			return Task.CompletedTask;
+			_host.Dispose();
 		}
 
-		private static void RunConsoleInteraction()
+		private static async void RunConsoleInteraction()
 		{
+			if (_host == null)
+				throw new NullReferenceException("Host is null");
+
+			var communicationService = _host.Services.GetRequiredService<ICommunicationService>();
+
 			PlotInfo();
 
 			while (!ClientProgramCancellationTokenSource.IsCancellationRequested)
 			{
-				var input = Console.ReadLine();
-				if (input == "e")
+				var readLineTask = Task.Run(Console.ReadLine);
+				var receiveMessageTask = communicationService?.ReceiveAsync<LoginRequest>();
+
+				if (receiveMessageTask == null)
 				{
-					ClientProgramCancellationTokenSource.Cancel();
-					break;
+					Console.WriteLine("Console interaction error!");
+					continue;
 				}
-				else if (input == "i")
+
+				var completedTask = await Task.WhenAny(readLineTask, receiveMessageTask);
+
+				if (completedTask == readLineTask)
 				{
-					PlotInfo();
+					var input = await readLineTask;
+					if (input == "e")
+					{
+						await ClientProgramCancellationTokenSource.CancelAsync();
+						break;
+					}
+					else if (input == "i")
+					{
+						PlotInfo();
+					}
+					else
+					{
+						// Send dummy message
+						communicationService?.SendAsync(new CheckAliveRequest());
+					}
 				}
-				else if (_communicationService != null)
+				else if (completedTask == receiveMessageTask)
 				{
-					_communicationService.SendAsync(new UserMessage { MessageObject = User.Create("tk", "ms") });
+					await receiveMessageTask;
+					Console.WriteLine("Please login with your username:");
+					var readLine = await readLineTask;
+					communicationService?.SendAsync(new LoginReply
+					{
+						Token = readLine
+					});
 				}
 			}
 		}
@@ -71,9 +100,10 @@ namespace BeautifulClientApplication
 				{
 					services.AddHostedService<ClientManager>();
 
-					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
+					services.AddTransient<IBaseMessage, CheckAliveRequest>();
+					services.AddTransient<IBaseMessage, CheckAliveReply>();
+					services.AddTransient<IBaseMessage, LoginReply>();
+					services.AddTransient<IBaseMessage, LoginRequest>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

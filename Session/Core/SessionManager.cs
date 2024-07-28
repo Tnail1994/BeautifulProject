@@ -1,25 +1,44 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Sockets;
-using Core.Extensions;
+﻿using Core.Extensions;
+
+#if DEBUG
 using Core.Helpers;
+using Microsoft.Extensions.Hosting;
+#endif
+
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using System.Net.Sockets;
 
-namespace Session
+namespace Session.Core
 {
-	public class SessionManager : ISessionManager
+	public class SessionManager : ISessionManager, IHostedService
 	{
 		private readonly IAsyncServer _asyncSocketServer;
-
-		private readonly ConcurrentDictionary<string, ISession> _sessions = new();
-
 		private readonly IScopeManager _scopeManager;
 
-		public SessionManager(IAsyncServer asyncSocketServer, IScopeManager scopeManager)
+#if DEBUG
+		private readonly ISessionsService _sessionsService;
+#endif
+
+		/// <summary>
+		/// The ctor of the host. The host must instantiate ISessionService first, because there is a reference to the IDbManager.
+		/// The IDbManager must be resolved before the IScopeManager for disposing purposes. Dispose first all scopes via IScopeManager
+		/// and then the others. IoC container of .Net disposing order is:
+		/// 1. Objects created last are disposed first.
+		/// 2. Objects with shorter lifetimes are disposed before objects with longer lifetimes.
+		/// </summary>
+		public SessionManager(IAsyncServer asyncSocketServer, ISessionsService sessionsService,
+			IScopeManager scopeManager)
 		{
 			_scopeManager = scopeManager;
+#if DEBUG
+			_sessionsService = sessionsService;
+#else
+			_ = sessionsService;
+#endif
+
 			_asyncSocketServer = asyncSocketServer;
 
 			_asyncSocketServer.NewConnectionOccured += OnNewConnectionOccured;
@@ -32,7 +51,7 @@ namespace Session
 
 		private void OnNewConnectionOccured(TcpClient client)
 		{
-			this.LogInfo("Starting new session ...", "server");
+			this.LogInfo("Starting new session ...");
 			StartNewSession(client);
 		}
 
@@ -41,16 +60,9 @@ namespace Session
 			var session = BuildSession(client);
 
 			session.SessionStopped += OnSessionStopped;
-			this.LogInfo($"New session with Id {session.Id} created.", "server");
-
-			_sessions.TryAdd(session.Id, session);
-
-			// todo; Check if the session is a pending session registered in the database
-			// todo; if so, then reestablish the session with the provided context
 
 			session.Start();
-
-			this.LogInfo($"New session with Id {session.Id} started.", "server");
+			this.LogInfo($"New session with Id {session.Id} started.");
 		}
 
 		private ISession BuildSession(TcpClient client)
@@ -67,56 +79,36 @@ namespace Session
 			return scope.GetService<ISession>();
 		}
 
-		private void OnSessionStopped(object? sender, string e)
+		private void OnSessionStopped(object? sender, SessionStoppedEventArgs sessionStoppedEventArgs)
 		{
-			if (sender is not ISession session)
+			if (sender is not ISession)
 			{
 				this.LogFatal(
-					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!",
-					"server");
+					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!");
 				return;
 			}
 
-			var removeResult = _sessions.TryRemove(session.Id, out _);
-
-			if (!removeResult)
-			{
-				this.LogError($"Cannot remove session with Id {session.Id} from dictionary.", "server");
-				return;
-			}
-
-			HandleStoppedSession(session);
-		}
-
-		private void HandleStoppedSession(ISession session)
-		{
-			// todo; Here we determine some state and safe it to the database
-
-			// After that state saving handle, we can dispose the scope
-			_scopeManager.Destroy(session.Id);
+			_scopeManager.Destroy(sessionStoppedEventArgs.SessionKey);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
 		{
 			_asyncSocketServer.NewConnectionOccured -= OnNewConnectionOccured;
-
-			_sessions.Clear();
-
 			return Task.CompletedTask;
 		}
 
 #if DEBUG
 		public void SendMessageToRandomClient(object messageObject)
 		{
-			var randomSession = _sessions.Values.MinBy(_ => GuidIdCreator.CreateString());
+			var randomSession = _sessionsService.GetSessions().MinBy(_ => GuidIdCreator.CreateString());
 			randomSession?.SendMessageToClient(messageObject);
 		}
 
 		public void SendMessageToAllClients(object messageObject)
 		{
-			foreach (var session in _sessions)
+			foreach (var session in _sessionsService.GetSessions())
 			{
-				session.Value.SendMessageToClient(messageObject);
+				session.SendMessageToClient(messageObject);
 			}
 		}
 #endif

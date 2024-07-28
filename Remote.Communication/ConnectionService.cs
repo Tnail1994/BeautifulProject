@@ -96,16 +96,18 @@ namespace Remote.Communication
 			this.LogDebug("Try to reconnect", _sessionKey.SessionId);
 
 			if (attempts == 0)
+			{
+				_communicationService.Stop();
+				_checkAliveService.Stop();
+				Stop();
 				_asyncClient.ResetSocket();
+			}
 
 			var reconnectAttempt = attempts;
 			try
 			{
 				while (reconnectAttempt < _connectionSettings.ReconnectAttempts)
 				{
-					if (reconnectAttempt > 0)
-						await Task.Delay(_connectionSettings.ReconnectDelayInSeconds * 1000);
-
 					var connectResult = await ConnectAsync();
 
 					if (connectResult)
@@ -120,6 +122,7 @@ namespace Remote.Communication
 			catch (SocketException)
 			{
 				reconnectAttempt++;
+				await Task.Delay(_connectionSettings.ReconnectDelayInSeconds * 1000);
 				await TryReconnecting(reconnectAttempt);
 			}
 			catch (Exception e)

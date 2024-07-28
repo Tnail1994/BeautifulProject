@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DbManagement.Common\DbManagement.Common.csproj" />
+    <ProjectReference Include="..\DbManagement\DbManagement.csproj" />
     <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />

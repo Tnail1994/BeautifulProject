@@ -2,15 +2,15 @@
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
 using Remote.Communication.Common.Client.Contracts;
-using Session;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using Session.Core;
 
-namespace Tests.Session
+namespace Tests.Session.Core
 {
 	public class SessionManagerTests
 	{
-		private readonly ISessionManager _sessionManager;
+		private readonly SessionManager _sessionManager;
 		private readonly IAsyncServer _asyncSocketServerMock;
 		private readonly IScopeManager _scopeManagerMock;
 		private readonly CancellationTokenSource _cancelledTokenSource;
@@ -24,9 +24,11 @@ namespace Tests.Session
 			_scopeManagerMock = Substitute.For<IScopeManager>();
 			_asyncClientMock = Substitute.For<IAsyncClientFactory>();
 
+			var sessionsServiceMock = Substitute.For<ISessionsService>();
+
 			_cancelledTokenSource = new CancellationTokenSource();
 
-			_sessionManager = new SessionManager(_asyncSocketServerMock, _scopeManagerMock);
+			_sessionManager = new SessionManager(_asyncSocketServerMock, sessionsServiceMock, _scopeManagerMock);
 		}
 
 		private void BaseProviderMocking()
@@ -74,7 +76,6 @@ namespace Tests.Session
 			return dummySocket;
 		}
 
-		// Assert exceptions for not set socket and scope
 		[Fact]
 		public void WhenNewConnectionOccuredWithNullSocket_ThenShouldThrowSessionManagerException()
 		{

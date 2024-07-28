@@ -2,7 +2,7 @@
 using Session.Common.Contracts;
 using Session.Common.Implementations;
 
-namespace Session
+namespace Session.Core
 {
 	public class Scope : IScope
 	{

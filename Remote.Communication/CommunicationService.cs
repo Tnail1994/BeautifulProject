@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
+#if DEBUG
 using System.Diagnostics;
+#endif
 using Core.Extensions;
 using Newtonsoft.Json;
 using Remote.Communication.Common.Client.Contracts;
@@ -87,7 +89,28 @@ namespace Remote.Communication
 		{
 			var jsonString = JsonConvert.SerializeObject(messageObj, JsonConfig.Settings);
 			this.LogDebug($"Sending {jsonString} to client.", SessionId);
+
+			if (_asyncClient.IsNotConnected)
+				throw new CommunicationServiceException("AsyncClient is not connected", 0);
+
 			_asyncClient.Send(jsonString);
+		}
+
+		public Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageToSend)
+			where TReplyMessageType : IBaseMessage
+		{
+			SendAsync(messageToSend);
+			return ReceiveAsync<TReplyMessageType>();
+		}
+
+
+		public async Task<TAwaitMessageType>
+			ReceiveAndSendAsync<TAwaitMessageType>(object messageToSend)
+			where TAwaitMessageType : IBaseMessage
+		{
+			var awaitMessage = await ReceiveAsync<TAwaitMessageType>();
+			SendAsync(messageToSend);
+			return awaitMessage;
 		}
 
 		public void Stop()
@@ -130,16 +153,18 @@ namespace Remote.Communication
 			{
 				this.LogDebug($"OnMessageReceived with {jsonString}", SessionId);
 
-				this.LogDebug("Start transforming with Service...", SessionId);
 #if DEBUG
+				this.LogDebug("Start transforming with Service...", SessionId);
 				_stopwatch.Restart();
 
 #endif
+
 				var transformedObject = _transformerService.Transform(jsonString);
+
 #if DEBUG
 				_stopwatch.Stop();
-#endif
 				this.LogDebug($"Transforming took {_stopwatch.ElapsedMilliseconds}ms", SessionId);
+#endif
 				AddTransformedObject(transformedObject);
 				this.LogDebug($"Finished and added: {transformedObject}", SessionId);
 

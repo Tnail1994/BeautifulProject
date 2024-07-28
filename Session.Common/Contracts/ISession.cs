@@ -1,8 +1,10 @@
-﻿namespace Session.Common.Contracts
+﻿using Session.Common.Implementations;
+
+namespace Session.Common.Contracts
 {
 	public interface ISession
 	{
-		event EventHandler<string>? SessionStopped;
+		event EventHandler<SessionStoppedEventArgs>? SessionStopped;
 		string Id { get; }
 
 		void Start();

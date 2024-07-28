@@ -15,7 +15,7 @@ namespace Remote.Server
 		public int MaxErrorCount { get; init; } = DefaultMaxErrorCount;
 		public string IpAddress { get; init; } = DefaultIpAddress;
 
-		public static AsyncServerSettings Default => new()
+		public static IAsyncServerSettings Default => new AsyncServerSettings()
 		{
 			Port = DefaultPort,
 			MaxConnections = DefaultMaxConnections,

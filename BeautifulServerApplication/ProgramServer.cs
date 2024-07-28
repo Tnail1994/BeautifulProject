@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DbManagement;
+using DbManagement.Common.Contracts;
+using DbManagement.Contexts;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Remote.Communication;
@@ -10,10 +13,14 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
-using Session;
+using Serilog;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
-using SharedBeautifulData;
+using Session.Core;
+using Session.Services;
+using Session.Services.Authorization;
+using SharedBeautifulData.Messages.Authorize;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -26,24 +33,50 @@ namespace BeautifulServerApplication
 #if DEBUG
 		private static IServiceProvider? _serviceProvider;
 		private static ISessionManager? _sessionManager;
+		private static IHost? _host;
 #endif
 
 		static Task Main(string[] args)
 		{
-			var host = CreateHostBuilder(args)
+			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+			AppDomain.CurrentDomain.ProcessExit += OnAppShutdown;
+
+			_host = CreateHostBuilder(args)
 				.Build();
 
-			host.RunAsync(ServerProgramCancellationTokenSource.Token);
+
+			_host.RunAsync(ServerProgramCancellationTokenSource.Token);
 
 #if DEBUG
-			_serviceProvider = host.Services;
+			_serviceProvider = _host.Services;
 			_sessionManager = _serviceProvider.GetRequiredService<IHostedService>() as ISessionManager;
 #endif
 
 			RunConsoleInteraction();
 
-			host.Dispose();
+			Dispose();
 			return Task.CompletedTask;
+		}
+
+		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			var eExceptionObject = ((Exception)e.ExceptionObject);
+			Log.Fatal($"Unhandled exception occured! \n" +
+			          $"Terminating: {e.IsTerminating} \n" +
+			          $"Message: {eExceptionObject.Message} \n" +
+			          $"Stacktrace: {eExceptionObject.StackTrace}");
+			Dispose();
+		}
+
+		private static void Dispose()
+		{
+			_host?.Dispose();
+		}
+
+		private static void OnAppShutdown(object? sender, EventArgs e)
+		{
+			Dispose();
+			ServerProgramCancellationTokenSource.Cancel();
 		}
 
 		private static void RunConsoleInteraction()
@@ -61,13 +94,13 @@ namespace BeautifulServerApplication
 #if DEBUG
 				else if (input?.StartsWith("-sr") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToRandomClient(new UserMessage
-						{ MessageObject = User.Create("1", "1") });
+					var testMessage = new CheckAliveReply() { Success = false };
+					_sessionManager.SendMessageToRandomClient(testMessage);
 				}
 				else if (input?.StartsWith("-sa") == true && _sessionManager != null)
 				{
-					_sessionManager.SendMessageToAllClients(new UserMessage
-						{ MessageObject = User.Create("2", "2") });
+					var testMessage = new CheckAliveReply() { Success = false };
+					_sessionManager.SendMessageToAllClients(testMessage);
 				}
 #endif
 				else
@@ -92,17 +125,27 @@ namespace BeautifulServerApplication
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
+					services.AddMemoryCache();
+
 					services.AddHostedService<SessionManager>();
 
 					// Server wide
-					services.AddTransient<IBaseMessage, UserMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveMessage>();
-					services.AddTransient<IBaseMessage, CheckAliveReplyMessage>();
-
-					services.AddSingleton<IAsyncServer, AsyncServer>();
-					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddTransient<IBaseMessage, CheckAliveRequest>();
+					services.AddTransient<IBaseMessage, CheckAliveReply>();
+					services.AddTransient<IBaseMessage, LoginReply>();
+					services.AddTransient<IBaseMessage, LoginRequest>();
+					services.AddTransient<IDbContext, UsersDbContext>();
+					services.AddTransient<IDbContext, SessionsDbContext>();
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
+					services.AddSingleton<IAsyncServer, AsyncServer>();
+					services.AddSingleton<ITransformerService, TransformerService>();
+					services.AddSingleton<IDbManager, DbManager>();
+					services.AddSingleton<IDbContextResolver, DbContextResolver>();
+					services.AddSingleton<IAuthenticationService, AuthenticationService>();
+					services.AddSingleton<IUsersService, UsersService>();
+					services.AddSingleton<ISessionsService, SessionsService>();
+
 
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
@@ -114,6 +157,12 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
 					services.Configure<ConnectionSettings>(
 						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
+					services.Configure<DbSettings>(
+						hostContext.Configuration.GetSection(nameof(DbSettings)));
+					services.Configure<DbContextSettings>(
+						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
+					services.Configure<AuthenticationSettings>(
+						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -125,9 +174,15 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
 					services.AddSingleton<IConnectionSettings>(provider =>
 						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
+					services.AddSingleton<IDbSettings>(provider =>
+						provider.GetRequiredService<IOptions<DbSettings>>().Value);
+					services.AddSingleton<IDbContextSettings>(provider =>
+						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
+					services.AddSingleton<IAuthenticationSettings>(provider =>
+						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
 
 					// Session wide
-					services.AddScoped<ISession, Session.Session>();
+					services.AddScoped<ISession, Session.Core.Session>();
 					services.AddScoped<IConnectionService, ConnectionService>();
 					services.AddScoped<ICommunicationService, CommunicationService>();
 					services.AddScoped<ISessionKey, SessionKey>();
