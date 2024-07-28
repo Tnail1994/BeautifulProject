@@ -34,7 +34,7 @@ namespace DbManagement.Common.Implementations
 		{
 			if (Set == null)
 			{
-				this.LogError($"Cannot get entities because Set is not initialized ", "server");
+				this.LogError($"Cannot get entities because Set is not initialized ");
 				return Enumerable.Empty<TDto>();
 			}
 
@@ -47,13 +47,13 @@ namespace DbManagement.Common.Implementations
 
 			if (entityDto == null)
 			{
-				this.LogWarning($"Cannot add because dto is not {typeof(T)}", "server");
+				this.LogWarning($"Cannot add because dto is not {typeof(T)}");
 				return;
 			}
 
 			if (Set == null)
 			{
-				this.LogError($"Cannot add because Set is not initialized ", "server");
+				this.LogError($"Cannot add because Set is not initialized ");
 				return;
 			}
 

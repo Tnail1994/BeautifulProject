@@ -59,7 +59,7 @@ namespace DbManagement
 			}
 			catch (Exception ex)
 			{
-				this.LogError($"Error caching DbContexts: {ex.Message}", "server");
+				this.LogError($"Error caching DbContexts: {ex.Message}");
 			}
 		}
 

@@ -52,7 +52,7 @@ namespace Session.Services
 
 			if (sessionInfosDto == null)
 			{
-				this.LogError("Cannot read session infos from database.", "server");
+				this.LogError("Cannot read session infos from database.");
 				return;
 			}
 
@@ -73,7 +73,7 @@ namespace Session.Services
 
 			if (!tryRemoveResult)
 			{
-				this.LogError($"Cannot remove session with Id {sessionId} from dictionary.", "server");
+				this.LogError($"Cannot remove session with Id {sessionId} from dictionary.");
 			}
 
 			return tryRemoveResult;
@@ -126,7 +126,7 @@ namespace Session.Services
 				{
 					var logMessage =
 						$"Found more than one session with username {username} and state {SessionState.Stopped}.";
-					this.LogError(logMessage, "server");
+					this.LogError(logMessage);
 					throw new InvalidOperationException(logMessage);
 				}
 

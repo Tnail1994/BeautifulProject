@@ -51,7 +51,7 @@ namespace Session.Core
 
 		private void OnNewConnectionOccured(TcpClient client)
 		{
-			this.LogInfo("Starting new session ...", "server");
+			this.LogInfo("Starting new session ...");
 			StartNewSession(client);
 		}
 
@@ -62,7 +62,7 @@ namespace Session.Core
 			session.SessionStopped += OnSessionStopped;
 
 			session.Start();
-			this.LogInfo($"New session with Id {session.Id} started.", "server");
+			this.LogInfo($"New session with Id {session.Id} started.");
 		}
 
 		private ISession BuildSession(TcpClient client)
@@ -84,8 +84,7 @@ namespace Session.Core
 			if (sender is not ISession)
 			{
 				this.LogFatal(
-					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!",
-					"server");
+					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!");
 				return;
 			}
 

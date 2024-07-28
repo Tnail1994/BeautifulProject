@@ -36,7 +36,7 @@ namespace Session.Services.Authorization
 
 			if (string.IsNullOrEmpty(username))
 			{
-				this.LogWarning("Cannot authorize user with empty name.", "server");
+				this.LogWarning("Cannot authorize user with empty name.");
 
 				if (attempts < _settings.MaxAuthAttempts)
 					return await Authorize(communicationService, attempts + 1);
@@ -46,7 +46,7 @@ namespace Session.Services.Authorization
 
 			if (!_usersService.DoesUsernameExist(username) || _usersService.IsUsernameActive(username))
 			{
-				this.LogWarning($"User with name {username} does not exist or is already active.", "server");
+				this.LogWarning($"User with name {username} does not exist or is already active.");
 
 				if (attempts < _settings.MaxAuthAttempts)
 					return await Authorize(communicationService, attempts + 1);
@@ -78,6 +78,10 @@ namespace Session.Services.Authorization
 			catch (ObjectDisposedException objectDisposedException)
 			{
 				this.LogDebug($"CommunicationService already disposed. ExMsg: {objectDisposedException.Message}");
+			}
+			catch (OperationCanceledException)
+			{
+				this.LogDebug($"Stop receiving logout reply, if request was okay or not.");
 			}
 			catch (Exception exception)
 			{
