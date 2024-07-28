@@ -15,7 +15,7 @@ namespace Session.Core
 		private readonly ICommunicationService _communicationService;
 		private readonly ISessionsService _sessionsService;
 
-		private readonly SessionInfo _sessionInfo;
+		private SessionInfo _sessionInfo;
 
 		public Session(ISessionKey sessionKey, IConnectionService connectionService,
 			IAuthenticationService authenticationService, ICommunicationService communicationService,
@@ -35,7 +35,7 @@ namespace Session.Core
 
 		public async void Start()
 		{
-			_sessionsService.TryAdd(this);
+			_sessionsService.TryAdd(this, _sessionInfo);
 
 			_connectionService.ConnectionLost += OnConnectionLost;
 
@@ -84,10 +84,12 @@ namespace Session.Core
 
 		private void ReestablishSession(ISessionInfo sessionInfo)
 		{
-			_sessionInfo.SetUsername(sessionInfo.Username);
-			_sessionInfo.SetAuthorized(sessionInfo.Authorized);
-
 			this.LogDebug($"Reestablishing session {Id}", Id);
+
+			SetState(SessionState.Down);
+			_sessionsService.UpdateSession(this, sessionInfo);
+			_sessionsService.TryRemove(_sessionInfo.Id);
+			_sessionInfo = (SessionInfo)sessionInfo;
 		}
 
 		private void RunSession()
@@ -122,14 +124,18 @@ namespace Session.Core
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
 
+			SetState(SessionState.Stopped);
+
 			_authenticationService.UnAuthorize(_communicationService, _sessionInfo.Username);
 
-			SetState(SessionState.Stopped);
 			TryRemoveSession();
 		}
 
 		private void TryRemoveSession()
 		{
+			if (_sessionInfo.SessionState == SessionState.Stopped)
+				return;
+
 			_sessionsService.TryRemove(_sessionKey.InstantiatedSessionId);
 		}
 

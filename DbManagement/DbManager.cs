@@ -41,7 +41,7 @@ namespace DbManagement
 
 					if (dbContext.GetEntities() is not IEnumerable<EntityDto> dbContextEntities)
 					{
-						this.LogError($"No entities found in {dbContextType.Name}");
+						this.LogWarning($"[CacheDbContext] No entities found in {dbContextType.Name}");
 						continue;
 					}
 
@@ -49,7 +49,7 @@ namespace DbManagement
 
 					if (!entitiesList.Any())
 					{
-						this.LogWarning($"No entities found in {dbContextType.Name}");
+						this.LogWarning($"[CacheDbContext] No entries found in {dbContextType.Name}");
 						continue;
 					}
 
@@ -87,7 +87,7 @@ namespace DbManagement
 
 				if (entities == null)
 				{
-					this.LogError($"No entities found for {requestedType.Name}");
+					this.LogWarning($"[GetEntities] No entities found for {requestedType.Name}");
 					return Enumerable.Empty<T>();
 				}
 
@@ -118,7 +118,7 @@ namespace DbManagement
 
 			if (entities == null)
 			{
-				this.LogError($"No entities found for {requestedTypeName}");
+				this.LogWarning($"[SaveChanges] No entities found for {requestedTypeName}");
 				return;
 			}
 

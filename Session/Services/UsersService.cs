@@ -55,7 +55,7 @@ namespace Session.Services
 
 			if (foundUser == null)
 			{
-				this.LogError($"Dis not find {username}. Cannot set users state.");
+				this.LogError($"Did not find {username}. Cannot set users state.");
 				return;
 			}
 

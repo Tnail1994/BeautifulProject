@@ -12,27 +12,25 @@ namespace Session.Services
 	{
 		private class SessionBundle
 		{
-			public static SessionBundle Create(ISession session)
-			{
-				return new SessionBundle
-				{
-					Session = session
-				};
-			}
-
-			public static SessionBundle Create(ISessionInfo sessionInfo, SessionInfoDto sessionInfoDto)
+			public static SessionBundle Create(ISessionInfo sessionInfo)
 			{
 				return new SessionBundle
 				{
 					SessionInfo = sessionInfo,
-					SessionInfoDto = sessionInfoDto
 				};
 			}
 
-			// ReSharper disable once UnusedAutoPropertyAccessor.Local
+			public static SessionBundle Create(ISession session, ISessionInfo sessionInfo)
+			{
+				return new SessionBundle
+				{
+					Session = session,
+					SessionInfo = sessionInfo,
+				};
+			}
+
 			public ISession? Session { get; set; }
 			public ISessionInfo? SessionInfo { get; set; }
-			public SessionInfoDto? SessionInfoDto { get; set; }
 		}
 
 		private readonly IDbManager _dbManager;
@@ -48,7 +46,7 @@ namespace Session.Services
 
 		private void ReadSessionsInfo()
 		{
-			var sessionInfosDto = _dbManager.GetEntities<SessionInfoDto>();
+			var sessionInfosDto = GetSessionInfosDto();
 
 			if (sessionInfosDto == null)
 			{
@@ -58,16 +56,32 @@ namespace Session.Services
 
 			foreach (var sessionInfoDto in sessionInfosDto)
 			{
-				_sessionBundles.TryAdd(sessionInfoDto.Id, SessionBundle.Create(Map(sessionInfoDto), sessionInfoDto));
+				TryAdd(sessionInfoDto.Id, SessionBundle.Create(Map(sessionInfoDto)));
 			}
 		}
 
-		public void TryAdd(ISession session)
+		private IEnumerable<SessionInfoDto>? GetSessionInfosDto()
 		{
-			_sessionBundles.TryAdd(session.Id, SessionBundle.Create(session));
+			return _dbManager.GetEntities<SessionInfoDto>();
+		}
+
+		public void TryAdd(ISession session, ISessionInfo sessionInfo)
+		{
+			var sessionBundle = SessionBundle.Create(session, sessionInfo);
+			TryAdd(session.Id, sessionBundle);
+		}
+
+		private void TryAdd(string sessionId, SessionBundle sessionBundle)
+		{
+			_sessionBundles.TryAdd(sessionId, sessionBundle);
 		}
 
 		public bool TryRemove(string sessionId)
+		{
+			return TryRemoveSessionBundle(sessionId);
+		}
+
+		private bool TryRemoveSessionBundle(string sessionId)
 		{
 			var tryRemoveResult = _sessionBundles.TryRemove(sessionId, out _);
 
@@ -97,15 +111,32 @@ namespace Session.Services
 
 		public void SaveSessionInfo(ISessionInfo sessionInfo)
 		{
-			var dto = Map(sessionInfo);
+			var sessionInfoDto = GetSessionInfosDto()?.FirstOrDefault(dto => dto.Id == sessionInfo.Id) ??
+			                     Map(sessionInfo);
 
+			UpdateSessionInfo(sessionInfo);
+			UpdateSessionInfoDto(sessionInfoDto, sessionInfo);
+			_dbManager.SaveChanges(sessionInfoDto);
+		}
+
+		private void UpdateSessionInfo(ISessionInfo sessionInfo)
+		{
 			if (_sessionBundles.TryGetValue(sessionInfo.Id, out var bundle))
 			{
-				UpdateSessionInfo(bundle, sessionInfo);
-				UpdateSessionInfoDto(bundle, sessionInfo);
+				var newBundle = SessionBundle.Create(sessionInfo);
+				newBundle.Session = bundle.Session;
+				_sessionBundles.TryUpdate(sessionInfo.Id, newBundle, bundle);
 			}
+			else
+			{
+				this.LogError($"Cannot update sessionInfo for id: {sessionInfo.Id}");
+			}
+		}
 
-			_dbManager.SaveChanges(dto);
+		private static void UpdateSessionInfoDto(SessionInfoDto sessionInfoDto, ISessionInfo sessionInfo)
+		{
+			sessionInfoDto.SessionState = (int)sessionInfo.SessionState;
+			sessionInfoDto.Authorized = sessionInfo.Authorized;
 		}
 
 		public bool HasPendingSession(string username)
@@ -118,11 +149,11 @@ namespace Session.Services
 		{
 			if (HasPendingSession(username))
 			{
-				var foundSessionInfos = _sessionBundles.Values.Where(bundle =>
+				var foundSessionBundles = _sessionBundles.Values.Where(bundle =>
 					FilterBundleByUsername(bundle, username) &&
 					FilterBundleByState(bundle, SessionState.Stopped)).ToList();
 
-				if (foundSessionInfos.Count > 1)
+				if (foundSessionBundles.Count > 1)
 				{
 					var logMessage =
 						$"Found more than one session with username {username} and state {SessionState.Stopped}.";
@@ -130,36 +161,33 @@ namespace Session.Services
 					throw new InvalidOperationException(logMessage);
 				}
 
-				var foundSessionInfo = foundSessionInfos.FirstOrDefault();
+				var foundSessionBundle = foundSessionBundles.FirstOrDefault();
 
-				sessionInfo = foundSessionInfo?.SessionInfo ?? SessionInfo.Empty;
-				return foundSessionInfo != null;
+				sessionInfo = foundSessionBundle?.SessionInfo ?? SessionInfo.Empty;
+				return !string.IsNullOrEmpty(sessionInfo.Id) && !string.IsNullOrEmpty(sessionInfo.Username) &&
+				       foundSessionBundle != null;
 			}
 
 			sessionInfo = SessionInfo.Empty;
 			return false;
 		}
 
+		public void UpdateSession(ISession session, ISessionInfo sessionInfo)
+		{
+			if (_sessionBundles.TryGetValue(sessionInfo.Id, out var bundle))
+			{
+				var newBundle = SessionBundle.Create(session, sessionInfo);
+				_sessionBundles.TryUpdate(sessionInfo.Id, newBundle, bundle);
+			}
+			else
+			{
+				this.LogError($"Cannot update session for id: {sessionInfo.Id}");
+			}
+		}
+
 		private static bool FilterBundleByState(SessionBundle bundle, SessionState state)
 		{
 			return bundle.SessionInfo?.SessionState == state;
-		}
-
-		private static void UpdateSessionInfo(SessionBundle bundle, ISessionInfo sessionInfo)
-		{
-			bundle.SessionInfo = sessionInfo;
-		}
-
-		private static void UpdateSessionInfoDto(SessionBundle bundle, ISessionInfo sessionInfo)
-		{
-			if (bundle.SessionInfoDto == null)
-				bundle.SessionInfoDto = Map(sessionInfo);
-			else
-			{
-				bundle.SessionInfoDto.Username = sessionInfo.Username;
-				bundle.SessionInfoDto.SessionState = (int)sessionInfo.SessionState;
-				bundle.SessionInfoDto.Authorized = sessionInfo.Authorized;
-			}
 		}
 
 		private ISessionInfo Map(SessionInfoDto dto)

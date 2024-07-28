@@ -48,7 +48,8 @@ namespace Tests.Session.Services
 
 			var sessionMock = Substitute.For<ISession>();
 			sessionMock.Id.Returns("testId");
-			_sessionsService.TryAdd(sessionMock);
+			var sessionInfoMock = Substitute.For<ISessionInfo>();
+			_sessionsService.TryAdd(sessionMock, sessionInfoMock);
 
 			var result = _sessionsService.TryGetSessionInfo("mockName", out var sessionInfo);
 			Assert.True(result);

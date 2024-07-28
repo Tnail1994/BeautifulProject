@@ -44,7 +44,7 @@ namespace Tests.Session.Core
 		public void WhenStartingSession_ThenSessionAddsItselfToSessionsService_TryAddShouldCalled()
 		{
 			_session.Start();
-			_sessionsServiceMock.Received(1).TryAdd(_session);
+			_sessionsServiceMock.Received(1).TryAdd(_session, Arg.Any<ISessionInfo>());
 		}
 
 		[Fact]
@@ -60,7 +60,6 @@ namespace Tests.Session.Core
 		public void WhenDisposing_ThenShouldCallTryRemoveAndSaveSessionInfo()
 		{
 			((global::Session.Core.Session)_session).Dispose();
-			_sessionsServiceMock.Received(1).TryRemove(Arg.Any<string>());
 			_sessionsServiceMock.Received(1).SaveSessionInfo(Arg.Any<SessionInfo>());
 		}
 	}
