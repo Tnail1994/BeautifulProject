@@ -9,19 +9,17 @@ namespace Remote.Communication.Transformation
 
 		public string Discriminator { get; }
 		public TaskCompletionSource<TransformedObject> TaskCompletionSource { get; }
-		public bool IsPermanent { get; }
 
-		private TransformedObjectWaiter(string discriminator, bool isPermanent)
+		private TransformedObjectWaiter(string discriminator)
 		{
 			Id = GuidIdCreator.CreateString();
 
 			TaskCompletionSource = new TaskCompletionSource<TransformedObject>();
 
 			Discriminator = discriminator;
-			IsPermanent = isPermanent;
 		}
 
-		public static TransformedObjectWaiter Create(string discriminator, bool isPermanent = false) =>
-			new(discriminator, isPermanent);
+		public static TransformedObjectWaiter Create(string discriminator) =>
+			new(discriminator);
 	}
 }

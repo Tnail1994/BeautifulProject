@@ -20,10 +20,11 @@ namespace Remote.Communication
 		private readonly ConcurrentDictionary<string, TransformedObjectWaiter> _transformedObjectWaiters = new();
 
 		private readonly IAsyncClient _asyncClient;
-
 		private readonly ITransformerService _transformerService;
 		private readonly ISessionKey _sessionKey;
-		private readonly CancellationTokenSource _ownCancellationReceivingTokenSource = new();
+
+		private readonly CancellationTokenSource _cancellationReceivingTokenSource = new();
+
 		private bool _running;
 
 #if DEBUG
@@ -61,7 +62,7 @@ namespace Remote.Communication
 
 		public Task<T> ReceiveAsync<T>() where T : IBaseMessage
 		{
-			return ReceiveAsync<T>(_ownCancellationReceivingTokenSource.Token);
+			return ReceiveAsync<T>(_cancellationReceivingTokenSource.Token);
 		}
 
 		public Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage
@@ -96,20 +97,20 @@ namespace Remote.Communication
 			_asyncClient.Send(jsonString);
 		}
 
-		public Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageToSend)
+		public Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageObj)
 			where TReplyMessageType : IBaseMessage
 		{
-			SendAsync(messageToSend);
+			SendAsync(messageObj);
 			return ReceiveAsync<TReplyMessageType>();
 		}
 
 
 		public async Task<TAwaitMessageType>
-			ReceiveAndSendAsync<TAwaitMessageType>(object messageToSend)
+			ReceiveAndSendAsync<TAwaitMessageType>(object messageObj)
 			where TAwaitMessageType : IBaseMessage
 		{
 			var awaitMessage = await ReceiveAsync<TAwaitMessageType>();
-			SendAsync(messageToSend);
+			SendAsync(messageObj);
 			return awaitMessage;
 		}
 
@@ -168,17 +169,9 @@ namespace Remote.Communication
 				AddTransformedObject(transformedObject);
 				this.LogDebug($"Finished and added: {transformedObject}", SessionId);
 
-				var transformedObjectWaiters =
-					_transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator)
-						.ToList();
-
-				foreach (var transformedObjectWaiter in transformedObjectWaiters)
+				foreach (var transformedObjectWaiter in FindTransformedObjectWaiters(transformedObject))
 				{
 					transformedObjectWaiter.TaskCompletionSource.SetResult(transformedObject);
-
-					if (transformedObjectWaiter.IsPermanent)
-						continue;
-
 					_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
 				}
 			}
@@ -216,6 +209,11 @@ namespace Remote.Communication
 			}
 		}
 
+		private IEnumerable<TransformedObjectWaiter> FindTransformedObjectWaiters(TransformedObject transformedObject)
+		{
+			return _transformedObjectWaiters.Values.Where(x => x.Discriminator == transformedObject.Discriminator);
+		}
+
 		private void AddTransformedObject(TransformedObject transformedObject)
 		{
 			_transformedObjects.TryAdd(transformedObject.Id, transformedObject);
@@ -232,7 +230,7 @@ namespace Remote.Communication
 
 			_transformedObjectWaiters.Clear();
 			_transformedObjects.Clear();
-			_ownCancellationReceivingTokenSource.Dispose();
+			_cancellationReceivingTokenSource.Dispose();
 		}
 	}
 }
