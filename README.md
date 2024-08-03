@@ -4,7 +4,7 @@ Welcome to this learning-focused project. Our aim is to create clean client appl
 We'll delve into asynchronous communication via TCP/IP, dependency injection using containers, database usage with Entity Framework, and much more. This educational project serves as an excellent starting point for those looking to develop their own programming skills in these areas.
 Our primary focus is on developing maintainable, high-performance, and scalable applications. We'll harness the power of parallelism through asynchronous implementation while avoiding common pitfalls. Additionally, we'll work on creating parallel sessions that represent unique connections between a client and server.
 One of the challenges we'll address is the danger of UI applications and asynchronous operations, particularly when element changes occur from a different task. These tasks may not be in the UI thread, potentially causing exceptions that lead to application crashes or malfunctions. This learning project addresses this challenge by developing a generalized solution, applicable not only to UI scenarios but to a broader range of asynchronous programming contexts.
-Join me on this exciting journey as we explore the intricacies of modern application development. Whether you're a beginner or looking to refine your skills, this project will provide valuable insights and hands-on experience in creating robust, efficient applications.
+Join me on this exciting journey as we explore the intricacies of modern application development.
 
 First have a look at the "What you will learn" section: [here](/docs/documentation.md#What-you-will-learn)
 
