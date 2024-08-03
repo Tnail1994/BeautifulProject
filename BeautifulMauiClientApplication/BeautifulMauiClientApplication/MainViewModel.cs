@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Core.Extensions;
 using Remote.Communication.Common.Client.Contracts;
 
 namespace BeautifulMauiClientApplication
@@ -12,6 +13,7 @@ namespace BeautifulMauiClientApplication
 		public RandomContent1ViewModel(IAsyncClientSettings asyncClientSettings)
 		{
 			_asyncClientSettings = asyncClientSettings;
+			this.LogInfo("Random content created");
 		}
 	}
 

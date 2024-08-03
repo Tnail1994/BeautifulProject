@@ -1,8 +1,6 @@
-﻿using System.Reflection;
-using CommunityToolkit.Maui;
+﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Remote.Communication;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
@@ -20,6 +18,9 @@ namespace BeautifulMauiClientApplication
 	{
 		public static MauiApp CreateMauiApp()
 		{
+			// Lauch settings https://www.youtube.com/watch?v=GgU4ulGYQEk&t=70s to get all in one folder
+			// zip it and send it to one. The one can unpack and should run it.
+
 			var builder = MauiApp.CreateBuilder();
 			builder
 				.UseMauiApp<App>()
@@ -33,10 +34,18 @@ namespace BeautifulMauiClientApplication
 #if DEBUG
 			builder.Logging.AddDebug();
 #endif
+
+			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+
+			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+
 			// Set up configuration
 			var config = new ConfigurationBuilder()
 				.AddJsonFile("appsettings.json")
+				.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables()
 				.Build();
+
 			builder.Configuration.AddConfiguration(config);
 
 			// Services
