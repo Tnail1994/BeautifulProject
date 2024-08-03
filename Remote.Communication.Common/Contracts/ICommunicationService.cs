@@ -8,7 +8,6 @@ namespace Remote.Communication.Common.Contracts
 		void Start();
 
 		Task<T> ReceiveAsync<T>() where T : INetworkMessage;
-		Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : INetworkMessage;
 		void SendAsync(object messageObj);
 
 		Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageObj)

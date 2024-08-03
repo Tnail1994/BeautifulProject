@@ -11,8 +11,10 @@ namespace AutoSynchronizedMessageHandling.Common.Contracts
 		/// <typeparam name="TRequestMessage">The requested message type to receive</typeparam>
 		/// <param name="replyMessageAction">The action to get informed.</param>
 		/// <param name="autoSyncType">The synchronization context, default is the main application context</param>
-		/// <returns>To stop subscribing to the type</returns>
-		CancellationTokenSource Subscribe<TRequestMessage>(Func<IRequestMessage, IReplyMessage> replyMessageAction,
+		/// <returns>The id to later unsubscribe by id</returns>
+		string Subscribe<TRequestMessage>(Func<IRequestMessage, IReplyMessage> replyMessageAction,
 			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : IRequestMessage;
+
+		bool Unsubscribe(string id);
 	}
 }

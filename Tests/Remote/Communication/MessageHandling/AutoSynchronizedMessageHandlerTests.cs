@@ -29,11 +29,11 @@ namespace Tests.Remote.Communication.MessageHandling
 		public async void WhenCommunicationServiceReceivesRequestedMessageType_ThenShouldFireEvent()
 		{
 			var testRequestMessage = TestRequestMessage.Create();
-			_communicationServiceMock.ReceiveAsync<TestRequestMessage>(Arg.Any<CancellationToken>())
+			_communicationServiceMock.ReceiveAsync<TestRequestMessage>()
 				.Returns(Task.FromResult(testRequestMessage));
 
 			var eventFired = false;
-			var cts = _autoSynchronizedMessageHandler.Subscribe<TestRequestMessage>(message =>
+			var id = _autoSynchronizedMessageHandler.Subscribe<TestRequestMessage>(message =>
 			{
 				eventFired = true;
 				Assert.Equal(message, testRequestMessage);
@@ -41,7 +41,7 @@ namespace Tests.Remote.Communication.MessageHandling
 			});
 
 			await Task.Delay(2);
-			await cts.CancelAsync();
+			_autoSynchronizedMessageHandler.Unsubscribe(id);
 			Assert.True(eventFired);
 		}
 	}

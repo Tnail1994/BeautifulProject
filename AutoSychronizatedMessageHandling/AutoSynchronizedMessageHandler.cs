@@ -8,7 +8,7 @@ using System.Collections.Concurrent;
 
 namespace AutoSynchronizedMessageHandling
 {
-	public class AutoSynchronizedMessageHandler : IAutoSynchronizedMessageHandler
+	public class AutoSynchronizedMessageHandler : IAutoSynchronizedMessageHandler, IDisposable
 	{
 		private readonly ICommunicationService _communicationService;
 
@@ -25,7 +25,7 @@ namespace AutoSynchronizedMessageHandling
 			_syncContext = SynchronizationContext.Current ?? new SynchronizationContext();
 		}
 
-		public CancellationTokenSource Subscribe<TRequestMessage>(
+		public string Subscribe<TRequestMessage>(
 			Func<IRequestMessage, IReplyMessage> replyMessageAction,
 			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : IRequestMessage
 		{
@@ -54,10 +54,15 @@ namespace AutoSynchronizedMessageHandling
 					              $"Cannot start publishing loop");
 				}
 			}
+			catch (NullReferenceException ex)
+			{
+				this.LogWarning($"[AutoSynchronizedMessageHandler]: {ex.Message}");
+				Unsubscribe(newAutoSynchronizedMessageContext.Id);
+			}
 			catch (OperationCanceledException)
 			{
 				this.LogDebug($"Publishing loop {typeDiscriminator} cancelled.");
-				_autoSynchronizedMessageContexts.TryRemove(newAutoSynchronizedMessageContext.Id, out _);
+				Unsubscribe(newAutoSynchronizedMessageContext.Id);
 			}
 			catch (Exception ex)
 			{
@@ -66,7 +71,16 @@ namespace AutoSynchronizedMessageHandling
 				              $"Stacktrace: {ex.StackTrace}.");
 			}
 
-			return publishingLoopCts;
+			return newAutoSynchronizedMessageContext.Id;
+		}
+
+		public bool Unsubscribe(string id)
+		{
+			if (!_autoSynchronizedMessageContexts.TryRemove(id, out var autoSynchronizedMessageContext))
+				return false;
+
+			autoSynchronizedMessageContext.PublishingLoopCts.Cancel();
+			return true;
 		}
 
 		private bool TryAddAutoSyncContext(
@@ -84,7 +98,7 @@ namespace AutoSynchronizedMessageHandling
 				while (!publishingLoopCts.Token.IsCancellationRequested)
 				{
 					var receivedRequestMessage =
-						await _communicationService.ReceiveAsync<TRequestMessage>(publishingLoopCts.Token);
+						await _communicationService.ReceiveAsync<TRequestMessage>();
 
 					var discriminator = receivedRequestMessage.GetType().Name;
 
@@ -114,6 +128,15 @@ namespace AutoSynchronizedMessageHandling
 			_communicationService.SendAsync(replyMessage);
 		}
 
+
+		public void Dispose()
+		{
+			foreach (var autoSynchronizedMessageContext in _autoSynchronizedMessageContexts.Values)
+			{
+				autoSynchronizedMessageContext.PublishingLoopCts.Cancel();
+			}
+		}
+
 		private class AutoSynchronizedMessageContext
 		{
 			private AutoSynchronizedMessageContext(string id, string typeDiscriminator,
@@ -128,7 +151,6 @@ namespace AutoSynchronizedMessageHandling
 			}
 
 			public CancellationTokenSource PublishingLoopCts { get; set; }
-
 
 			public static AutoSynchronizedMessageContext Create(string typeDiscriminator,
 				Func<IRequestMessage, IReplyMessage> replyMessageAction, AutoSyncType autoSyncType,
