@@ -7,23 +7,17 @@ namespace Session.Common.Implementations
 	{
 		string SessionId { get; }
 		string InstantiatedSessionId { get; }
-		void Update(ISessionInfo sessionInfo);
 	}
 
 	public class SessionKey : ISessionKey
 	{
-		public SessionKey()
+		public SessionKey(ISessionKeySettings sessionKeySettings)
 		{
-			SessionId = GuidIdCreator.CreateString();
+			SessionId = sessionKeySettings.GenerateId ? GuidIdCreator.CreateString() : string.Empty;
 			InstantiatedSessionId = SessionId;
 		}
 
 		public string SessionId { get; private set; }
 		public string InstantiatedSessionId { get; }
-
-		public void Update(ISessionInfo sessionInfo)
-		{
-			SessionId = sessionInfo.Id;
-		}
 	}
 }

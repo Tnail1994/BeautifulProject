@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using Serilog;
+using SharedBeautifulData.Constants;
 
 namespace BeautifulClientApplication
 {
@@ -17,7 +18,7 @@ namespace BeautifulClientApplication
 
 			Log.Logger = new LoggerConfiguration()
 				.MinimumLevel.Verbose()
-				.WriteTo.Map("SessionId", "Misc",
+				.WriteTo.Map("SessionId", LoggerConstants.DefaultLoggingKey,
 					(sessionId, wt) => wt.File(Path.Combine(
 							AppDomain.CurrentDomain.BaseDirectory, "LogFiles",
 							$"{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}", $"Log_{sessionId}_.txt"),

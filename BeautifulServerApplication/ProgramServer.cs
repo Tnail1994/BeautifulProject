@@ -163,6 +163,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
 					services.Configure<AuthenticationSettings>(
 						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
+					services.Configure<SessionKeySettings>(
+						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -180,6 +182,8 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
 					services.AddSingleton<IAuthenticationSettings>(provider =>
 						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
+					services.AddSingleton<ISessionKeySettings>(provider =>
+						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ISession, Session.Core.Session>();
