@@ -22,7 +22,7 @@ namespace BeautifulMauiClientApplication
 #endif
 			builder.Services.AddSingleton<IDataService, DataService>();
 
-			builder.Services.AddTransient<MainPage>();
+			builder.Services.AddTransient<MainView>();
 			builder.Services.AddTransient<MainViewModel>();
 
 			return builder.Build();

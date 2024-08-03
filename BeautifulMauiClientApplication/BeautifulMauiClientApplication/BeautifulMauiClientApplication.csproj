@@ -93,4 +93,10 @@
 	  </Reference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="MainView.xaml.cs">
+	    <DependentUpon>MainView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
 </Project>
