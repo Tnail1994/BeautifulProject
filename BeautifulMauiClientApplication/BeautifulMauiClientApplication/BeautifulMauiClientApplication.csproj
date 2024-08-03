@@ -123,31 +123,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="MainView.xaml.cs">
+	  <Compile Update="Example\MainView.xaml.cs">
 	    <DependentUpon>MainView.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="RandomContent3View.xaml.cs">
+	  <Compile Update="Example\RandomContent3View.xaml.cs">
 	    <DependentUpon>RandomContent3View.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="RandomContent2View.xaml.cs">
+	  <Compile Update="Example\RandomContent2View.xaml.cs">
 	    <DependentUpon>RandomContent2View.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="RandomContent1View.xaml.cs">
+	  <Compile Update="Example\RandomContent1View.xaml.cs">
 	    <DependentUpon>RandomContent1View.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="RandomContent3View.xaml">
+	  <MauiXaml Update="Example\RandomContent3View.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="RandomContent2View.xaml">
+	  <MauiXaml Update="Example\RandomContent2View.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="RandomContent1View.xaml">
+	  <MauiXaml Update="Example\RandomContent1View.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TestView.xaml">
+	  <MauiXaml Update="Example\TestView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

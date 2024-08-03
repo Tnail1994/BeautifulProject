@@ -2,12 +2,11 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Remote.Communication.Common.Contracts;
-using SharedBeautifulData.Messages.Authorize;
-using System.Collections.ObjectModel;
 using Remote.Communication.Common.Implementations;
+using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Messages.RandomTestData;
-using CommunityToolkit.Mvvm.Messaging.Messages;
+using System.Collections.ObjectModel;
 
 namespace BeautifulMauiClientApplication
 {
