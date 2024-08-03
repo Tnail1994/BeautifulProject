@@ -14,8 +14,11 @@ namespace BeautifulClientApplication
 
 		public static void Initialize()
 		{
+			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+
 			var currentDirectory = Directory.GetCurrentDirectory();
 			var basePath = Directory.GetParent(currentDirectory)?.Parent?.Parent?.ToString();
+			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
 
 			try
 			{
@@ -24,6 +27,7 @@ namespace BeautifulClientApplication
 					new ConfigurationBuilder()
 						.SetBasePath(basePath)
 						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+						.AddJsonFile($"appsettings.{environment}.json", optional: true)
 						.AddEnvironmentVariables()
 						.Build();
 				}

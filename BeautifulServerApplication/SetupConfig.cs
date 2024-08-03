@@ -26,7 +26,7 @@ namespace BeautifulServerApplication
 					new ConfigurationBuilder()
 						.SetBasePath(currentDirectory)
 						.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-						.AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
+						.AddJsonFile($"appsettings.{environment}.json", optional: true)
 						.AddEnvironmentVariables()
 						.Build();
 				}
