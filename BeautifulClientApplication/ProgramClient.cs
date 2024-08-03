@@ -12,6 +12,7 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.RandomTestData;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -105,6 +106,8 @@ namespace BeautifulClientApplication
 					services.AddTransient<INetworkMessage, CheckAliveReply>();
 					services.AddTransient<INetworkMessage, LoginReply>();
 					services.AddTransient<INetworkMessage, LoginRequest>();
+					services.AddTransient<INetworkMessage, RandomDataRequest>();
+					services.AddTransient<INetworkMessage, RandomDataReply>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

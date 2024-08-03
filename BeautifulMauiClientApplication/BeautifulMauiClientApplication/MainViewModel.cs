@@ -6,9 +6,42 @@ using SharedBeautifulData.Messages.Authorize;
 using System.Collections.ObjectModel;
 using Remote.Communication.Common.Implementations;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.RandomTestData;
+using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace BeautifulMauiClientApplication
 {
+	public partial class RandomContent3ViewModel : ObservableObject, IDisposable
+	{
+		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
+		private readonly string _subscribeId;
+
+		[ObservableProperty] private string _text = string.Empty;
+
+		private int _counter = 0;
+
+		public RandomContent3ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
+		{
+			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
+			_subscribeId = _autoSynchronizedMessageHandler.Subscribe<RandomDataRequest>(OnRandomDataMessageRequest);
+		}
+
+		private INetworkMessage? OnRandomDataMessageRequest(INetworkMessage requestMessage)
+		{
+			if (requestMessage is RandomDataRequest randomDataRequest)
+			{
+				Text = randomDataRequest.MessageObject ?? String.Empty;
+			}
+
+			return null;
+		}
+
+		public void Dispose()
+		{
+			_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
+		}
+	}
+
 	public partial class RandomContent2ViewModel : ObservableObject, IDisposable
 	{
 		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
@@ -48,7 +81,7 @@ namespace BeautifulMauiClientApplication
 		}
 	}
 
-	public partial class RandomContent1ViewModel : ObservableObject, IDisposable
+	public partial class RandomContent1ViewModel : ObservableObject
 	{
 		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
 		private readonly string _subscribeId;
@@ -79,11 +112,6 @@ namespace BeautifulMauiClientApplication
 			}
 
 			return null;
-		}
-
-		public void Dispose()
-		{
-			_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
 		}
 	}
 

@@ -1,4 +1,5 @@
-﻿using DbManagement;
+﻿using Core.Helpers;
+using DbManagement;
 using DbManagement.Common.Contracts;
 using DbManagement.Contexts;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,7 @@ using Session.Services;
 using Session.Services.Authorization;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.RandomTestData;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -36,7 +38,7 @@ namespace BeautifulServerApplication
 		private static IHost? _host;
 #endif
 
-		static Task Main(string[] args)
+		static async Task Main(string[] args)
 		{
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			AppDomain.CurrentDomain.ProcessExit += OnAppShutdown;
@@ -45,7 +47,7 @@ namespace BeautifulServerApplication
 				.Build();
 
 
-			_host.RunAsync(ServerProgramCancellationTokenSource.Token);
+			var hostRunTask = _host.RunAsync(ServerProgramCancellationTokenSource.Token);
 
 #if DEBUG
 			_serviceProvider = _host.Services;
@@ -54,8 +56,9 @@ namespace BeautifulServerApplication
 
 			RunConsoleInteraction();
 
+			await hostRunTask;
+
 			Dispose();
-			return Task.CompletedTask;
 		}
 
 		private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -79,7 +82,7 @@ namespace BeautifulServerApplication
 			ServerProgramCancellationTokenSource.Cancel();
 		}
 
-		private static void RunConsoleInteraction()
+		private static async void RunConsoleInteraction()
 		{
 			PlotInfo();
 
@@ -88,7 +91,7 @@ namespace BeautifulServerApplication
 				var input = Console.ReadLine();
 				if (input == "-e")
 				{
-					ServerProgramCancellationTokenSource.Cancel();
+					await ServerProgramCancellationTokenSource.CancelAsync();
 					break;
 				}
 #if DEBUG
@@ -101,6 +104,18 @@ namespace BeautifulServerApplication
 				{
 					var testMessage = new CheckAliveReply() { Success = false };
 					_sessionManager.SendMessageToAllClients(testMessage);
+				}
+				else if (int.TryParse(input, out var value))
+				{
+					for (int i = 0; i < value; i++)
+					{
+						var randomMessage = new RandomDataRequest
+						{
+							MessageObject = i.ToString()
+						};
+						_sessionManager?.SendMessageToAllClients(randomMessage);
+						await Task.Delay(1);
+					}
 				}
 #endif
 				else
@@ -118,6 +133,7 @@ namespace BeautifulServerApplication
 #if DEBUG
 			Console.WriteLine("-sr: Send message to random client");
 			Console.WriteLine("-sa: Send message to all client");
+			Console.WriteLine("-x: Send a number x radom messages to all clients");
 #endif
 		}
 
@@ -134,6 +150,8 @@ namespace BeautifulServerApplication
 					services.AddTransient<INetworkMessage, CheckAliveReply>();
 					services.AddTransient<INetworkMessage, LoginReply>();
 					services.AddTransient<INetworkMessage, LoginRequest>();
+					services.AddTransient<INetworkMessage, RandomDataRequest>();
+					services.AddTransient<INetworkMessage, RandomDataReply>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 					services.AddTransient<IDbContext, SessionsDbContext>();
 

@@ -11,9 +11,9 @@
 
         <beautifulMauiClientApplication:RandomContent2View Grid.Row="0" Grid.Column="1" />
 
-        <beautifulMauiClientApplication:RandomContent1View Grid.Row="1" Grid.Column="0" />
+        <beautifulMauiClientApplication:RandomContent3View Grid.Row="1" Grid.Column="0" />
 
-        <beautifulMauiClientApplication:RandomContent1View Grid.Row="1" Grid.Column="1" />
+        <beautifulMauiClientApplication:RandomContent3View Grid.Row="1" Grid.Column="1" />
 
     </Grid>
 

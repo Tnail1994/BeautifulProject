@@ -126,6 +126,9 @@
 	  <Compile Update="MainView.xaml.cs">
 	    <DependentUpon>MainView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="RandomContent3View.xaml.cs">
+	    <DependentUpon>RandomContent3View.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="RandomContent2View.xaml.cs">
 	    <DependentUpon>RandomContent2View.xaml</DependentUpon>
 	  </Compile>
@@ -135,6 +138,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="RandomContent3View.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="RandomContent2View.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

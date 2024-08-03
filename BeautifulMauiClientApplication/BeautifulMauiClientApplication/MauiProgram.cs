@@ -14,6 +14,7 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
+using SharedBeautifulData.Messages.RandomTestData;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -58,6 +59,8 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddTransient<INetworkMessage, CheckAliveReply>();
 			builder.Services.AddTransient<INetworkMessage, LoginReply>();
 			builder.Services.AddTransient<INetworkMessage, LoginRequest>();
+			builder.Services.AddTransient<INetworkMessage, RandomDataRequest>();
+			builder.Services.AddTransient<INetworkMessage, RandomDataReply>();
 
 			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();
@@ -102,6 +105,7 @@ namespace BeautifulMauiClientApplication
 			// Contents
 			builder.Services.AddTransient<RandomContent1ViewModel>();
 			builder.Services.AddTransient<RandomContent2ViewModel>();
+			builder.Services.AddTransient<RandomContent3ViewModel>();
 
 			return builder.Build();
 		}
