@@ -1,4 +1,4 @@
-# BeautifulProject
+# BeautifulProject - A Learning Journey - Advanced tutorial for c# net applications
  
 Welcome to this learning-focused project. Our aim is to create clean client applications across various platforms (such as console and MAUI) and server applications. Throughout this journey, we'll explore a wide range of topics that form the foundation of such applications.
 We'll delve into asynchronous communication via TCP/IP, dependency injection using containers, database usage with Entity Framework, and much more. This educational project serves as an excellent starting point for those looking to develop their own programming skills in these areas.
