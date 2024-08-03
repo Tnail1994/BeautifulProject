@@ -87,20 +87,20 @@ namespace AutoSynchronizedMessageHandling
 
 			var typeDiscriminator = autoSynchronizedMessageContext.TypeDiscriminator;
 
-			if (!_autoSynchronizedMessageContexts.Values.Any(context =>
+			if (_autoSynchronizedMessageContexts.Values.Any(context =>
 				    context.TypeDiscriminator.Equals(typeDiscriminator)))
+				return true;
+
+			this.LogDebug($"No auto sync registrations for {typeDiscriminator}. Stopping publishing loop...");
+
+			if (!_publishingCtSources.TryGetValue(typeDiscriminator, out var publishingCts))
 			{
-				this.LogDebug($"No auto sync registrations for {typeDiscriminator}. Stopping publishing loop...");
-
-				if (!_publishingCtSources.TryGetValue(typeDiscriminator, out var publishingCts))
-				{
-					this.LogError($"Cannot stop publishing loop, because did not find CTS for {typeDiscriminator}");
-					return false;
-				}
-
-				publishingCts.Cancel();
-				_publishingCtSources.Remove(typeDiscriminator);
+				this.LogError($"Cannot stop publishing loop, because did not find CTS for {typeDiscriminator}");
+				return false;
 			}
+
+			publishingCts.Cancel();
+			_publishingCtSources.Remove(typeDiscriminator);
 
 			return true;
 		}
