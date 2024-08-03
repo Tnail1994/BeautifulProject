@@ -5,6 +5,8 @@ namespace BeautifulMauiClientApplication
 		public RandomContent1View()
 		{
 			InitializeComponent();
+			BindingContext =
+				Application.Current?.MainPage?.Handler?.MauiContext?.Services.GetService<RandomContent1ViewModel>();
 		}
 	}
 }

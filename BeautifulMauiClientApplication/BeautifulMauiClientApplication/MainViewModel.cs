@@ -1,11 +1,18 @@
 ﻿using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Remote.Communication.Common.Client.Contracts;
 
 namespace BeautifulMauiClientApplication
 {
 	public partial class RandomContent1ViewModel : ObservableObject
 	{
+		private readonly IAsyncClientSettings _asyncClientSettings;
+
+		public RandomContent1ViewModel(IAsyncClientSettings asyncClientSettings)
+		{
+			_asyncClientSettings = asyncClientSettings;
+		}
 	}
 
 	public partial class TestViewModel : ObservableObject

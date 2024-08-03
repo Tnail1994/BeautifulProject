@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 BeautifulServerApplication/appsettings.Development.json
 BeautifulClientApplication/appsettings.Development.json
+/BeautifulMauiClientApplication/BeautifulMauiClientApplication/appsettings.Development.json
