@@ -15,7 +15,7 @@ namespace Tests.Remote.Communication.Transformation
 		[Fact]
 		public void WhenNoSuitableBaseMessagesAddedToServiceCollection_ThenTransformCall_ShouldRaiseTransformException()
 		{
-			//_dummyServiceCollection.AddTransient<IBaseMessage, TestMessage>();
+			//_dummyServiceCollection.AddTransient<INetworkMessage, TestMessage>();
 			_dummyProvider = _dummyServiceCollection.BuildServiceProvider();
 			var transformerService = new TransformerService(_dummyProvider);
 			Assert.Throws<TransformException>(() =>
@@ -26,7 +26,7 @@ namespace Tests.Remote.Communication.Transformation
 		public void
 			WhenSuitableBaseMessagesAddedToServiceCollection_ThenTransformCall_ShouldGiveBackTransformedObject_WithSameTestMessage()
 		{
-			_dummyServiceCollection.AddTransient<IBaseMessage, TestMessage>();
+			_dummyServiceCollection.AddTransient<INetworkMessage, TestMessage>();
 			_dummyProvider = _dummyServiceCollection.BuildServiceProvider();
 			var transformerService = new TransformerService(_dummyProvider);
 			var transformedObject = transformerService.Transform(TestMessage.CreateString());
@@ -41,7 +41,7 @@ namespace Tests.Remote.Communication.Transformation
 		[Fact]
 		public void WhenInputNotJsonFormat_InsideTransform_ThenShouldRaiseJsonReaderException()
 		{
-			_dummyServiceCollection.AddTransient<IBaseMessage, TestMessage>();
+			_dummyServiceCollection.AddTransient<INetworkMessage, TestMessage>();
 			_dummyProvider = _dummyServiceCollection.BuildServiceProvider();
 			var transformerService = new TransformerService(_dummyProvider);
 			Assert.Throws<JsonReaderException>(() =>
@@ -52,8 +52,8 @@ namespace Tests.Remote.Communication.Transformation
 		public void
 			WhenInputJsonFormat_ButWithWrongSerializerSettings_InsideTransform_ThenShouldRaiseTransformException()
 		{
-			_dummyServiceCollection.AddTransient<IBaseMessage, TestMessage>();
-			_dummyServiceCollection.AddTransient<IBaseMessage, TestMessage>();
+			_dummyServiceCollection.AddTransient<INetworkMessage, TestMessage>();
+			_dummyServiceCollection.AddTransient<INetworkMessage, TestMessage>();
 			_dummyProvider = _dummyServiceCollection.BuildServiceProvider();
 			var transformerService = new TransformerService(_dummyProvider);
 			var testMessage = TestMessage.Create();
@@ -64,7 +64,7 @@ namespace Tests.Remote.Communication.Transformation
 		[Fact]
 		public void WhenWrongMessageIsAddedToServiceCollection_InsideTransform_ThenShouldRaiseTransformException()
 		{
-			_dummyServiceCollection.AddTransient<IBaseMessage, WrongTestMessage>();
+			_dummyServiceCollection.AddTransient<INetworkMessage, WrongTestMessage>();
 			_dummyProvider = _dummyServiceCollection.BuildServiceProvider();
 			var transformerService = new TransformerService(_dummyProvider);
 			Assert.Throws<TransformException>(() =>

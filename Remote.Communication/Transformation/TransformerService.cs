@@ -19,10 +19,10 @@ namespace Remote.Communication.Transformation
 
 		private void RegisterAllBaseMessagesTransformMethod(IServiceProvider serviceProvider)
 		{
-			var baseMessageTypes = serviceProvider.GetServices<IBaseMessage>()
+			var baseMessageTypes = serviceProvider.GetServices<INetworkMessage>()
 				.Select(m => m.GetType())
 				.Where(t => t.BaseType?.IsGenericType == true &&
-				            t.BaseType.GetGenericTypeDefinition() == typeof(BaseMessage<>));
+				            t.BaseType.GetGenericTypeDefinition() == typeof(NetworkMessage<>));
 
 			this.LogDebug("Registering BaseMessageTypes: **");
 

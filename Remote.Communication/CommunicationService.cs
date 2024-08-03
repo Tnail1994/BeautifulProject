@@ -60,12 +60,12 @@ namespace Remote.Communication
 			_running = true;
 		}
 
-		public Task<T> ReceiveAsync<T>() where T : IBaseMessage
+		public Task<T> ReceiveAsync<T>() where T : INetworkMessage
 		{
 			return ReceiveAsync<T>(_cancellationReceivingTokenSource.Token);
 		}
 
-		public Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage
+		public Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : INetworkMessage
 		{
 			var transformedObject = _transformedObjects.Values.FirstOrDefault(x => x.Object is T);
 
@@ -98,7 +98,7 @@ namespace Remote.Communication
 		}
 
 		public Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageObj)
-			where TReplyMessageType : IBaseMessage
+			where TReplyMessageType : INetworkMessage
 		{
 			SendAsync(messageObj);
 			return ReceiveAsync<TReplyMessageType>();
@@ -107,7 +107,7 @@ namespace Remote.Communication
 
 		public async Task<TAwaitMessageType>
 			ReceiveAndSendAsync<TAwaitMessageType>(object messageObj)
-			where TAwaitMessageType : IBaseMessage
+			where TAwaitMessageType : INetworkMessage
 		{
 			var awaitMessage = await ReceiveAsync<TAwaitMessageType>();
 			SendAsync(messageObj);
@@ -129,7 +129,7 @@ namespace Remote.Communication
 		}
 
 
-		private async Task<T> WaitForReceive<T>() where T : IBaseMessage
+		private async Task<T> WaitForReceive<T>() where T : INetworkMessage
 		{
 			var transformedObjectWaiter = TransformedObjectWaiter.Create(GetDiscriminator<T>());
 			_transformedObjectWaiters.TryAdd(transformedObjectWaiter.Id, transformedObjectWaiter);
@@ -143,7 +143,7 @@ namespace Remote.Communication
 			return (T)transformedObject.Object;
 		}
 
-		private static string GetDiscriminator<T>() where T : IBaseMessage
+		private static string GetDiscriminator<T>() where T : INetworkMessage
 		{
 			return typeof(T).Name;
 		}

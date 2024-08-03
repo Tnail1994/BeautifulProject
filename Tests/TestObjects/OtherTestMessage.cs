@@ -4,7 +4,7 @@ using Remote.Communication.Common.Transformation.Implementations;
 
 namespace Tests.TestObjects
 {
-	public class OtherTestMessage : BaseMessage<TestObject>
+	public class OtherTestMessage : NetworkMessage<TestObject>, INetworkMessage
 	{
 		[JsonIgnore]
 		public TestObject TestObject

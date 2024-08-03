@@ -130,10 +130,10 @@ namespace BeautifulServerApplication
 					services.AddHostedService<SessionManager>();
 
 					// Server wide
-					services.AddTransient<IBaseMessage, CheckAliveRequest>();
-					services.AddTransient<IBaseMessage, CheckAliveReply>();
-					services.AddTransient<IBaseMessage, LoginReply>();
-					services.AddTransient<IBaseMessage, LoginRequest>();
+					services.AddTransient<INetworkMessage, CheckAliveRequest>();
+					services.AddTransient<INetworkMessage, CheckAliveReply>();
+					services.AddTransient<INetworkMessage, LoginReply>();
+					services.AddTransient<INetworkMessage, LoginRequest>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 					services.AddTransient<IDbContext, SessionsDbContext>();
 

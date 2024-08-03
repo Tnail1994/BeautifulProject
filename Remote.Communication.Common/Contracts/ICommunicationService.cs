@@ -7,12 +7,12 @@ namespace Remote.Communication.Common.Contracts
 		event EventHandler<string>? ConnectionLost;
 		void Start();
 
-		Task<T> ReceiveAsync<T>() where T : IBaseMessage;
-		Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : IBaseMessage;
+		Task<T> ReceiveAsync<T>() where T : INetworkMessage;
+		Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : INetworkMessage;
 		void SendAsync(object messageObj);
 
 		Task<TReplyMessageType> SendAndReceiveAsync<TReplyMessageType>(object messageObj)
-			where TReplyMessageType : IBaseMessage;
+			where TReplyMessageType : INetworkMessage;
 
 		/// <summary>
 		/// /// Use this, if you do not need info of the awaited message for the sending message
@@ -21,7 +21,7 @@ namespace Remote.Communication.Common.Contracts
 		/// <param name="messageObj">The object to send</param>
 		/// <returns></returns>
 		Task<TAwaitMessageType> ReceiveAndSendAsync<TAwaitMessageType>(object messageObj)
-			where TAwaitMessageType : IBaseMessage;
+			where TAwaitMessageType : INetworkMessage;
 
 		void Stop();
 	}

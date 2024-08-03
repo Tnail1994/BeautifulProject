@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AutoSychronizatedMessageHandling\AutoSynchronizedMessageHandling.csproj" />
     <ProjectReference Include="..\BeautifulClientApplication\BeautifulClientApplication.csproj" />
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />

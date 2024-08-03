@@ -2,20 +2,23 @@
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Implementations;
 
+
 namespace Tests.TestObjects
 {
-	public class WrongTestMessage : INetworkMessage
+	public class TestRequestMessage : NetworkMessage<TestObject>, IRequestMessage
 	{
-		private static WrongTestMessage Create()
-		{
-			return new WrongTestMessage();
-		}
-
 		public static string CreateString()
 		{
 			return JsonConvert.SerializeObject(Create(), JsonConfig.Settings);
 		}
 
-		public string TypeDiscriminator => string.Empty;
+
+		public static TestRequestMessage Create()
+		{
+			return new TestRequestMessage
+			{
+				MessageObject = TestObject.Create("MockRequestMessage")
+			};
+		}
 	}
 }

@@ -4,18 +4,20 @@ using Remote.Communication.Common.Transformation.Implementations;
 
 namespace Tests.TestObjects
 {
-	public class WrongTestMessage : INetworkMessage
+	public class TestReplyMessage : NetworkMessage<TestObject>, IReplyMessage
 	{
-		private static WrongTestMessage Create()
-		{
-			return new WrongTestMessage();
-		}
-
 		public static string CreateString()
 		{
 			return JsonConvert.SerializeObject(Create(), JsonConfig.Settings);
 		}
 
-		public string TypeDiscriminator => string.Empty;
+
+		public static TestReplyMessage Create()
+		{
+			return new TestReplyMessage
+			{
+				MessageObject = TestObject.Create("MockReplyMessage")
+			};
+		}
 	}
 }
