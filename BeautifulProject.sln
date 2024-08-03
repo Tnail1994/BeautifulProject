@@ -45,9 +45,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DbManagement.Common", "DbMa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MessageHandling", "MessageHandling", "{A0672F42-6C09-416C-A3A9-1352A5E25966}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSynchronizedMessageHandling", "AutoSychronizatedMessageHandling\AutoSynchronizedMessageHandling.csproj", "{639E39BE-F1E7-47B0-80CC-BEF54EDE71CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSynchronizedMessageHandling", "AutoSychronizatedMessageHandling\AutoSynchronizedMessageHandling.csproj", "{639E39BE-F1E7-47B0-80CC-BEF54EDE71CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoSynchronizedMessageHandling.Common", "AutoSynchronizedMessageHandling.Common\AutoSynchronizedMessageHandling.Common.csproj", "{1A77C89E-08FD-4219-A453-29EA5F3F4B95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoSynchronizedMessageHandling.Common", "AutoSynchronizedMessageHandling.Common\AutoSynchronizedMessageHandling.Common.csproj", "{1A77C89E-08FD-4219-A453-29EA5F3F4B95}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewFolder1", "NewFolder1", "{89E901CA-5F3A-417F-A450-AE10156C2FCA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
