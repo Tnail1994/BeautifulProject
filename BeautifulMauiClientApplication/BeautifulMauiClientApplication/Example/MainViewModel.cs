@@ -1,4 +1,5 @@
-﻿using AutoSynchronizedMessageHandling.Common.Contracts;
+﻿using System.Collections.ObjectModel;
+using AutoSynchronizedMessageHandling.Common.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Remote.Communication.Common.Contracts;
@@ -6,9 +7,8 @@ using Remote.Communication.Common.Implementations;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Messages.RandomTestData;
-using System.Collections.ObjectModel;
 
-namespace BeautifulMauiClientApplication
+namespace BeautifulMauiClientApplication.Example
 {
 	public partial class RandomContent3ViewModel : ObservableObject, IDisposable
 	{
@@ -48,7 +48,7 @@ namespace BeautifulMauiClientApplication
 
 		[ObservableProperty] private string _text = string.Empty;
 
-		private int _counter = 0;
+		private int _counter;
 
 		public RandomContent2ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
 		{
@@ -65,7 +65,7 @@ namespace BeautifulMauiClientApplication
 
 		private INetworkMessage? OnCheckAliveMessageRequest(INetworkMessage requestMessage)
 		{
-			if (requestMessage is CheckAliveRequest checkAliveRequest)
+			if (requestMessage is CheckAliveRequest)
 			{
 				_counter++;
 				SetText();
@@ -112,9 +112,14 @@ namespace BeautifulMauiClientApplication
 
 			return null;
 		}
+
+		public void Dispose()
+		{
+			_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
+		}
 	}
 
-	public partial class TestViewModel : ObservableObject
+	public class TestViewModel : ObservableObject
 	{
 		private readonly IConnectionService _connectionService;
 		private readonly ICommunicationService _communicationService;
@@ -132,7 +137,7 @@ namespace BeautifulMauiClientApplication
 		private async void Start()
 		{
 			_connectionService.Start();
-			var receiveMessageTask = await _communicationService.ReceiveAsync<LoginRequest>();
+			await _communicationService.ReceiveAsync<LoginRequest>();
 			_communicationService.SendAsync(new LoginReply
 			{
 				Token = "a"

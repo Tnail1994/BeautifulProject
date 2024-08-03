@@ -1,3 +1,5 @@
+using BeautifulMauiClientApplication.Example;
+
 namespace BeautifulMauiClientApplication;
 
 public partial class TestView : ContentPage

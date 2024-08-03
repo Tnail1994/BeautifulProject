@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="BeautifulMauiClientApplication.MainView"
+    x:Class="BeautifulMauiClientApplication.Example.MainView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:beautifulMauiClientApplication="clr-namespace:BeautifulMauiClientApplication"
+    xmlns:example="clr-namespace:BeautifulMauiClientApplication.Example"
     Title="Main Page"
-    x:DataType="beautifulMauiClientApplication:MainViewModel">
+    x:DataType="example:MainViewModel">
 
     <Grid RowDefinitions="Auto,*">
         <Button
@@ -25,7 +26,7 @@
             IsVisible="{Binding IsNotBusy}"
             ItemsSource="{Binding Items}">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="beautifulMauiClientApplication:ItemObj">
+                <DataTemplate x:DataType="example:ItemObj">
                     <Label Padding="10" Text="{Binding Name}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>

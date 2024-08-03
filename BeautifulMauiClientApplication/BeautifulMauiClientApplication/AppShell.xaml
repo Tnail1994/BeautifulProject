@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:BeautifulMauiClientApplication"
+    xmlns:example="clr-namespace:BeautifulMauiClientApplication.Example"
     Title="BeautifulMauiClientApplication">
 
     <!--  Flyout header (optional)  -->
@@ -23,7 +24,7 @@
         <Tab>
             <ShellContent
                 Title="Main"
-                ContentTemplate="{DataTemplate local:MainView}"
+                ContentTemplate="{DataTemplate example:MainView}"
                 Route="MainPage" />
         </Tab>
     </FlyoutItem>

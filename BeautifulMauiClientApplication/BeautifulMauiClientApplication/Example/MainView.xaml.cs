@@ -1,4 +1,4 @@
-﻿namespace BeautifulMauiClientApplication
+﻿namespace BeautifulMauiClientApplication.Example
 {
 	public partial class MainView : ContentPage
 	{

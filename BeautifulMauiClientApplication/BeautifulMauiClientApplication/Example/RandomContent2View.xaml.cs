@@ -6,7 +6,8 @@ namespace BeautifulMauiClientApplication
 		{
 			InitializeComponent();
 			BindingContext =
-				Application.Current?.MainPage?.Handler?.MauiContext?.Services.GetService<RandomContent2ViewModel>();
+				Application.Current?.MainPage?.Handler?.MauiContext?.Services
+					.GetService<Example.RandomContent2ViewModel>();
 		}
 	}
 }

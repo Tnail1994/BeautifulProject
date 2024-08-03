@@ -1,5 +1,6 @@
 ﻿using AutoSynchronizedMessageHandling;
 using AutoSynchronizedMessageHandling.Common.Contracts;
+using BeautifulMauiClientApplication.Example;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -97,15 +98,15 @@ namespace BeautifulMauiClientApplication
 
 			// Pages
 			builder.Services.AddTransient<MainView>();
-			builder.Services.AddTransient<MainViewModel>();
+			builder.Services.AddTransient<Example.MainViewModel>();
 
 			builder.Services.AddTransient<TestView>();
 			builder.Services.AddTransient<TestViewModel>();
 
 			// Contents
-			builder.Services.AddTransient<RandomContent1ViewModel>();
-			builder.Services.AddTransient<RandomContent2ViewModel>();
-			builder.Services.AddTransient<RandomContent3ViewModel>();
+			builder.Services.AddTransient<Example.RandomContent1ViewModel>();
+			builder.Services.AddTransient<Example.RandomContent2ViewModel>();
+			builder.Services.AddTransient<Example.RandomContent3ViewModel>();
 
 			return builder.Build();
 		}
