@@ -1,14 +1,19 @@
-﻿using CommunityToolkit.Maui;
+﻿using AutoSynchronizedMessageHandling;
+using AutoSynchronizedMessageHandling.Common.Contracts;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Remote.Communication;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Communication.Common.Contracts;
+using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
+using SharedBeautifulData.Messages.Authorize;
+using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulServices;
 using SharedBeautifulServices.Common;
 
@@ -48,6 +53,12 @@ namespace BeautifulMauiClientApplication
 
 			builder.Configuration.AddConfiguration(config);
 
+			// Message types
+			builder.Services.AddTransient<INetworkMessage, CheckAliveRequest>();
+			builder.Services.AddTransient<INetworkMessage, CheckAliveReply>();
+			builder.Services.AddTransient<INetworkMessage, LoginReply>();
+			builder.Services.AddTransient<INetworkMessage, LoginRequest>();
+
 			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();
 
@@ -61,6 +72,8 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddSingleton<ICheckAliveService, CheckAliveService>();
 			builder.Services.AddSingleton<IAsyncClient>(provider =>
 				provider.GetRequiredService<IAsyncClientFactory>().Create());
+
+			builder.Services.AddSingleton<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
 
 			// Configurations
 			builder.Services.AddSingleton<IAsyncClientSettings>(_ =>
@@ -88,6 +101,7 @@ namespace BeautifulMauiClientApplication
 
 			// Contents
 			builder.Services.AddTransient<RandomContent1ViewModel>();
+			builder.Services.AddTransient<RandomContent2ViewModel>();
 
 			return builder.Build();
 		}

@@ -86,6 +86,7 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.71" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.71" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Serilog" Version="4.0.1" />
 		<PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
 		<PackageReference Include="Serilog.Sinks.Map" Version="2.0.0" />
@@ -125,12 +126,18 @@
 	  <Compile Update="MainView.xaml.cs">
 	    <DependentUpon>MainView.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="RandomContent2View.xaml.cs">
+	    <DependentUpon>RandomContent2View.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="RandomContent1View.xaml.cs">
 	    <DependentUpon>RandomContent1View.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="RandomContent2View.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="RandomContent1View.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

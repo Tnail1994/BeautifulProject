@@ -26,7 +26,7 @@ namespace AutoSynchronizedMessageHandling
 		}
 
 		public string Subscribe<TRequestMessage>(
-			Func<IRequestMessage, IReplyMessage> replyMessageAction,
+			Func<IRequestMessage, IReplyMessage?> replyMessageAction,
 			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : IRequestMessage
 		{
 			if (replyMessageAction == null)
@@ -125,6 +125,10 @@ namespace AutoSynchronizedMessageHandling
 			TRequestMessage receivedRequestMessage) where TRequestMessage : IRequestMessage
 		{
 			var replyMessage = autoSynchronizedMessageContext.ReplyMessageAction(receivedRequestMessage);
+
+			if (replyMessage == null)
+				return;
+
 			_communicationService.SendAsync(replyMessage);
 		}
 
@@ -140,7 +144,7 @@ namespace AutoSynchronizedMessageHandling
 		private class AutoSynchronizedMessageContext
 		{
 			private AutoSynchronizedMessageContext(string id, string typeDiscriminator,
-				Func<IRequestMessage, IReplyMessage> replyMessageAction, AutoSyncType autoSyncType,
+				Func<IRequestMessage, IReplyMessage?> replyMessageAction, AutoSyncType autoSyncType,
 				CancellationTokenSource publishingLoopCts)
 			{
 				Id = id;
@@ -153,7 +157,7 @@ namespace AutoSynchronizedMessageHandling
 			public CancellationTokenSource PublishingLoopCts { get; set; }
 
 			public static AutoSynchronizedMessageContext Create(string typeDiscriminator,
-				Func<IRequestMessage, IReplyMessage> replyMessageAction, AutoSyncType autoSyncType,
+				Func<IRequestMessage, IReplyMessage?> replyMessageAction, AutoSyncType autoSyncType,
 				CancellationTokenSource publishingLoopCts)
 			{
 				var guidId = GuidIdCreator.CreateString();
@@ -163,7 +167,7 @@ namespace AutoSynchronizedMessageHandling
 
 			public string Id { get; }
 			public AutoSyncType AutoSyncType { get; }
-			public Func<IRequestMessage, IReplyMessage> ReplyMessageAction { get; }
+			public Func<IRequestMessage, IReplyMessage?> ReplyMessageAction { get; }
 			public string TypeDiscriminator { get; }
 		}
 	}

@@ -1,24 +1,70 @@
-﻿using System.Collections.ObjectModel;
+﻿using AutoSynchronizedMessageHandling.Common.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Core.Extensions;
-using Remote.Communication.Common.Client.Contracts;
+using Remote.Communication.Common.Contracts;
+using SharedBeautifulData.Messages.Authorize;
+using System.Collections.ObjectModel;
+using Remote.Communication.Common.Implementations;
+using SharedBeautifulData.Messages.CheckAlive;
 
 namespace BeautifulMauiClientApplication
 {
+	public partial class RandomContent2ViewModel : ObservableObject
+	{
+		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
+
+		public RandomContent2ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
+		{
+			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
+			_autoSynchronizedMessageHandler.Subscribe<CheckAliveRequest>(OnCheckAliveMessageRequest);
+		}
+
+		private IReplyMessage? OnCheckAliveMessageRequest(IRequestMessage requestMessage)
+		{
+			if (requestMessage is CheckAliveRequest checkAliveRequest)
+			{
+			}
+
+			return null;
+		}
+	}
+
 	public partial class RandomContent1ViewModel : ObservableObject
 	{
-		private readonly IAsyncClientSettings _asyncClientSettings;
-
-		public RandomContent1ViewModel(IAsyncClientSettings asyncClientSettings)
-		{
-			_asyncClientSettings = asyncClientSettings;
-			this.LogInfo("Random content created");
-		}
 	}
 
 	public partial class TestViewModel : ObservableObject
 	{
+		private readonly IConnectionService _connectionService;
+		private readonly ICommunicationService _communicationService;
+
+		// Dummy init of communication 
+		public TestViewModel(IConnectionService connectionService, ICommunicationService communicationService)
+		{
+			_connectionService = connectionService;
+			_communicationService = communicationService;
+			_connectionService.ConnectionLost += OnConnectionLost;
+			_connectionService.Reconnected += OnReconnected;
+			Start();
+		}
+
+		private async void Start()
+		{
+			_connectionService.Start();
+			var receiveMessageTask = await _communicationService.ReceiveAsync<LoginRequest>();
+			_communicationService.SendAsync(new LoginReply
+			{
+				Token = "a"
+			});
+		}
+
+		private void OnReconnected()
+		{
+		}
+
+		private void OnConnectionLost(string reason)
+		{
+		}
 	}
 
 	public partial class MainViewModel : ObservableObject
