@@ -8,6 +8,7 @@ using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
+using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
@@ -124,6 +125,8 @@ namespace BeautifulClientApplication
 						hostContext.Configuration.GetSection(nameof(AsyncClientFactorySettings)));
 					services.Configure<ConnectionSettings>(
 						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
+					services.Configure<SessionKeySettings>(
+						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
 
 					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
@@ -133,6 +136,8 @@ namespace BeautifulClientApplication
 						provider.GetRequiredService<IOptions<AsyncClientFactorySettings>>().Value);
 					services.AddSingleton<IConnectionSettings>(provider =>
 						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
+					services.AddSingleton<ISessionKeySettings>(provider =>
+						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
 				});
 	}
 }
