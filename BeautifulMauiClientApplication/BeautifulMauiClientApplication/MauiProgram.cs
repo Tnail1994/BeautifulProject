@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace BeautifulMauiClientApplication
 {
@@ -9,6 +10,7 @@ namespace BeautifulMauiClientApplication
 			var builder = MauiApp.CreateBuilder();
 			builder
 				.UseMauiApp<App>()
+				.UseMauiCommunityToolkit()
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -18,6 +20,10 @@ namespace BeautifulMauiClientApplication
 #if DEBUG
 			builder.Logging.AddDebug();
 #endif
+			builder.Services.AddSingleton<IDataService, DataService>();
+
+			builder.Services.AddTransient<MainPage>();
+			builder.Services.AddTransient<MainViewModel>();
 
 			return builder.Build();
 		}
