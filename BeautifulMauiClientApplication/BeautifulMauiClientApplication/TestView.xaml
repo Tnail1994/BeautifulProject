@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="BeautifulMauiClientApplication.TestView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:beautifulMauiClientApplication="clr-namespace:BeautifulMauiClientApplication"
+    Title="TestView">
+    <Grid ColumnDefinitions="*, *" RowDefinitions="*,*">
+
+        <beautifulMauiClientApplication:RandomContent1View Grid.Row="0" Grid.Column="0" />
+
+        <beautifulMauiClientApplication:RandomContent1View Grid.Row="0" Grid.Column="1" />
+
+        <beautifulMauiClientApplication:RandomContent1View Grid.Row="1" Grid.Column="0" />
+
+        <beautifulMauiClientApplication:RandomContent1View Grid.Row="1" Grid.Column="1" />
+
+    </Grid>
+
+</ContentPage>

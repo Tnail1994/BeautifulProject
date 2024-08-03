@@ -28,4 +28,13 @@
         </Tab>
     </FlyoutItem>
 
+    <FlyoutItem Title="Test" Icon="appiconfg.svg">
+        <Tab>
+            <ShellContent
+                Title="Test"
+                ContentTemplate="{DataTemplate local:TestView}"
+                Route="MainPage" />
+        </Tab>
+    </FlyoutItem>
+
 </Shell>

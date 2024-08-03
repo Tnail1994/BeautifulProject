@@ -20,10 +20,19 @@ namespace BeautifulMauiClientApplication
 #if DEBUG
 			builder.Logging.AddDebug();
 #endif
+
+			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();
 
+			// Pages
 			builder.Services.AddTransient<MainView>();
 			builder.Services.AddTransient<MainViewModel>();
+
+			builder.Services.AddTransient<TestView>();
+			builder.Services.AddTransient<TestViewModel>();
+
+			//// Contents
+			//builder.Services.AddTransient<RandomContent1ViewModel>();
 
 			return builder.Build();
 		}

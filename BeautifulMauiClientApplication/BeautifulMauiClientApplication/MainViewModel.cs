@@ -4,6 +4,14 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace BeautifulMauiClientApplication
 {
+	public partial class RandomContent1ViewModel : ObservableObject
+	{
+	}
+
+	public partial class TestViewModel : ObservableObject
+	{
+	}
+
 	public partial class MainViewModel : ObservableObject
 	{
 		private readonly IDataService _dataService;
