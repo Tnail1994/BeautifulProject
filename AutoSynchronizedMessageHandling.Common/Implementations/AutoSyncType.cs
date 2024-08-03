@@ -12,5 +12,7 @@
 		/// Be careful using thread unsafe collections.
 		/// </summary>
 		This = 1,
+
+		Custom = 2,
 	}
 }

@@ -29,15 +29,20 @@ namespace AutoSynchronizedMessageHandling
 
 		public string Subscribe<TRequestMessage>(
 			Func<INetworkMessage, INetworkMessage?> replyMessageAction,
-			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : INetworkMessage
+			AutoSyncType autoSyncType = AutoSyncType.Main, SynchronizationContext? synchronizationContext = null)
+			where TRequestMessage : INetworkMessage
 		{
 			if (replyMessageAction == null)
 				throw new InvalidOperationException("Reply message action not set.");
 
 			string typeDiscriminator = typeof(TRequestMessage).Name;
 
+			if (synchronizationContext != null)
+				autoSyncType = AutoSyncType.Custom;
+
 			var newAutoSynchronizedMessageContext =
-				AutoSynchronizedMessageContext.Create(typeDiscriminator, replyMessageAction, autoSyncType);
+				AutoSynchronizedMessageContext.Create(typeDiscriminator, replyMessageAction, autoSyncType,
+					synchronizationContext);
 
 			var addingResult = TryAddAutoSyncContext(newAutoSynchronizedMessageContext);
 
@@ -130,19 +135,40 @@ namespace AutoSynchronizedMessageHandling
 					foreach (var autoSynchronizedMessageContext in _autoSynchronizedMessageContexts.Values.Where(
 						         context => context.TypeDiscriminator.Equals(discriminator)))
 					{
-						if (autoSynchronizedMessageContext.AutoSyncType.Equals(AutoSyncType.Main))
-							_syncContext.Post(
-								_ =>
-								{
-									ExecuteReplyMessageAction(autoSynchronizedMessageContext, receivedRequestMessage);
-								}, null);
-						else
+						switch (autoSynchronizedMessageContext.AutoSyncType)
 						{
-							ExecuteReplyMessageAction(autoSynchronizedMessageContext, receivedRequestMessage);
+							case AutoSyncType.Main:
+								PostExecuteReplyMessageAction(autoSynchronizedMessageContext, receivedRequestMessage,
+									_syncContext);
+								break;
+
+							case AutoSyncType.This:
+								ExecuteReplyMessageAction(autoSynchronizedMessageContext, receivedRequestMessage);
+								break;
+
+							case AutoSyncType.Custom:
+								PostExecuteReplyMessageAction(autoSynchronizedMessageContext, receivedRequestMessage,
+									autoSynchronizedMessageContext.SynchronizationContext);
+								break;
 						}
 					}
 				}
 			}, publishingLoopCts.Token);
+		}
+
+		private void PostExecuteReplyMessageAction<TRequestMessage>(
+			AutoSynchronizedMessageContext autoSynchronizedMessageContext,
+			TRequestMessage receivedRequestMessage, SynchronizationContext? synchronizationContext)
+			where TRequestMessage : INetworkMessage
+		{
+			synchronizationContext ??= _syncContext;
+
+			synchronizationContext.Post(
+				_ =>
+				{
+					ExecuteReplyMessageAction(autoSynchronizedMessageContext,
+						receivedRequestMessage);
+				}, null);
 		}
 
 		private void ExecuteReplyMessageAction<TRequestMessage>(
@@ -169,24 +195,29 @@ namespace AutoSynchronizedMessageHandling
 		private class AutoSynchronizedMessageContext
 		{
 			private AutoSynchronizedMessageContext(string id, string typeDiscriminator,
-				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType)
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
+				SynchronizationContext? synchronizationContext)
 			{
 				Id = id;
 				AutoSyncType = autoSyncType;
+				SynchronizationContext = synchronizationContext;
 				TypeDiscriminator = typeDiscriminator;
 				ReplyMessageAction = replyMessageAction;
 			}
 
 
 			public static AutoSynchronizedMessageContext Create(string typeDiscriminator,
-				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType)
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
+				SynchronizationContext? synchronizationContext)
 			{
 				var guidId = GuidIdCreator.CreateString();
-				return new AutoSynchronizedMessageContext(guidId, typeDiscriminator, replyMessageAction, autoSyncType);
+				return new AutoSynchronizedMessageContext(guidId, typeDiscriminator, replyMessageAction, autoSyncType,
+					synchronizationContext);
 			}
 
 			public string Id { get; }
 			public AutoSyncType AutoSyncType { get; }
+			public SynchronizationContext? SynchronizationContext { get; }
 			public Func<INetworkMessage, INetworkMessage?> ReplyMessageAction { get; }
 			public string TypeDiscriminator { get; }
 		}
