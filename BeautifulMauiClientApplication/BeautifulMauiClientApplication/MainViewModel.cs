@@ -9,9 +9,10 @@ using SharedBeautifulData.Messages.CheckAlive;
 
 namespace BeautifulMauiClientApplication
 {
-	public partial class RandomContent2ViewModel : ObservableObject
+	public partial class RandomContent2ViewModel : ObservableObject, IDisposable
 	{
 		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
+		private readonly string _subscribeId;
 
 		[ObservableProperty] private string _text = string.Empty;
 
@@ -20,7 +21,7 @@ namespace BeautifulMauiClientApplication
 		public RandomContent2ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
 		{
 			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
-			_autoSynchronizedMessageHandler.Subscribe<CheckAliveRequest>(OnCheckAliveMessageRequest);
+			_subscribeId = _autoSynchronizedMessageHandler.Subscribe<CheckAliveRequest>(OnCheckAliveMessageRequest);
 
 			SetText();
 		}
@@ -40,9 +41,14 @@ namespace BeautifulMauiClientApplication
 
 			return null;
 		}
+
+		public void Dispose()
+		{
+			_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
+		}
 	}
 
-	public partial class RandomContent1ViewModel : ObservableObject
+	public partial class RandomContent1ViewModel : ObservableObject, IDisposable
 	{
 		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
 		private readonly string _subscribeId;
@@ -73,6 +79,11 @@ namespace BeautifulMauiClientApplication
 			}
 
 			return null;
+		}
+
+		public void Dispose()
+		{
+			_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
 		}
 	}
 
