@@ -8,7 +8,7 @@ namespace SharedBeautifulData.Messages.Authorize
 		Username,
 	}
 
-	public class LoginRequest : NetworkMessage<LoginRequestType>, IRequestMessage
+	public class LoginRequest : NetworkMessage<LoginRequestType>
 	{
 		[JsonIgnore]
 		public LoginRequestType Type

@@ -4,7 +4,7 @@ using Remote.Communication.Common.Transformation.Implementations;
 
 namespace Tests.TestObjects
 {
-	public class TestReplyMessage : NetworkMessage<TestObject>, IReplyMessage
+	public class TestReplyMessage : NetworkMessage<TestObject>
 	{
 		public static string CreateString()
 		{

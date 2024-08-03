@@ -3,7 +3,7 @@ using Remote.Communication.Common.Implementations;
 
 namespace SharedBeautifulData.Messages.Authorize
 {
-	public class LogoutRequest : NetworkMessage<string>, IRequestMessage
+	public class LogoutRequest : NetworkMessage<string>
 	{
 		[JsonIgnore]
 		public string? Reason

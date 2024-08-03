@@ -13,16 +13,29 @@ namespace BeautifulMauiClientApplication
 	{
 		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
 
+		[ObservableProperty] private string _text = string.Empty;
+
+		private int _counter = 0;
+
 		public RandomContent2ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
 		{
 			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
 			_autoSynchronizedMessageHandler.Subscribe<CheckAliveRequest>(OnCheckAliveMessageRequest);
+
+			SetText();
 		}
 
-		private IReplyMessage? OnCheckAliveMessageRequest(IRequestMessage requestMessage)
+		private void SetText()
+		{
+			Text = $"Check alive request counter: {_counter}";
+		}
+
+		private INetworkMessage? OnCheckAliveMessageRequest(INetworkMessage requestMessage)
 		{
 			if (requestMessage is CheckAliveRequest checkAliveRequest)
 			{
+				_counter++;
+				SetText();
 			}
 
 			return null;
@@ -31,6 +44,36 @@ namespace BeautifulMauiClientApplication
 
 	public partial class RandomContent1ViewModel : ObservableObject
 	{
+		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
+		private readonly string _subscribeId;
+
+		[ObservableProperty] private string _text = string.Empty;
+
+		private int _counter = 0;
+
+		public RandomContent1ViewModel(IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler)
+		{
+			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
+			_subscribeId = _autoSynchronizedMessageHandler.Subscribe<CheckAliveReply>(OnCheckAliveMessageReply);
+
+			SetText();
+		}
+
+		private void SetText()
+		{
+			Text = $"Check alive reply counter: {_counter}";
+		}
+
+		private INetworkMessage? OnCheckAliveMessageReply(INetworkMessage requestMessage)
+		{
+			if (requestMessage is CheckAliveReply checkAliveReply)
+			{
+				_counter++;
+				SetText();
+			}
+
+			return null;
+		}
 	}
 
 	public partial class TestViewModel : ObservableObject

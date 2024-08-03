@@ -5,7 +5,7 @@ using Remote.Communication.Common.Transformation.Implementations;
 
 namespace Tests.TestObjects
 {
-	public class TestRequestMessage : NetworkMessage<TestObject>, IRequestMessage
+	public class TestRequestMessage : NetworkMessage<TestObject>
 	{
 		public static string CreateString()
 		{

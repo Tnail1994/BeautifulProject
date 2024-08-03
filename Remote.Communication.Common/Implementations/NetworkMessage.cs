@@ -7,15 +7,7 @@ namespace Remote.Communication.Common.Implementations
 	{
 	}
 
-	public interface IRequestMessage : INetworkMessage
-	{
-	}
-
-	public interface IReplyMessage : INetworkMessage
-	{
-	}
-
-	public abstract class NetworkMessage<T>
+	public abstract class NetworkMessage<T> : INetworkMessage
 	{
 		public T? MessageObject { get; set; }
 

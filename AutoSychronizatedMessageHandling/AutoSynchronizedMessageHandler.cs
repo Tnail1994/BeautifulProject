@@ -26,8 +26,8 @@ namespace AutoSynchronizedMessageHandling
 		}
 
 		public string Subscribe<TRequestMessage>(
-			Func<IRequestMessage, IReplyMessage?> replyMessageAction,
-			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : IRequestMessage
+			Func<INetworkMessage, INetworkMessage?> replyMessageAction,
+			AutoSyncType autoSyncType = AutoSyncType.Main) where TRequestMessage : INetworkMessage
 		{
 			if (replyMessageAction == null)
 				throw new InvalidOperationException("Reply message action not set.");
@@ -91,7 +91,7 @@ namespace AutoSynchronizedMessageHandling
 		}
 
 		private void StartPublishingLoop<TRequestMessage>(CancellationTokenSource publishingLoopCts)
-			where TRequestMessage : IRequestMessage
+			where TRequestMessage : INetworkMessage
 		{
 			Task.Factory.StartNew(async () =>
 			{
@@ -122,7 +122,7 @@ namespace AutoSynchronizedMessageHandling
 
 		private void ExecuteReplyMessageAction<TRequestMessage>(
 			AutoSynchronizedMessageContext autoSynchronizedMessageContext,
-			TRequestMessage receivedRequestMessage) where TRequestMessage : IRequestMessage
+			TRequestMessage receivedRequestMessage) where TRequestMessage : INetworkMessage
 		{
 			var replyMessage = autoSynchronizedMessageContext.ReplyMessageAction(receivedRequestMessage);
 
@@ -144,7 +144,7 @@ namespace AutoSynchronizedMessageHandling
 		private class AutoSynchronizedMessageContext
 		{
 			private AutoSynchronizedMessageContext(string id, string typeDiscriminator,
-				Func<IRequestMessage, IReplyMessage?> replyMessageAction, AutoSyncType autoSyncType,
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
 				CancellationTokenSource publishingLoopCts)
 			{
 				Id = id;
@@ -157,7 +157,7 @@ namespace AutoSynchronizedMessageHandling
 			public CancellationTokenSource PublishingLoopCts { get; set; }
 
 			public static AutoSynchronizedMessageContext Create(string typeDiscriminator,
-				Func<IRequestMessage, IReplyMessage?> replyMessageAction, AutoSyncType autoSyncType,
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
 				CancellationTokenSource publishingLoopCts)
 			{
 				var guidId = GuidIdCreator.CreateString();
@@ -167,7 +167,7 @@ namespace AutoSynchronizedMessageHandling
 
 			public string Id { get; }
 			public AutoSyncType AutoSyncType { get; }
-			public Func<IRequestMessage, IReplyMessage?> ReplyMessageAction { get; }
+			public Func<INetworkMessage, INetworkMessage?> ReplyMessageAction { get; }
 			public string TypeDiscriminator { get; }
 		}
 	}

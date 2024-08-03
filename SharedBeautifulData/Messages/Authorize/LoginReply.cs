@@ -3,7 +3,7 @@ using Remote.Communication.Common.Implementations;
 
 namespace SharedBeautifulData.Messages.Authorize
 {
-	public class LoginReply : NetworkMessage<string>, IReplyMessage
+	public class LoginReply : NetworkMessage<string>
 	{
 		[JsonIgnore]
 		public string? Token
