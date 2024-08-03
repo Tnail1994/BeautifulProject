@@ -1,4 +1,6 @@
-﻿namespace BeautifulMauiClientApplication
+﻿using Microsoft.Maui.Controls;
+
+namespace BeautifulMauiClientApplication
 {
 	public partial class App : Application
 	{

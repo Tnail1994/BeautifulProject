@@ -1,8 +1,11 @@
-﻿namespace BeautifulMauiClientApplication
+﻿using Microsoft.Maui.Accessibility;
+using Microsoft.Maui.Controls;
+
+namespace BeautifulMauiClientApplication
 {
 	public partial class MainPage : ContentPage
 	{
-		int count = 0;
+		int _count = 0;
 
 		public MainPage()
 		{
@@ -11,15 +14,11 @@
 
 		private void OnCounterClicked(object sender, EventArgs e)
 		{
-			count++;
+			_count++;
 
-			if (count == 1)
-				CounterBtn.Text = $"Clicked {count} time";
-			else
-				CounterBtn.Text = $"Clicked {count} times";
+			CounterBtn.Text = _count == 1 ? $"Clicked {_count} time" : $"Clicked {_count} times";
 
 			SemanticScreenReader.Announce(CounterBtn.Text);
 		}
 	}
-
 }
