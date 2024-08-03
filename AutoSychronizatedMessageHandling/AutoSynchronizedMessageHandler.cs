@@ -15,6 +15,8 @@ namespace AutoSynchronizedMessageHandling
 		private readonly ConcurrentDictionary<string, AutoSynchronizedMessageContext>
 			_autoSynchronizedMessageContexts = new();
 
+		private readonly Dictionary<string, CancellationTokenSource> _publishingCtSources = new();
+
 		private readonly SynchronizationContext _syncContext;
 
 
@@ -33,10 +35,9 @@ namespace AutoSynchronizedMessageHandling
 				throw new InvalidOperationException("Reply message action not set.");
 
 			string typeDiscriminator = typeof(TRequestMessage).Name;
-			var publishingLoopCts = new CancellationTokenSource();
 
-			var newAutoSynchronizedMessageContext = AutoSynchronizedMessageContext.Create(typeDiscriminator,
-				replyMessageAction, autoSyncType, publishingLoopCts);
+			var newAutoSynchronizedMessageContext =
+				AutoSynchronizedMessageContext.Create(typeDiscriminator, replyMessageAction, autoSyncType);
 
 			var addingResult = TryAddAutoSyncContext(newAutoSynchronizedMessageContext);
 
@@ -46,7 +47,7 @@ namespace AutoSynchronizedMessageHandling
 				{
 					this.LogInfo($"Successfully registered {typeDiscriminator} to AutoSyncContext: {autoSyncType}\n" +
 					             $"Start publishing loop.");
-					StartPublishingLoop<TRequestMessage>(publishingLoopCts);
+					StartPublishingLoop<TRequestMessage>(typeDiscriminator);
 				}
 				else
 				{
@@ -79,7 +80,23 @@ namespace AutoSynchronizedMessageHandling
 			if (!_autoSynchronizedMessageContexts.TryRemove(id, out var autoSynchronizedMessageContext))
 				return false;
 
-			autoSynchronizedMessageContext.PublishingLoopCts.Cancel();
+			var typeDiscriminator = autoSynchronizedMessageContext.TypeDiscriminator;
+
+			if (!_autoSynchronizedMessageContexts.Values.Any(context =>
+				    context.TypeDiscriminator.Equals(typeDiscriminator)))
+			{
+				this.LogDebug($"No auto sync registrations for {typeDiscriminator}. Stopping publishing loop...");
+
+				if (!_publishingCtSources.TryGetValue(typeDiscriminator, out var publishingCts))
+				{
+					this.LogError($"Cannot stop publishing loop, because did not find CTS for {typeDiscriminator}");
+					return false;
+				}
+
+				publishingCts.Cancel();
+				_publishingCtSources.Remove(typeDiscriminator);
+			}
+
 			return true;
 		}
 
@@ -90,9 +107,17 @@ namespace AutoSynchronizedMessageHandling
 				newAutoSynchronizedMessageContext);
 		}
 
-		private void StartPublishingLoop<TRequestMessage>(CancellationTokenSource publishingLoopCts)
+		private void StartPublishingLoop<TRequestMessage>(string typeDiscriminator)
 			where TRequestMessage : INetworkMessage
 		{
+			var publishingLoopCts = new CancellationTokenSource();
+
+			if (!_publishingCtSources.TryAdd(typeDiscriminator, publishingLoopCts))
+			{
+				this.LogDebug($"Do not start publishing loop for {typeDiscriminator}, because already running...");
+				return;
+			}
+
 			Task.Factory.StartNew(async () =>
 			{
 				while (!publishingLoopCts.Token.IsCancellationRequested)
@@ -135,34 +160,29 @@ namespace AutoSynchronizedMessageHandling
 
 		public void Dispose()
 		{
-			foreach (var autoSynchronizedMessageContext in _autoSynchronizedMessageContexts.Values)
+			foreach (var publishingCts in _publishingCtSources.Values)
 			{
-				autoSynchronizedMessageContext.PublishingLoopCts.Cancel();
+				publishingCts.Cancel();
 			}
 		}
 
 		private class AutoSynchronizedMessageContext
 		{
 			private AutoSynchronizedMessageContext(string id, string typeDiscriminator,
-				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
-				CancellationTokenSource publishingLoopCts)
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType)
 			{
 				Id = id;
 				AutoSyncType = autoSyncType;
 				TypeDiscriminator = typeDiscriminator;
 				ReplyMessageAction = replyMessageAction;
-				PublishingLoopCts = publishingLoopCts;
 			}
 
-			public CancellationTokenSource PublishingLoopCts { get; set; }
 
 			public static AutoSynchronizedMessageContext Create(string typeDiscriminator,
-				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType,
-				CancellationTokenSource publishingLoopCts)
+				Func<INetworkMessage, INetworkMessage?> replyMessageAction, AutoSyncType autoSyncType)
 			{
 				var guidId = GuidIdCreator.CreateString();
-				return new AutoSynchronizedMessageContext(guidId, typeDiscriminator, replyMessageAction, autoSyncType,
-					publishingLoopCts);
+				return new AutoSynchronizedMessageContext(guidId, typeDiscriminator, replyMessageAction, autoSyncType);
 			}
 
 			public string Id { get; }
