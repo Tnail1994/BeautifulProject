@@ -86,10 +86,14 @@ namespace Session.Core
 		{
 			this.LogDebug($"Reestablishing session {Id}", Id);
 
+			// Update internal session info data
 			SetState(SessionState.Down);
 			_sessionsService.UpdateSession(this, sessionInfo);
 			_sessionsService.TryRemove(_sessionInfo.Id);
 			_sessionInfo = (SessionInfo)sessionInfo;
+			_sessionKey.UpdateId(sessionInfo.Id);
+
+			// Grab session context data
 		}
 
 		private void RunSession()
@@ -136,7 +140,7 @@ namespace Session.Core
 			if (_sessionInfo.SessionState == SessionState.Stopped)
 				return;
 
-			_sessionsService.TryRemove(_sessionKey.InstantiatedSessionId);
+			_sessionsService.TryRemove(_sessionKey.SessionId);
 		}
 
 		private void SaveSession()

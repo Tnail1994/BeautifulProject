@@ -24,7 +24,7 @@ namespace Session.Core
 
 		public void Destroy(ISessionKey sessionKey)
 		{
-			if (_createdScopes.TryRemove(sessionKey.InstantiatedSessionId, out var scope))
+			if (_createdScopes.TryRemove(sessionKey.SessionId, out var scope))
 			{
 				scope.ServiceScope.Dispose();
 			}
