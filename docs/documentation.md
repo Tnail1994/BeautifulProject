@@ -1,11 +1,12 @@
 # Introduction
-Building robust client-server applications in C# can be a challenging yet rewarding endeavor, especially when dealing with asynchronous communication over TCP/IP. When I first approached this task, I encountered various pitfalls such as race conditions, deadlocks, and inefficient resource management.
-In this tutorial, I will guide you through the process of building a well-structured server and client console application using C# and .NET. My focus will be on establishing asynchronous TCP/IP communication between these two components, resulting in an efficient and scalable system. I will cover everything from setting up the project structure to implementing asynchronous communication, handling multiple client connections, and applying best practices for error handling and resource management.
-Whether you're an experienced C# developer looking to improve your networking skills, or a novice who wants to understand the intricacies of client-server architecture, this guide will provide you with practical insights and a solid foundation for your future projects.
-By the end of this tutorial, you'll have the knowledge to build your own robust, asynchronous client-server applications in C# with confidence. Let's dive in and turn the complexities of networking into a series of clear, manageable steps.
+Welcome to this learning-focused project. Our aim is to create clean client applications across various platforms (such as console and MAUI) and server applications. Throughout this journey, we'll explore a wide range of topics that form the foundation of such applications.
+We'll delve into asynchronous communication via TCP/IP, dependency injection using containers, database usage with Entity Framework, and much more. This educational project serves as an excellent starting point for those looking to develop their own programming skills in these areas.
+Our primary focus is on developing maintainable, high-performance, and scalable applications. We'll harness the power of parallelism through asynchronous implementation while avoiding common pitfalls. Additionally, we'll work on creating parallel sessions that represent unique connections between a client and server.
+One of the challenges we'll address is the danger of UI applications and asynchronous operations, particularly when element changes occur from a different task. These tasks may not be in the UI thread, potentially causing exceptions that lead to application crashes or malfunctions. This learning project addresses this challenge by developing a generalized solution, applicable not only to UI scenarios but to a broader range of asynchronous programming contexts.
+Join me on this exciting journey as we explore the intricacies of modern application development. Whether you're a beginner or looking to refine your skills, this project will provide valuable insights and hands-on experience in creating robust, efficient applications.
 
 # What you will learn
-You will learn how to create a well-structured server and client console application that communicates asynchronously over TCP/IP.
+You will learn how to create a well-structured server and client console application that communicates asynchronously via TCP/IP.
 You will also learn how to
 - Use the IoC container ([.Net Dependency Injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection))
 - Use `TcpClient` from the .Net Sockets framework and create asynchronous communication between client and server.
@@ -13,6 +14,7 @@ You will also learn how to
 - Learn to use Microsoft.Extentions such as `IHostedService` within the hosting framework.
 - How to configure a project in .Net
 - How to use Serilog framework and make clean generalized logging for server and client
+- Automatically handle messages in the prefered `SychronizationContext' 
 - Clean architecture of a system and projects
 - How to write clean code
 - Unit test your applications and dlls
@@ -220,6 +222,8 @@ To mitigate these risks, consider the following strategies:
 # And that's why we do this
 ![image](draws/A_example_what_we_are_doing.png "This is an experimental graphic about what we built. We built a part of the fundament of an overall bigger picture.")
 
+
+# Step by Step 
 
 # Statistics
 
