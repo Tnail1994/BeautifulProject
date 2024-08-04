@@ -151,6 +151,8 @@ namespace BeautifulServerApplication
 					services.AddTransient<INetworkMessage, LoginRequest>();
 					services.AddTransient<INetworkMessage, RandomDataRequest>();
 					services.AddTransient<INetworkMessage, RandomDataReply>();
+					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
+					services.AddTransient<INetworkMessage, DeviceIdentReply>();
 					services.AddTransient<IDbContext, UsersDbContext>();
 					services.AddTransient<IDbContext, SessionsDbContext>();
 

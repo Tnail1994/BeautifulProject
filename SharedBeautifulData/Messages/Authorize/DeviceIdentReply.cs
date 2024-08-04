@@ -1,12 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 using Remote.Communication.Common.Implementations;
 
 namespace SharedBeautifulData.Messages.Authorize
 {
-	public class LoginReply : NetworkMessage<bool>
+	public class DeviceIdentReply : NetworkMessage<string>
 	{
 		[JsonIgnore]
-		public bool Success
+		public string? Ident
 		{
 			get => MessageObject;
 			set => MessageObject = value;

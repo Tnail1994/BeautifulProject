@@ -22,6 +22,9 @@ namespace DbManagement.Contexts
 
 		[Key] [Column("Name")] public string Name { get; set; }
 		[Column("Active")] public bool IsActive { get; set; }
+		[Column("StayActive")] public bool StayActive { get; set; }
+		[Column("LastLoggedInDeviceIdent")] public string? LastLoggedInDeviceIdent { get; set; }
+		[Column("ReactivateCounter")] public int ReactivateCounter { get; set; }
 
 		public override bool Equals(object? obj)
 		{

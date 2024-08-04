@@ -4,5 +4,6 @@
 	{
 		int MaxAuthAttempts { get; }
 		int AuthTimeoutInMinutes { get; }
+		int MaxReactivateAuthenticationCounter { get; }
 	}
 }

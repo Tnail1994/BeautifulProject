@@ -28,9 +28,11 @@ namespace BeautifulClientApplication
 			_host = CreateHostBuilder(args)
 				.Build();
 
+			var hostRunTask = _host.RunAsync(ClientProgramCancellationTokenSource.Token);
+
 			RunConsoleInteraction();
 
-			await _host.RunAsync(ClientProgramCancellationTokenSource.Token);
+			await hostRunTask;
 
 			_host.Dispose();
 		}
@@ -46,44 +48,21 @@ namespace BeautifulClientApplication
 
 			while (!ClientProgramCancellationTokenSource.IsCancellationRequested)
 			{
-				var readLineTask = Task.Run(Console.ReadLine);
-				var receiveMessageTask = communicationService?.ReceiveAsync<LoginRequest>();
+				var input = Console.ReadLine();
 
-				if (receiveMessageTask == null)
+				if (input == "e")
 				{
-					Console.WriteLine("Console interaction error!");
-					continue;
+					await ClientProgramCancellationTokenSource.CancelAsync();
+					break;
 				}
-
-				var completedTask = await Task.WhenAny(readLineTask, receiveMessageTask);
-
-				if (completedTask == readLineTask)
+				else if (input == "i")
 				{
-					var input = await readLineTask;
-					if (input == "e")
-					{
-						await ClientProgramCancellationTokenSource.CancelAsync();
-						break;
-					}
-					else if (input == "i")
-					{
-						PlotInfo();
-					}
-					else
-					{
-						// Send dummy message
-						communicationService?.SendAsync(new CheckAliveRequest());
-					}
+					PlotInfo();
 				}
-				else if (completedTask == receiveMessageTask)
+				else
 				{
-					await receiveMessageTask;
-					Console.WriteLine("Please login with your username:");
-					var readLine = await readLineTask;
-					communicationService?.SendAsync(new LoginReply
-					{
-						Token = readLine
-					});
+					// Send dummy message
+					communicationService?.SendAsync(new CheckAliveRequest());
 				}
 			}
 		}
@@ -108,6 +87,8 @@ namespace BeautifulClientApplication
 					services.AddTransient<INetworkMessage, LoginRequest>();
 					services.AddTransient<INetworkMessage, RandomDataRequest>();
 					services.AddTransient<INetworkMessage, RandomDataReply>();
+					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
+					services.AddTransient<INetworkMessage, DeviceIdentReply>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

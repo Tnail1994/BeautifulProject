@@ -1,9 +1,12 @@
-﻿namespace Session.Common.Contracts
+﻿using SharedBeautifulData.Objects;
+
+namespace Session.Common.Contracts
 {
 	public interface IUsersService
 	{
-		bool DoesUsernameExist(string username);
-		bool IsUsernameActive(string username);
+		bool TryGetUserByDeviceIdent(string deviceIdent, out User? user);
+		bool TryGetUserByUsername(string username, out User? user);
+		void SetUser(User user);
 		void SetUsersActiveState(string username, bool isActive);
 	}
 }

@@ -5,13 +5,21 @@ namespace SharedBeautifulData.Messages.Authorize
 {
 	public enum LoginRequestType
 	{
+		DeviceIdent,
 		Username,
 	}
 
-	public class LoginRequest : NetworkMessage<LoginRequestType>
+	public class LoginRequestValue
+	{
+		public LoginRequestType Type { get; set; }
+		public string? Value { get; set; }
+		public bool StayActive { get; set; }
+	}
+
+	public class LoginRequest : NetworkMessage<LoginRequestValue>
 	{
 		[JsonIgnore]
-		public LoginRequestType Type
+		public LoginRequestValue? RequestValue
 		{
 			get => MessageObject;
 			set => MessageObject = value;

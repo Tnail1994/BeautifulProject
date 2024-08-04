@@ -33,16 +33,34 @@ namespace Session.Core
 		public string Id => _sessionKey.SessionId;
 		public event EventHandler<SessionStoppedEventArgs>? SessionStopped;
 
-		public async void Start()
+		public void Start()
 		{
 			_sessionsService.TryAdd(this, _sessionInfo);
 
 			_connectionService.ConnectionLost += OnConnectionLost;
+			_connectionService.ConnectionEstablished += OnConnectionEstablished;
 
 			try
 			{
+				SetState(SessionState.Connecting, false);
 				_connectionService.Start();
+			}
+			catch (CheckAliveException checkAliveException)
+			{
+				this.LogError($"CheckAliveService failed to start. {checkAliveException.Message}", Id);
+			}
+			catch (Exception e)
+			{
+				this.LogFatal($"Error while Start inside session\n" +
+				              $"Message: {e.Message}\n" +
+				              $"Stacktrace: {e.StackTrace}\n", Id);
+			}
+		}
 
+		private async void OnConnectionEstablished()
+		{
+			try
+			{
 				SetState(SessionState.Authorizing, false);
 
 				var authorizationInfo = await _authenticationService.Authorize(_communicationService);
@@ -66,17 +84,9 @@ namespace Session.Core
 
 				SetState(SessionState.Running);
 			}
-			catch (CheckAliveException checkAliveException)
-			{
-				this.LogError($"CheckAliveService failed to start. {checkAliveException.Message}", Id);
-			}
-			catch (OperationCanceledException)
-			{
-				this.LogInfo("Session was stopped", Id);
-			}
 			catch (Exception e)
 			{
-				this.LogFatal($"!!! Unexpected error while Start inside Session event\n" +
+				this.LogFatal($"[Session] Error while OnConnectionEstablished event \n" +
 				              $"Message: {e.Message}\n" +
 				              $"Stacktrace: {e.StackTrace}\n", Id);
 			}
@@ -150,6 +160,7 @@ namespace Session.Core
 
 		private void OnConnectionLost(string reason)
 		{
+			this.LogDebug($"[Session] Connection lost, invoke SessionStopped event. Id or reason:{reason}");
 			InvokeSessionOnHold(reason);
 		}
 

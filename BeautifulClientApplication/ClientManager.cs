@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Remote.Communication.Common.Contracts;
 using Serilog;
 using SharedBeautifulData.Exceptions;
+using SharedBeautifulData.Messages.Authorize;
 
 namespace BeautifulClientApplication
 {
@@ -11,13 +12,68 @@ namespace BeautifulClientApplication
 	internal class ClientManager : IClientManager
 	{
 		private readonly IConnectionService _connectionService;
+		private readonly ICommunicationService _communicationService;
 		private CancellationToken _cancellationToken;
 
-		public ClientManager(IConnectionService connectionService)
+		private LoginRequest? _loginRequestObject;
+
+		public ClientManager(IConnectionService connectionService, ICommunicationService communicationService)
 		{
 			_connectionService = connectionService;
+			_communicationService = communicationService;
+			_connectionService.ConnectionEstablished += OnConnectionEstablished;
 			_connectionService.ConnectionLost += OnConnectionLost;
 			_connectionService.Reconnected += OnReconnected;
+		}
+
+		private async void OnConnectionEstablished()
+		{
+			await Login();
+		}
+
+		private async Task Login()
+		{
+			var maschineName = Environment.MachineName;
+			await _communicationService.ReceiveAndSendAsync<DeviceIdentRequest>(
+				new DeviceIdentReply
+				{
+					Ident = maschineName,
+				});
+
+
+			var loginReply = await TryLogin(LoginRequestType.DeviceIdent, maschineName, true);
+
+			var username = "a";
+			while (loginReply is { Success: false })
+			{
+				await Task.Delay(1000, _cancellationToken);
+				loginReply = await TryLogin(LoginRequestType.Username, username, true);
+			}
+		}
+
+		private async Task<LoginReply> TryLogin(LoginRequestType type, string value, bool stayActive)
+		{
+			if (_loginRequestObject?.RequestValue == null)
+			{
+				_loginRequestObject = new LoginRequest
+				{
+					RequestValue = new LoginRequestValue
+					{
+						Type = type,
+						Value = value,
+						StayActive = stayActive
+					}
+				};
+			}
+			else
+			{
+				_loginRequestObject.RequestValue.Type = type;
+				_loginRequestObject.RequestValue.Value = value;
+				_loginRequestObject.RequestValue.StayActive = stayActive;
+			}
+
+			var loginReply = await _communicationService.SendAndReceiveAsync<LoginReply>(_loginRequestObject);
+			return loginReply;
 		}
 
 		public Task StartAsync(CancellationToken cancellationToken)

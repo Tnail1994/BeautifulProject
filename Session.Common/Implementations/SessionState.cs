@@ -8,6 +8,7 @@
 		Stopped = 3, // When a session can be restored
 		Down = 4, // Unrecoverable session
 		FailedAuthorization = 5,
-		Empty = 6
+		Empty = 6,
+		Connecting = 7,
 	}
 }

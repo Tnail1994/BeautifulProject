@@ -3,6 +3,7 @@ using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Session.Common.Contracts;
 using SharedBeautifulData.Messages.Authorize;
+using SharedBeautifulData.Objects;
 
 namespace Session.Services.Authorization
 {
@@ -19,44 +20,80 @@ namespace Session.Services.Authorization
 
 		public async Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService)
 		{
-			return await Authorize(communicationService, 0);
+			var deviceIdent =
+				await communicationService.SendAndReceiveAsync<DeviceIdentReply>(new DeviceIdentRequest());
+
+			if (!string.IsNullOrEmpty(deviceIdent.Ident) &&
+			    _usersService.TryGetUserByDeviceIdent(deviceIdent.Ident, out var user) &&
+			    user is { IsNotActive: true, StayActive: true } &&
+			    CheckLastLoggedInDeviceIdent(user, deviceIdent) &&
+			    user.ReactivateCounter <
+			    _settings.MaxReactivateAuthenticationCounter)
+			{
+				// It is valid, that user with this device ident logs in
+				var loginRequest = await ReceiveLoginRequest(communicationService);
+
+				user.IsActive = true;
+				user.ReactivateCounter++;
+				user.StayActive = loginRequest.RequestValue?.StayActive == true;
+				_usersService.SetUser(user);
+
+				SendLoginReply(communicationService, true);
+
+				return AuthorizationInfo.Create(user.Name);
+			}
+
+			return await Authorize(communicationService, 0, deviceIdent.Ident);
 		}
 
-		private async Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService, int attempts)
+		private static bool CheckLastLoggedInDeviceIdent(User user, DeviceIdentReply deviceIdent)
 		{
-			// Send login request message to client and wait for reply
-			var loginReply =
-				await communicationService.SendAndReceiveAsync<LoginReply>(new LoginRequest
-				{
-					Type = LoginRequestType.Username
-				});
+			if (user.LastLoggedInDeviceIdent == null)
+				return true;
 
-			var username = loginReply.Token ?? string.Empty;
+			return user.LastLoggedInDeviceIdent.Equals(deviceIdent.Ident);
+		}
 
+		private static async Task<LoginRequest> ReceiveLoginRequest(ICommunicationService communicationService)
+		{
+			return await communicationService.ReceiveAsync<LoginRequest>();
+		}
 
-			if (string.IsNullOrEmpty(username))
+		private async Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService, int attempts,
+			string? deviceIdent)
+		{
+			var loginRequest = await ReceiveLoginRequest(communicationService);
+
+			var requestValueType = loginRequest.RequestValue?.Type;
+			var requestValueValue = loginRequest.RequestValue?.Value;
+
+			if (requestValueType?.Equals(LoginRequestType.Username) == true &&
+			    !string.IsNullOrEmpty(requestValueValue) &&
+			    _usersService.TryGetUserByUsername(requestValueValue, out var user) && user is { IsNotActive: true })
 			{
-				this.LogWarning("Cannot authorize user with empty name.");
-
-				if (attempts < _settings.MaxAuthAttempts)
-					return await Authorize(communicationService, attempts + 1);
-
-				return AuthorizationInfo.Failed;
+				user.IsActive = true;
+				user.ReactivateCounter = 0;
+				user.LastLoggedInDeviceIdent = deviceIdent;
+				user.StayActive = loginRequest.RequestValue?.StayActive == true;
+				_usersService.SetUser(user);
+				SendLoginReply(communicationService, true);
+				return AuthorizationInfo.Create(user.Name);
 			}
 
-			if (!_usersService.DoesUsernameExist(username) || _usersService.IsUsernameActive(username))
+			SendLoginReply(communicationService, false);
+
+			if (attempts <= _settings.MaxAuthAttempts)
+				return await Authorize(communicationService, attempts + 1, deviceIdent);
+
+			return AuthorizationInfo.Failed;
+		}
+
+		private static void SendLoginReply(ICommunicationService communicationService, bool loginSuccess)
+		{
+			communicationService.SendAsync(new LoginReply
 			{
-				this.LogWarning($"User with name {username} does not exist or is already active.");
-
-				if (attempts < _settings.MaxAuthAttempts)
-					return await Authorize(communicationService, attempts + 1);
-
-				return AuthorizationInfo.Failed;
-			}
-
-			_usersService.SetUsersActiveState(username, true);
-
-			return AuthorizationInfo.Create(username);
+				Success = loginSuccess
+			});
 		}
 
 		public async Task UnAuthorize(ICommunicationService communicationService, string username)

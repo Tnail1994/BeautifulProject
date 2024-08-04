@@ -91,16 +91,16 @@ namespace Remote.Communication.Client
 						this.LogError(ex.Message);
 						break;
 				}
-
-				ConnectionLost?.Invoke(this, Id);
 			}
 			catch (Exception ex)
 			{
 				this.LogFatal($"!!! Unexpected error receiving client. Id: {Id}" +
 				              $"{ex.Message}" +
 				              $"Stacktrace: {ex.StackTrace}.");
-
-				ConnectionLost?.Invoke(this, ex.Message);
+			}
+			finally
+			{
+				ConnectionLost?.Invoke(this, Id);
 			}
 		}
 

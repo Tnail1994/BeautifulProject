@@ -54,18 +54,18 @@ namespace Remote.Communication
 			}
 
 			_asyncClient.MessageReceived += OnMessageReceived;
-			_asyncClient.ConnectionLost += ConnectionLost;
+			_asyncClient.ConnectionLost += OnConnectionLost;
 			_asyncClient.StartReceivingAsync();
 
 			_running = true;
 		}
 
-		public Task<T> ReceiveAsync<T>() where T : INetworkMessage
+		private void OnConnectionLost(object? sender, string e)
 		{
-			return ReceiveAsync<T>(_cancellationReceivingTokenSource.Token);
+			ConnectionLost?.Invoke(sender, e);
 		}
 
-		public Task<T> ReceiveAsync<T>(CancellationToken cancellationToken) where T : INetworkMessage
+		public Task<T> ReceiveAsync<T>() where T : INetworkMessage
 		{
 			var transformedObject = _transformedObjects.Values.FirstOrDefault(x => x.Object is T);
 

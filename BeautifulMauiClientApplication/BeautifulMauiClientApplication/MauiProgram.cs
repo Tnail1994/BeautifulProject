@@ -62,6 +62,8 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddTransient<INetworkMessage, LoginRequest>();
 			builder.Services.AddTransient<INetworkMessage, RandomDataRequest>();
 			builder.Services.AddTransient<INetworkMessage, RandomDataReply>();
+			builder.Services.AddTransient<INetworkMessage, DeviceIdentRequest>();
+			builder.Services.AddTransient<INetworkMessage, DeviceIdentReply>();
 
 			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();

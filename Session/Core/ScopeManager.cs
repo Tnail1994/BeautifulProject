@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Session.Common.Contracts;
 using Session.Common.Implementations;
@@ -24,9 +25,14 @@ namespace Session.Core
 
 		public void Destroy(ISessionKey sessionKey)
 		{
-			if (_createdScopes.TryRemove(sessionKey.SessionId, out var scope))
+			if (_createdScopes.TryRemove(sessionKey.InstantiatedSessionId, out var scope))
 			{
 				scope.ServiceScope.Dispose();
+			}
+			else
+			{
+				this.LogError(
+					$"Did not destroy session with instantiated id {sessionKey.InstantiatedSessionId} and current id {sessionKey.SessionId}");
 			}
 		}
 

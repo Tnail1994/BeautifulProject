@@ -2,6 +2,7 @@
 using DbManagement.Common.Contracts;
 using DbManagement.Contexts;
 using Session.Common.Contracts;
+using SharedBeautifulData.Objects;
 
 namespace Session.Services
 {
@@ -16,7 +17,7 @@ namespace Session.Services
 
 		public bool DoesUsernameExist(string username)
 		{
-			return FindUser(username) != null;
+			return FindUserByName(username) != null;
 		}
 
 		//private IEnumerable<User>? GetUsers()
@@ -31,7 +32,7 @@ namespace Session.Services
 
 		public bool IsUsernameActive(string username)
 		{
-			var foundUser = FindUser(username);
+			var foundUser = FindUserByName(username);
 
 			if (foundUser == null)
 				return false;
@@ -42,16 +43,23 @@ namespace Session.Services
 			return foundUser.IsActive;
 		}
 
-		private UserDto? FindUser(string username)
+		private UserDto? FindUserByName(string username)
 		{
 			var entities = _dbManager.GetEntities<UserDto>();
 			var foundUser = entities?.FirstOrDefault(user => user.Name == username);
 			return foundUser;
 		}
 
+		private UserDto? FindUserByDeviceIdent(string deviceIdent)
+		{
+			var entities = _dbManager.GetEntities<UserDto>();
+			var foundUser = entities?.FirstOrDefault(user => user.LastLoggedInDeviceIdent == deviceIdent);
+			return foundUser;
+		}
+
 		public void SetUsersActiveState(string username, bool isActive)
 		{
-			var foundUser = FindUser(username);
+			var foundUser = FindUserByName(username);
 
 			if (foundUser == null)
 			{
@@ -63,15 +71,51 @@ namespace Session.Services
 			_dbManager.SaveChanges(foundUser);
 		}
 
+		public bool TryGetUserByDeviceIdent(string deviceIdent, out User? user)
+		{
+			var foundUserDto = FindUserByDeviceIdent(deviceIdent);
+			return ReturnUser(out user, foundUserDto);
+		}
+
+		public bool TryGetUserByUsername(string username, out User? user)
+		{
+			var foundUserDto = FindUserByName(username);
+			return ReturnUser(out user, foundUserDto);
+		}
+
+		public void SetUser(User user)
+		{
+			var foundUserDto = FindUserByName(user.Name);
+
+			if (foundUserDto == null)
+			{
+				this.LogError($"Cannot set User data for {user.Name}, because not found.");
+				return;
+			}
+
+			foundUserDto.ReactivateCounter = user.ReactivateCounter;
+			foundUserDto.StayActive = user.StayActive;
+			foundUserDto.LastLoggedInDeviceIdent = user.LastLoggedInDeviceIdent;
+			foundUserDto.IsActive = user.IsActive;
+			_dbManager.SaveChanges(foundUserDto);
+		}
+
+		private bool ReturnUser(out User? user, UserDto? foundUserDto)
+		{
+			user = foundUserDto != null ? Map(foundUserDto) : null;
+			return user != null;
+		}
+
 		//private UserDto Map(User user)
 		//{
 		//	return new UserDto(user.Name);
 		//}
 
-		//private User Map(UserDto userDto)
-		//{
-		//	return User.Create(userDto.Name, userDto.IsActive);
-		//}
+		private User Map(UserDto userDto)
+		{
+			return User.Create(userDto.Name, userDto.IsActive, userDto.StayActive, userDto.LastLoggedInDeviceIdent,
+				userDto.ReactivateCounter);
+		}
 
 		public void Dispose()
 		{

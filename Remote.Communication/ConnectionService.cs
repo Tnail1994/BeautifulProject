@@ -14,6 +14,8 @@ namespace Remote.Communication
 		private readonly ICheckAliveService _checkAliveService;
 		private readonly ISessionKey _sessionKey;
 		private readonly IConnectionSettings _connectionSettings;
+
+		public event Action? ConnectionEstablished;
 		public event Action<string>? ConnectionLost;
 		public event Action? Reconnected;
 		private bool _running;
@@ -48,6 +50,12 @@ namespace Remote.Communication
 			_checkAliveService.Start();
 
 			_running = true;
+
+			// Wait a short moment
+			// todo refactor check alive and communication service to be tasks 
+			await Task.Delay(1000);
+
+			ConnectionEstablished?.Invoke();
 		}
 
 		private async Task<bool> ConnectAsync()
@@ -73,21 +81,29 @@ namespace Remote.Communication
 			//	return;
 			//}
 
+			_communicationService.ConnectionLost -= OnConnectionLost;
 			_running = false;
 		}
 
 		private void OnConnectionLost(object? sender, string reason)
 		{
+			this.LogDebug($"[ConnectionService] Connection lost, invoke event. Id or reason:{reason}");
 			InvokeOnConnectionLost(reason);
 		}
 
-		private async void InvokeOnConnectionLost(string reason)
+		private void InvokeOnConnectionLost(string reason)
 		{
 			ConnectionLost?.Invoke(reason);
 
 			if (!_connectionSettings.ReconnectActivated)
 				return;
 
+			StartTryReconnecting();
+		}
+
+		private async void StartTryReconnecting()
+		{
+			await Task.Delay(_connectionSettings.ReconnectDelayInSeconds * 1000);
 			await TryReconnecting();
 		}
 

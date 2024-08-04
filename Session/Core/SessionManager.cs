@@ -88,6 +88,9 @@ namespace Session.Core
 				return;
 			}
 
+			this.LogDebug(
+				$"[SessionManager] session stopped, start destroying it {sessionStoppedEventArgs.SessionKey.SessionId}");
+
 			_scopeManager.Destroy(sessionStoppedEventArgs.SessionKey);
 		}
 
