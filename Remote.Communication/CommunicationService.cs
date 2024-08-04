@@ -177,10 +177,43 @@ namespace Remote.Communication
 			}
 			catch (JsonReaderException jsonReaderException)
 			{
-				this.LogError($"Json reader error for jsonString: {jsonString}.\n" +
-				              $"{jsonReaderException.Message}", SessionId);
+				this.LogWarning($"Json reader error for jsonString: {jsonString}.\n" +
+				                $"{jsonReaderException.Message}", SessionId);
+				this.LogWarning($"Try to handle and search for pattern ...");
 
-				// Todo check, why jsonString is not a valid json format
+				// We know, that this error can occur if:
+				// 1) Send 2 or more Json messages at once like {"$type":"...}{"$type":"...}. This isn't a json object anymore.
+				// Determine if jsonString has this format. Checking for existing '}{'
+				// If so, then split by }{ and them back to the split strings
+				if (!jsonString.Contains("}{"))
+				{
+					// Maybe save the string?
+					this.LogError($"No pattern found, cannot transform {jsonString}");
+					return;
+				}
+
+				this.LogWarning($"Pattern found, try to split and fire OnMessageReceived again ...");
+
+				var possibleMessages = jsonString.Split("}{", StringSplitOptions.RemoveEmptyEntries);
+
+				possibleMessages[0] += "}";
+
+				var lastIndex = possibleMessages.Length - 1;
+
+				if (lastIndex > 0)
+				{
+					for (int i = 1; i < lastIndex; i++)
+					{
+						possibleMessages[i] = "{" + possibleMessages[i] + "}";
+					}
+
+					possibleMessages[lastIndex] = "{" + possibleMessages[lastIndex];
+				}
+
+				foreach (var possibleMessage in possibleMessages)
+				{
+					OnMessageReceived(possibleMessage);
+				}
 			}
 			catch (JsonException ex)
 			{

@@ -51,10 +51,6 @@ namespace Remote.Communication
 
 			_running = true;
 
-			// Wait a short moment
-			// todo refactor check alive and communication service to be tasks 
-			await Task.Delay(1000);
-
 			ConnectionEstablished?.Invoke();
 		}
 
