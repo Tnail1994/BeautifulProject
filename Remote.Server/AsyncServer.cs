@@ -17,7 +17,7 @@ namespace Remote.Server
 
 		private readonly ConcurrentDictionary<string, TcpClient> _connectedClients = new();
 
-		public event Action<TcpClient>? NewConnectionOccured;
+		public event Action<KeyValuePair<string, TcpClient>>? NewConnectionOccured;
 
 		public AsyncServer(IAsyncServerSettings settings)
 		{
@@ -36,6 +36,12 @@ namespace Remote.Server
 			this.LogInfo("Server started.");
 
 			return Task.Factory.StartNew(ListenForClientsAsync, _cts.Token);
+		}
+
+		public void Remove(string clientId)
+		{
+			if (_connectedClients.TryRemove(clientId, out var tcpClient))
+				tcpClient.Dispose();
 		}
 
 		public void Stop()
@@ -64,7 +70,7 @@ namespace Remote.Server
 						this.LogWarning($"Cannot add Id {clientId} to dictionary.");
 
 					this.LogInfo($"New Connection: Id = {clientId}");
-					NewConnectionOccured?.Invoke(client);
+					NewConnectionOccured?.Invoke(new KeyValuePair<string, TcpClient>(clientId, client));
 				}
 			}
 			catch (OperationCanceledException oce)

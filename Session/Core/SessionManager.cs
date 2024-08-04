@@ -1,4 +1,5 @@
-﻿using Core.Extensions;
+﻿using System.Collections.Concurrent;
+using Core.Extensions;
 
 #if DEBUG
 using Core.Helpers;
@@ -21,6 +22,8 @@ namespace Session.Core
 #if DEBUG
 		private readonly ISessionsService _sessionsService;
 #endif
+
+		private readonly ConcurrentDictionary<string, string> _sessionIdClientIdMap = new();
 
 		/// <summary>
 		/// The ctor of the host. The host must instantiate ISessionService first, because there is a reference to the IDbManager.
@@ -49,20 +52,22 @@ namespace Session.Core
 			await _asyncSocketServer.StartAsync();
 		}
 
-		private void OnNewConnectionOccured(TcpClient client)
+		private void OnNewConnectionOccured(KeyValuePair<string, TcpClient> clientAndId)
 		{
 			this.LogInfo("Starting new session ...");
-			StartNewSession(client);
+			StartNewSession(clientAndId.Key, clientAndId.Value);
 		}
 
-		private void StartNewSession(TcpClient client)
+		private void StartNewSession(string clientId, TcpClient client)
 		{
 			var session = BuildSession(client);
-
 			session.SessionStopped += OnSessionStopped;
 
 			session.Start();
 			this.LogInfo($"New session with Id {session.Id} started.");
+
+			// Saving client and session ids for disposing purposes
+			_sessionIdClientIdMap.TryAdd(session.Id, clientId);
 		}
 
 		private ISession BuildSession(TcpClient client)
@@ -92,6 +97,11 @@ namespace Session.Core
 				$"[SessionManager] session stopped, start destroying it {sessionStoppedEventArgs.SessionKey.SessionId}");
 
 			_scopeManager.Destroy(sessionStoppedEventArgs.SessionKey);
+
+			if (_sessionIdClientIdMap.TryRemove(sessionStoppedEventArgs.SessionKey.InstantiatedSessionId,
+				    out var clientId))
+
+				_asyncSocketServer.Remove(clientId);
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)

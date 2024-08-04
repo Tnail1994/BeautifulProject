@@ -29,12 +29,13 @@ namespace Tests.Session.Core
 
 		[Fact]
 		public void
-			WhenStartingSession_ThenConnectionServiceShouldStartAsWellAndSubscribeToEventsAndReceiveAuthorizeCall()
+			WhenStartingSessionAndConnectionEstablished_ThenConnectionServiceShouldStartAsWellAndSubscribeToEventsAndReceiveAuthorizeCall()
 		{
 			_authenticationServiceMock.Authorize(_communicationServiceMock)
 				.Returns(Task.FromResult(AuthorizationInfo.Create("any")));
 
 			_session.Start();
+			_connectionServiceMock.ConnectionEstablished += Raise.Event<Action>();
 			_connectionServiceMock.Received(1).Start();
 			_connectionServiceMock.Received(1).ConnectionLost += Arg.Any<Action<string>>();
 			_authenticationServiceMock.Received(1).Authorize(_communicationServiceMock);
@@ -48,11 +49,13 @@ namespace Tests.Session.Core
 		}
 
 		[Fact]
-		public void WhenAuthorizationSucceed_ThenItTryToReestablishSessionByTryGettingSessionInfo()
+		public void WhenConnectionEstablished_ThenItTryToReestablishSessionByTryGettingSessionInfo()
 		{
 			_authenticationServiceMock.Authorize(_communicationServiceMock)
 				.Returns(Task.FromResult(AuthorizationInfo.Create("mockName")));
 			_session.Start();
+
+			_connectionServiceMock.ConnectionEstablished += Raise.Event<Action>();
 			_sessionsServiceMock.Received(1).TryGetSessionInfo("mockName", out Arg.Any<ISessionInfo>());
 		}
 

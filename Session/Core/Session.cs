@@ -111,8 +111,7 @@ namespace Session.Core
 
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
-			// So beware of writing to the console or doing other blocking operations.
-			// Need to define an own logging system for this session overall.
+			// So beware of writing to collections or doing other blocking operations.
 		}
 
 		private void SetInfo(IAuthorizationInfo authorizationInfo, bool save = true)

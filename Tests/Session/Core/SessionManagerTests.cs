@@ -65,9 +65,11 @@ namespace Tests.Session.Core
 			session.Received(1).Start();
 		}
 
-		private void RaiseNewConnectionEvent(TcpClient? dummySocket)
+		private void RaiseNewConnectionEvent(TcpClient dummySocket)
 		{
-			_asyncSocketServerMock.NewConnectionOccured += Raise.Event<Action<TcpClient>>(dummySocket);
+			_asyncSocketServerMock.NewConnectionOccured +=
+				Raise.Event<Action<KeyValuePair<string, TcpClient>>>(
+					new KeyValuePair<string, TcpClient>("anyId", dummySocket));
 		}
 
 		private static TcpClient CreateDummySocket()
@@ -81,7 +83,9 @@ namespace Tests.Session.Core
 		{
 			BaseProviderMocking();
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 			Assert.Throws<SessionManagerException>(() => RaiseNewConnectionEvent(null));
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 		}
 
 		[Fact]
