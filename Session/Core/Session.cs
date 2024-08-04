@@ -69,7 +69,7 @@ namespace Session.Core
 
 				if (!authorizationInfo.IsAuthorized)
 				{
-					SetState(SessionState.FailedAuthorization);
+					SetState(SessionState.FailedAuthorization, false);
 					return;
 				}
 
@@ -97,7 +97,6 @@ namespace Session.Core
 			this.LogDebug($"Reestablishing session {Id}", Id);
 
 			// Update internal session info data
-			SetState(SessionState.Down);
 			_sessionsService.UpdateSession(this, sessionInfo);
 			_sessionsService.TryRemove(_sessionInfo.Id);
 			_sessionInfo = (SessionInfo)sessionInfo;
