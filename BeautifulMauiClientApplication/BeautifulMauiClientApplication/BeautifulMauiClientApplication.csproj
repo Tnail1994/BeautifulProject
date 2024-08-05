@@ -135,6 +135,9 @@
 	  <Compile Update="Example\RandomContent1View.xaml.cs">
 	    <DependentUpon>RandomContent1View.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="LoginView.xaml.cs">
+	    <DependentUpon>LoginView.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -148,6 +151,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Example\TestView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="LoginView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

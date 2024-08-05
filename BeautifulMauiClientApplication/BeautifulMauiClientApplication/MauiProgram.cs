@@ -60,6 +60,8 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddTransient<INetworkMessage, CheckAliveReply>();
 			builder.Services.AddTransient<INetworkMessage, LoginReply>();
 			builder.Services.AddTransient<INetworkMessage, LoginRequest>();
+			builder.Services.AddTransient<INetworkMessage, LogoutReply>();
+			builder.Services.AddTransient<INetworkMessage, LogoutRequest>();
 			builder.Services.AddTransient<INetworkMessage, RandomDataRequest>();
 			builder.Services.AddTransient<INetworkMessage, RandomDataReply>();
 			builder.Services.AddTransient<INetworkMessage, DeviceIdentRequest>();
@@ -104,6 +106,9 @@ namespace BeautifulMauiClientApplication
 
 			builder.Services.AddTransient<TestView>();
 			builder.Services.AddTransient<TestViewModel>();
+
+			builder.Services.AddTransient<LoginView>();
+			builder.Services.AddTransient<LoginViewModel>();
 
 			// Contents
 			builder.Services.AddTransient<Example.RandomContent1ViewModel>();
