@@ -1,14 +1,14 @@
 ﻿using BeautifulMauiClientApplication.Startup;
 using Core.Extensions;
-using Remote.Communication;
 using Remote.Communication.Common.Contracts;
 using SharedBeautifulData.Messages.Authorize;
 
-namespace BeautifulMauiClientApplication.Login.Services
+namespace BeautifulMauiClientApplication.Login
 {
 	public interface ILoginService : IAutoStartService
 	{
 		Task<bool> AwaitLogin();
+		Task<bool> Login(string username, bool rememberMe);
 	}
 
 	public class LoginService : ILoginService
@@ -34,13 +34,19 @@ namespace BeautifulMauiClientApplication.Login.Services
 
 		public Task<bool> AwaitLogin() => _awaitLoginTcs.Task;
 
-		public async Task<StartingResult> Start()
+		public async Task<bool> Login(string username, bool rememberMe)
+		{
+			var loginReply = await TryLogin(LoginRequestType.Username, username, rememberMe);
+			SetSuccessulLoginResult(loginReply, username);
+			return loginReply.Success;
+		}
+
+		public Task<StartingResult> Start()
 		{
 			try
 			{
 				_connectionService.Start();
-				var loginResult = await AwaitLogin();
-				return Result(loginResult);
+				return Result(true);
 			}
 			catch (Exception ex)
 			{
@@ -50,15 +56,16 @@ namespace BeautifulMauiClientApplication.Login.Services
 			}
 		}
 
-		private static StartingResult Result(bool result)
+		private static Task<StartingResult> Result(bool result)
 		{
-			return StartingResult.Create(result, nameof(LoginService));
+			return Task.FromResult(StartingResult.Create(result, nameof(LoginService)));
 		}
 
 
 		private async void OnConnectionEstablished()
 		{
 			var deviceName = DeviceInfo.Current.Name;
+			deviceName = "dummy3";
 			await _communicationService.ReceiveAndSendAsync<DeviceIdentRequest>(
 				new DeviceIdentReply
 				{
@@ -67,8 +74,8 @@ namespace BeautifulMauiClientApplication.Login.Services
 
 			var loginReply = await TryLogin(LoginRequestType.DeviceIdent, deviceName, true);
 
-			var username = "b";
-			var attempts = 5;
+			var username = "gsdfgsdf";
+			var attempts = 1;
 			while (loginReply is { Success: false } && attempts > 0)
 			{
 				await Task.Delay(1);
@@ -76,6 +83,11 @@ namespace BeautifulMauiClientApplication.Login.Services
 				attempts--;
 			}
 
+			SetSuccessulLoginResult(loginReply, username);
+		}
+
+		private void SetSuccessulLoginResult(LoginReply loginReply, string username)
+		{
 			if (loginReply is { Success: true })
 			{
 				this.LogDebug($"Auto login fo {username} successful");

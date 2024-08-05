@@ -1,13 +1,10 @@
-﻿using System.Collections.ObjectModel;
-using System.Threading;
-using AutoSynchronizedMessageHandling.Common.Contracts;
+﻿using AutoSynchronizedMessageHandling.Common.Contracts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
-using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;
 using SharedBeautifulData.Messages.RandomTestData;
+using System.Collections.ObjectModel;
 
 namespace BeautifulMauiClientApplication.Example
 {
@@ -105,7 +102,7 @@ namespace BeautifulMauiClientApplication.Example
 
 		private INetworkMessage? OnCheckAliveMessageReply(INetworkMessage requestMessage)
 		{
-			if (requestMessage is CheckAliveReply checkAliveReply)
+			if (requestMessage is CheckAliveReply)
 			{
 				_counter++;
 				SetText();

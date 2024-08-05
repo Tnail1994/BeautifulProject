@@ -1,9 +1,7 @@
 ﻿using AutoSynchronizedMessageHandling;
 using AutoSynchronizedMessageHandling.Common.Contracts;
 using BeautifulMauiClientApplication.Example;
-using BeautifulMauiClientApplication.Login.Models;
-using BeautifulMauiClientApplication.Login.Services;
-using BeautifulMauiClientApplication.Login.ViewModels;
+using BeautifulMauiClientApplication.Login;
 using BeautifulMauiClientApplication.Startup;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
@@ -119,7 +117,6 @@ namespace BeautifulMauiClientApplication
 
 			builder.Services.AddTransient<LoginView>();
 			builder.Services.AddTransient<LoginViewModel>();
-			builder.Services.AddTransient<LoginModel>();
 
 			// Contents
 			builder.Services.AddTransient<RandomContent1ViewModel>();

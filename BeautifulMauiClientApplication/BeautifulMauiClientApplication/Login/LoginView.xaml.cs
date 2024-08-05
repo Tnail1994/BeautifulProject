@@ -1,6 +1,4 @@
-using BeautifulMauiClientApplication.Login.ViewModels;
-
-namespace BeautifulMauiClientApplication
+namespace BeautifulMauiClientApplication.Login
 {
 	public partial class LoginView : ContentPage
 	{

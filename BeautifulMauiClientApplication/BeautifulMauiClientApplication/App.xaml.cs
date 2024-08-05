@@ -1,5 +1,4 @@
-﻿using BeautifulMauiClientApplication.Login.Services;
-using BeautifulMauiClientApplication.Login.ViewModels;
+﻿using BeautifulMauiClientApplication.Login;
 using BeautifulMauiClientApplication.Startup;
 
 namespace BeautifulMauiClientApplication
@@ -13,6 +12,7 @@ namespace BeautifulMauiClientApplication
 		{
 			_startupService = startupService;
 			_loginService = loginService;
+
 			InitializeComponent();
 
 			MainPage = loginView;
