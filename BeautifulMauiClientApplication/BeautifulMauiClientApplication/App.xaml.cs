@@ -1,9 +1,18 @@
-﻿namespace BeautifulMauiClientApplication
+﻿using BeautifulMauiClientApplication.Login.Services;
+using BeautifulMauiClientApplication.Login.ViewModels;
+using BeautifulMauiClientApplication.Startup;
+
+namespace BeautifulMauiClientApplication
 {
 	public partial class App : Application
 	{
-		public App(LoginView loginView)
+		private readonly IStartupService _startupService;
+		private readonly ILoginService _loginService;
+
+		public App(IStartupService startupService, ILoginService loginService, LoginView loginView)
 		{
+			_startupService = startupService;
+			_loginService = loginService;
 			InitializeComponent();
 
 			MainPage = loginView;
@@ -13,21 +22,9 @@
 
 		private async void StartApp()
 		{
-			if (MainPage?.BindingContext is not LoginViewModel loginViewModel)
-				throw new InvalidOperationException(
-					"Cannot start app, because loginViews BindingContext is not LoginViewModel?");
+			await _startupService.Start();
 
-
-			var loginSuccessful = await loginViewModel.AwaitLogin();
-
-			var maxAwaits = 10;
-			while (!loginSuccessful && maxAwaits > 0)
-			{
-				loginSuccessful = await loginViewModel.AwaitLogin();
-				maxAwaits--;
-			}
-
-			if (loginSuccessful)
+			if (await _loginService.AwaitLogin())
 			{
 				MainPage = new AppShell();
 			}

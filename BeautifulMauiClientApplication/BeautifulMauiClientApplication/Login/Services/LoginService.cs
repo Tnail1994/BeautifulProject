@@ -1,32 +1,60 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using BeautifulMauiClientApplication.Startup;
+using Core.Extensions;
+using Remote.Communication;
 using Remote.Communication.Common.Contracts;
 using SharedBeautifulData.Messages.Authorize;
 
-namespace BeautifulMauiClientApplication
+namespace BeautifulMauiClientApplication.Login.Services
 {
-	public class LoginViewModel : ObservableObject
+	public interface ILoginService : IAutoStartService
 	{
-		private TaskCompletionSource<bool>? _awaitLoginTcs;
+		Task<bool> AwaitLogin();
+	}
 
+	public class LoginService : ILoginService
+	{
 		private readonly IConnectionService _connectionService;
 		private readonly ICommunicationService _communicationService;
 
+		private readonly TaskCompletionSource<bool> _awaitLoginTcs = new();
+
+
 		private LoginRequest? _loginRequestObject;
 
-		public LoginViewModel(IConnectionService connectionService, ICommunicationService communicationService)
+		public LoginService(IConnectionService connectionService,
+			ICommunicationService communicationService)
 		{
 			_connectionService = connectionService;
 			_communicationService = communicationService;
 			_connectionService.ConnectionEstablished += OnConnectionEstablished;
 			_connectionService.ConnectionLost += OnConnectionLost;
 			_connectionService.Reconnected += OnReconnected;
-			Start();
 		}
 
-		private void Start()
+
+		public Task<bool> AwaitLogin() => _awaitLoginTcs.Task;
+
+		public async Task<StartingResult> Start()
 		{
-			_connectionService.Start();
+			try
+			{
+				_connectionService.Start();
+				var loginResult = await AwaitLogin();
+				return Result(loginResult);
+			}
+			catch (Exception ex)
+			{
+				this.LogError($"Error starting LoginService: {ex.Message}\n" +
+				              $"Stacktrace {ex.StackTrace}");
+				return Result(false);
+			}
 		}
+
+		private static StartingResult Result(bool result)
+		{
+			return StartingResult.Create(result, nameof(LoginService));
+		}
+
 
 		private async void OnConnectionEstablished()
 		{
@@ -48,7 +76,11 @@ namespace BeautifulMauiClientApplication
 				attempts--;
 			}
 
-			_awaitLoginTcs?.SetResult(loginReply?.Success == true);
+			if (loginReply is { Success: true })
+			{
+				this.LogDebug($"Auto login fo {username} successful");
+				_awaitLoginTcs?.SetResult(true);
+			}
 		}
 
 		private async Task<LoginReply> TryLogin(LoginRequestType type, string value, bool stayActive)
@@ -82,12 +114,6 @@ namespace BeautifulMauiClientApplication
 
 		private void OnConnectionLost(string reason)
 		{
-		}
-
-		public Task<bool> AwaitLogin()
-		{
-			_awaitLoginTcs = new TaskCompletionSource<bool>();
-			return _awaitLoginTcs.Task;
 		}
 	}
 }

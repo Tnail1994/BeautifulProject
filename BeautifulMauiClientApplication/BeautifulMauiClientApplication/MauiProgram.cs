@@ -1,6 +1,10 @@
 ﻿using AutoSynchronizedMessageHandling;
 using AutoSynchronizedMessageHandling.Common.Contracts;
 using BeautifulMauiClientApplication.Example;
+using BeautifulMauiClientApplication.Login.Models;
+using BeautifulMauiClientApplication.Login.Services;
+using BeautifulMauiClientApplication.Login.ViewModels;
+using BeautifulMauiClientApplication.Startup;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -83,6 +87,12 @@ namespace BeautifulMauiClientApplication
 
 			builder.Services.AddSingleton<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
 
+			builder.Services.AddSingleton<IStartupService, StartupService>();
+
+			// Auto start services
+			builder.Services.AddSingleton<ILoginService, LoginService>();
+			builder.Services.AddSingleton<IAutoStartService>(sp => sp.GetRequiredService<ILoginService>());
+
 			// Configurations
 			builder.Services.AddSingleton<IAsyncClientSettings>(_ =>
 				config.GetSection(nameof(AsyncClientSettings)).Get<AsyncClientSettings>() ??
@@ -102,18 +112,19 @@ namespace BeautifulMauiClientApplication
 
 			// Pages
 			builder.Services.AddTransient<MainView>();
-			builder.Services.AddTransient<Example.MainViewModel>();
+			builder.Services.AddTransient<MainViewModel>();
 
 			builder.Services.AddTransient<TestView>();
 			builder.Services.AddTransient<TestViewModel>();
 
 			builder.Services.AddTransient<LoginView>();
 			builder.Services.AddTransient<LoginViewModel>();
+			builder.Services.AddTransient<LoginModel>();
 
 			// Contents
-			builder.Services.AddTransient<Example.RandomContent1ViewModel>();
-			builder.Services.AddTransient<Example.RandomContent2ViewModel>();
-			builder.Services.AddTransient<Example.RandomContent3ViewModel>();
+			builder.Services.AddTransient<RandomContent1ViewModel>();
+			builder.Services.AddTransient<RandomContent2ViewModel>();
+			builder.Services.AddTransient<RandomContent3ViewModel>();
 
 			return builder.Build();
 		}
