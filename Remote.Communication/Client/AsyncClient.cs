@@ -88,7 +88,7 @@ namespace Remote.Communication.Client
 				switch (ex.ErrorCode)
 				{
 					default:
-						this.LogError(ex.Message);
+						this.LogWarning(ex.Message);
 						break;
 				}
 			}
