@@ -54,43 +54,52 @@ namespace DbManagement.Common.Implementations
 			{
 				while (!_updateLoopCts.IsCancellationRequested)
 				{
-					if (Entities == null)
-					{
-						this.LogWarning($"DbSet of {TypeNameOfCollectionEntries} is null");
-						continue;
-					}
-
-					if (_updateQueue.IsEmpty)
-					{
-						await Task.Delay(_dbContextSettings.UpdateDbDelayInMs);
-						continue;
-					}
-
-					if (_dbContextSettings.AnalyzeUpdateSet)
-					{
-						// todo analyzing algorithm
-					}
-					else
-					{
-						if (!_updateQueue.TryDequeue(out var updateEntityElement))
-							continue;
-
-						switch (updateEntityElement.Type)
-						{
-							case UpdateType.Add:
-								this.LogDebug($"Adding type {typeof(T)}, with {updateEntityElement.EntityDto}");
-								await Entities.AddAsync(updateEntityElement.EntityDto);
-								break;
-							case UpdateType.Delete:
-								this.LogDebug($"Removing type {typeof(T)}, with {updateEntityElement.EntityDto}");
-								Entities.Remove(updateEntityElement.EntityDto);
-								break;
-						}
-					}
-
-					await SaveChangesAsync();
+					await Task.Delay(_dbContextSettings.UpdateDbDelayInMs);
+					await SaveChangesFromUpdateLoop();
 				}
 			}, _updateLoopCts.Token);
+		}
+
+		private async Task SaveChangesFromUpdateLoop(bool skipCts = false)
+		{
+			if (Entities == null)
+			{
+				this.LogWarning($"DbSet of {TypeNameOfCollectionEntries} is null");
+				return;
+			}
+
+			var hasChanges = true;
+
+			// todo: how to add analyzing of the updateQueue? 
+			if (_dbContextSettings.AnalyzeUpdateSet)
+			{
+			}
+
+			while (!_updateQueue.IsEmpty && (!_updateLoopCts.IsCancellationRequested || skipCts))
+			{
+				if (!_updateQueue.TryDequeue(out var updateEntityElement))
+					continue;
+
+				switch (updateEntityElement.Type)
+				{
+					case UpdateType.Add:
+						this.LogDebug($"Adding type {typeof(T)}, with {updateEntityElement.EntityDto}");
+						await Entities.AddAsync(updateEntityElement.EntityDto);
+						hasChanges = true;
+						break;
+					case UpdateType.Delete:
+						this.LogDebug($"Removing type {typeof(T)}, with {updateEntityElement.EntityDto}");
+						Entities.Remove(updateEntityElement.EntityDto);
+						hasChanges = true;
+						break;
+					case UpdateType.Update:
+						hasChanges = true;
+						break;
+				}
+			}
+
+			if (hasChanges)
+				await SaveChangesAsync();
 		}
 
 
@@ -167,6 +176,13 @@ namespace DbManagement.Common.Implementations
 		{
 			_set ??= Entities?.ToList();
 			return _set;
+		}
+
+		public override async ValueTask DisposeAsync()
+		{
+			_updateLoopCts.Cancel();
+			await SaveChangesFromUpdateLoop(true);
+			await base.DisposeAsync();
 		}
 	}
 }
