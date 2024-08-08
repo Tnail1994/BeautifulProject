@@ -42,7 +42,7 @@ namespace Session.Core
 
 			try
 			{
-				SetState(SessionState.Connecting, false);
+				SetState(SessionState.Connecting);
 				_connectionService.Start();
 			}
 			catch (CheckAliveException checkAliveException)
@@ -61,7 +61,7 @@ namespace Session.Core
 		{
 			try
 			{
-				SetState(SessionState.Authorizing, false);
+				SetState(SessionState.Authorizing);
 
 				var authorizationInfo = await _authenticationService.Authorize(_communicationService);
 
@@ -69,7 +69,7 @@ namespace Session.Core
 
 				if (!authorizationInfo.IsAuthorized)
 				{
-					SetState(SessionState.FailedAuthorization, false);
+					SetState(SessionState.FailedAuthorization);
 					return;
 				}
 
@@ -123,11 +123,11 @@ namespace Session.Core
 				SaveSession();
 		}
 
-		private void SetState(SessionState state, bool save = true)
+		private void SetState(SessionState state)
 		{
 			_sessionInfo.SetState(state);
 
-			if (save)
+			if (state.Equals(SessionState.Running) || (state.Equals(SessionState.Stopped) && _sessionInfo.Authorized))
 				SaveSession();
 		}
 
