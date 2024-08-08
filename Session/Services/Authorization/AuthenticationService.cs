@@ -127,7 +127,8 @@ namespace Session.Services.Authorization
 			}
 			finally
 			{
-				_usersService.SetUsersActiveState(username, false);
+				if (!string.IsNullOrEmpty(username))
+					_usersService.SetUsersActiveState(username, false);
 			}
 		}
 	}
