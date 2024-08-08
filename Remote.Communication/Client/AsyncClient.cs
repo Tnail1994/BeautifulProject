@@ -44,9 +44,12 @@ namespace Remote.Communication.Client
 			return new AsyncClient(client, settings);
 		}
 
-		public Task<bool> ConnectAsync()
+		public async Task<bool> ConnectAsync()
 		{
-			return _client.ConnectAsync(_ip, _port);
+			var connectAsyncResult = await _client.ConnectAsync(_ip, _port);
+
+
+			return connectAsyncResult;
 		}
 
 		public async void StartReceivingAsync()
@@ -56,7 +59,7 @@ namespace Remote.Communication.Client
 				var buffer = new byte[_bufferSize];
 				while (!_receivingCancellationTokenSource.Token.IsCancellationRequested)
 				{
-					var receiveTask = _client.ReceiveAsync(buffer, SocketFlags.None);
+					var receiveTask = _client.ReceiveAsync(buffer);
 					var timeoutTask = Task.Delay(_clientTimeout, _receivingCancellationTokenSource.Token);
 
 					var completedTask = await Task.WhenAny(receiveTask, timeoutTask);
@@ -111,7 +114,7 @@ namespace Remote.Communication.Client
 			try
 			{
 				var messageBytes = Encoding.UTF8.GetBytes(message);
-				var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
+				var sendingResult = await _client.SendAsync(messageBytes);
 				this.LogDebug($"Send {sendingResult}. Id: {Id}");
 			}
 			catch (SocketException ex)
@@ -140,6 +143,11 @@ namespace Remote.Communication.Client
 		public void ResetSocket()
 		{
 			_client.ResetSocket();
+		}
+
+		public Task Authenticate()
+		{
+			return _client.Authenticate();
 		}
 
 		public void Dispose()

@@ -1,10 +1,30 @@
-﻿using System.Net.Sockets;
+﻿using System.Net.Security;
+using System.Net.Sockets;
 
 namespace Remote.Server.Common.Contracts
 {
+	public class ConnectionOccurObject
+	{
+		public string ClientId { get; }
+		public TcpClient TcpClient { get; }
+		public SslStream SslStream { get; }
+
+		private ConnectionOccurObject(string clientId, TcpClient tcpClient, SslStream sslStream)
+		{
+			ClientId = clientId;
+			TcpClient = tcpClient;
+			SslStream = sslStream;
+		}
+
+		public static ConnectionOccurObject Create(string clientId, TcpClient client, SslStream sslStream)
+		{
+			return new ConnectionOccurObject(clientId, client, sslStream);
+		}
+	}
+
 	public interface IAsyncServer
 	{
-		event Action<KeyValuePair<string, TcpClient>> NewConnectionOccured;
+		event Action<ConnectionOccurObject> NewConnectionOccured;
 		Task StartAsync();
 		void Remove(string clientId);
 	}

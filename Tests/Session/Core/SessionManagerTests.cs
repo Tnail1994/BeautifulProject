@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using System.Net.Security;
+using NSubstitute;
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
 using Remote.Communication.Common.Client.Contracts;
@@ -67,9 +68,11 @@ namespace Tests.Session.Core
 
 		private void RaiseNewConnectionEvent(TcpClient dummySocket)
 		{
+			var dummySslStream = new SslStream(dummySocket.GetStream());
+
 			_asyncSocketServerMock.NewConnectionOccured +=
-				Raise.Event<Action<KeyValuePair<string, TcpClient>>>(
-					new KeyValuePair<string, TcpClient>("anyId", dummySocket));
+				Raise.Event<Action<ConnectionOccurObject>>(ConnectionOccurObject.Create("anyId", dummySocket,
+					dummySslStream));
 		}
 
 		private static TcpClient CreateDummySocket()

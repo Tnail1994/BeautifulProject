@@ -12,5 +12,6 @@
 		void StartReceivingAsync();
 		void Send(string message);
 		void ResetSocket();
+		Task Authenticate();
 	}
 }

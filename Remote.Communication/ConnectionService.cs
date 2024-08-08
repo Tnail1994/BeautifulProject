@@ -56,6 +56,8 @@ namespace Remote.Communication
 
 		private async Task<bool> ConnectAsync()
 		{
+			await _asyncClient.Authenticate();
+
 			if (_asyncClient.IsConnected)
 				return true;
 

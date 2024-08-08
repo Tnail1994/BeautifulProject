@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using Core.Exceptions;
 using Core.Extensions;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Remote.Server
 {
@@ -17,7 +19,7 @@ namespace Remote.Server
 
 		private readonly ConcurrentDictionary<string, TcpClient> _connectedClients = new();
 
-		public event Action<KeyValuePair<string, TcpClient>>? NewConnectionOccured;
+		public event Action<ConnectionOccurObject>? NewConnectionOccured;
 
 		public AsyncServer(IAsyncServerSettings settings)
 		{
@@ -59,10 +61,17 @@ namespace Remote.Server
 
 			try
 			{
+				var serverCertificate = new X509Certificate2(@"C:\Users\Stefan\Desktop\Beautiful_Server_Cert.pfx");
+
 				while (!_cts.Token.IsCancellationRequested)
 				{
 					this.LogInfo("Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
+					var sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
+
+					// todo: make configure values
+					await sslStream.AuthenticateAsServerAsync(serverCertificate, false, false);
+
 					var clientId = Guid.NewGuid().ToString();
 					var addingResult = _connectedClients.TryAdd(clientId, client);
 
@@ -70,19 +79,12 @@ namespace Remote.Server
 						this.LogWarning($"Cannot add Id {clientId} to dictionary.");
 
 					this.LogInfo($"New Connection: Id = {clientId}");
-					NewConnectionOccured?.Invoke(new KeyValuePair<string, TcpClient>(clientId, client));
+					NewConnectionOccured?.Invoke(ConnectionOccurObject.Create(clientId, client, sslStream));
 				}
 			}
 			catch (OperationCanceledException oce)
 			{
 				this.LogDebug($"{oce.Message}");
-			}
-			catch (BaseException baseException)
-			{
-				this.LogError($"{baseException.Message}");
-
-				// todo: we know that the exception is out of our project. We have to figure out, what should happen if the project (like Session) fails
-				// todo: processing the NewConnectionOccured event. We maybe have to retry the event?
 			}
 			catch (Exception ex) when (!_cts.Token.IsCancellationRequested)
 			{
@@ -108,6 +110,14 @@ namespace Remote.Server
 					}
 				}
 			}
+		}
+
+		public X509Certificate ServerCertificateFile { get; set; }
+
+		private bool App_CertificateValidation(object sender, X509Certificate? certificate, X509Chain? chain,
+			SslPolicyErrors sslpolicyerrors)
+		{
+			return true;
 		}
 
 		public void Dispose()

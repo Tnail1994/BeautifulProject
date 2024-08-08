@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Net.Security;
 using Core.Extensions;
 
 #if DEBUG
@@ -52,15 +53,17 @@ namespace Session.Core
 			await _asyncSocketServer.StartAsync();
 		}
 
-		private void OnNewConnectionOccured(KeyValuePair<string, TcpClient> clientAndId)
+		// todo: Change KeyValuePair to class object and add sslStream
+		private void OnNewConnectionOccured(ConnectionOccurObject connectionOccurObject)
 		{
 			this.LogInfo("Starting new session ...");
-			StartNewSession(clientAndId.Key, clientAndId.Value);
+			StartNewSession(connectionOccurObject.ClientId, connectionOccurObject.TcpClient,
+				connectionOccurObject.SslStream);
 		}
 
-		private void StartNewSession(string clientId, TcpClient client)
+		private void StartNewSession(string clientId, TcpClient client, SslStream sslStream)
 		{
-			var session = BuildSession(client);
+			var session = BuildSession(client, sslStream);
 			session.SessionStopped += OnSessionStopped;
 
 			session.Start();
@@ -70,7 +73,7 @@ namespace Session.Core
 			_sessionIdClientIdMap.TryAdd(session.Id, clientId);
 		}
 
-		private ISession BuildSession(TcpClient client)
+		private ISession BuildSession(TcpClient client, SslStream sslStream)
 		{
 			var scope = _scopeManager.Create();
 
@@ -80,7 +83,7 @@ namespace Session.Core
 			if (scope == null)
 				throw new SessionManagerException("Scope is not set.", 2);
 
-			scope.GetService<IAsyncClientFactory>().Init(client);
+			scope.GetService<IAsyncClientFactory>().Init(client, sslStream);
 			return scope.GetService<ISession>();
 		}
 

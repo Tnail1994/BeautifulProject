@@ -21,14 +21,14 @@ namespace Tests.Remote.Communication.Client
 		public void StartReceivingAsync_WhenCalled_ShouldStartReceivingOnSocket()
 		{
 			_asyncClient.StartReceivingAsync();
-			_clientMock.Received(1).ReceiveAsync(Arg.Any<byte[]>(), Arg.Any<SocketFlags>());
+			_clientMock.Received(1).ReceiveAsync(Arg.Any<byte[]>());
 		}
 
 		[Fact]
 		public void SendingAString_ShouldCallSendMethodOnSocket()
 		{
 			_asyncClient.Send("MockMessage");
-			_clientMock.Received(1).SendAsync(Arg.Any<byte[]>(), Arg.Any<SocketFlags>());
+			_clientMock.Received(1).SendAsync(Arg.Any<byte[]>());
 		}
 	}
 }
