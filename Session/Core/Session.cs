@@ -84,6 +84,10 @@ namespace Session.Core
 
 				SetState(SessionState.Running);
 			}
+			catch (OperationCanceledException operationCanceled)
+			{
+				this.LogInfo("Authorization canceled.");
+			}
 			catch (Exception e)
 			{
 				this.LogFatal($"[Session] Error while OnConnectionEstablished event \n" +
