@@ -84,7 +84,7 @@ namespace Session.Core
 
 				SetState(SessionState.Running);
 			}
-			catch (OperationCanceledException operationCanceled)
+			catch (OperationCanceledException)
 			{
 				this.LogInfo("Authorization canceled.");
 			}

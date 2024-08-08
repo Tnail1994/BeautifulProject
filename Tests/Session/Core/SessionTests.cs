@@ -60,10 +60,14 @@ namespace Tests.Session.Core
 		}
 
 		[Fact]
-		public void WhenDisposing_ThenShouldCallTryRemoveAndSaveSessionInfo()
+		public void WhenStartingAndDisposing_ThenShouldCallTryRemoveAndSaveSessionInfoWhenUserIsAuthorized()
 		{
+			_authenticationServiceMock.Authorize(_communicationServiceMock)
+				.Returns(Task.FromResult(AuthorizationInfo.Create("anyUser")));
+			_session.Start();
+			_connectionServiceMock.ConnectionEstablished += Raise.Event<Action>();
 			((global::Session.Core.Session)_session).Dispose();
-			_sessionsServiceMock.Received(1).SaveSessionInfo(Arg.Any<SessionInfo>());
+			_sessionsServiceMock.Received(2).SaveSessionInfo(Arg.Any<SessionInfo>());
 		}
 	}
 }

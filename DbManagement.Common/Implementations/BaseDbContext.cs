@@ -3,7 +3,6 @@ using Core.Extensions;
 using Core.Helpers;
 using DbManagement.Common.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
 
 namespace DbManagement.Common.Implementations
@@ -137,17 +136,17 @@ namespace DbManagement.Common.Implementations
 			if (!_set.Contains(entityDto))
 			{
 				this.LogDebug($"(_set) Adding type {typeof(T)}, with {entityDto}");
-				Add<TDto>(entityDto);
+				Add(entityDto);
 			}
 			else
 			{
 				this.LogDebug($"(_set) Updating type {typeof(T)}, with {entityDto}");
-				Update<TDto>(entityDto);
+				Update(entityDto);
 			}
 		}
 
 
-		private void Add<TDto>(T entityDto) where TDto : EntityDto
+		private void Add(T entityDto)
 		{
 			if (_set == null)
 				return;
@@ -156,7 +155,7 @@ namespace DbManagement.Common.Implementations
 			_updateQueue.Enqueue(UpdateEntityElement.Create(entityDto, UpdateType.Add));
 		}
 
-		private void Update<TDto>(T entityDto) where TDto : EntityDto
+		private void Update(T entityDto)
 		{
 			if (_set == null)
 				return;
