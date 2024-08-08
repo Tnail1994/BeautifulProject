@@ -108,10 +108,28 @@ namespace Remote.Communication.Client
 		{
 			//if (_client.IsNotConnected)
 			//	return;
-
-			var messageBytes = Encoding.UTF8.GetBytes(message);
-			var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
-			this.LogDebug($"Send {sendingResult}. Id: {Id}");
+			try
+			{
+				var messageBytes = Encoding.UTF8.GetBytes(message);
+				var sendingResult = await _client.SendAsync(messageBytes, SocketFlags.None);
+				this.LogDebug($"Send {sendingResult}. Id: {Id}");
+			}
+			catch (SocketException ex)
+			{
+				switch (ex.ErrorCode)
+				{
+					default:
+						this.LogWarning($"Cannot send {message} Id: {Id}\n" +
+						                $"{ex.Message}");
+						break;
+				}
+			}
+			catch (Exception ex)
+			{
+				this.LogFatal($"Cannot send message {message}. Id: {Id}" +
+				              $"{ex.Message}" +
+				              $"Stacktrace: {ex.StackTrace}.");
+			}
 		}
 
 		public void StopReceiving()
