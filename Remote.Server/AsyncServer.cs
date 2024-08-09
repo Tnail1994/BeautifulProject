@@ -6,6 +6,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using Core.Helpers;
+using Remote.Communication.Helpers;
 
 namespace Remote.Server
 {
@@ -63,7 +64,7 @@ namespace Remote.Server
 
 			try
 			{
-				var serverCertificate = new X509Certificate2(_settings.TlsSettingsObj.CertificatePath);
+				var serverCertificate = CertificateCreator.Create(_settings.TlsSettingsObj.CertificatePath);
 
 				while (!_cts.Token.IsCancellationRequested)
 				{

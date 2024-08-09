@@ -2,6 +2,7 @@
 using Remote.Communication.Common.Client.Contracts;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
+using Remote.Communication.Helpers;
 
 namespace Remote.Communication.Client
 {
@@ -42,9 +43,8 @@ namespace Remote.Communication.Client
 
 			if (!_settings.IsServerClient)
 			{
-				var clientCertificate = new X509Certificate2(_settings.TlsSettingsObj.CertificatePath);
 				var clientCertificateCollection =
-					new X509CertificateCollection(new X509Certificate[] { clientCertificate });
+					CertificateCreator.CreateAsCollection(_settings.TlsSettingsObj.CertificatePath);
 
 				_sslStream = new SslStream(_client.GetStream(), _settings.TlsSettingsObj.LeaveInnerStreamOpen,
 					ValidateAsClient);
