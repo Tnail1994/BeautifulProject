@@ -103,7 +103,6 @@ namespace Session.Core
 
 			if (_sessionIdClientIdMap.TryRemove(sessionStoppedEventArgs.SessionKey.InstantiatedSessionId,
 				    out var clientId))
-
 				_asyncSocketServer.Remove(clientId);
 		}
 

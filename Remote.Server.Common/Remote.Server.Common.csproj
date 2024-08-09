@@ -9,4 +9,8 @@
     <OutputPath>$(SolutionDir)bin\Dlls\</OutputPath>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Remote.Communication.Common\Remote.Communication.Common.csproj" />
+  </ItemGroup>
+
 </Project>

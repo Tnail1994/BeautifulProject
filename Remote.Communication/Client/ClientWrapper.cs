@@ -35,17 +35,29 @@ namespace Remote.Communication.Client
 			return buffer.Length;
 		}
 
+		//public async Task<int> SendAsync(byte[] buffer)
+		//{
+		//	await AwaitCurrentWriteTask();
+
+		//	_writeTask = _sslStream.WriteAsync(buffer);
+		//	await _writeTask.Value;
+		//	_writeTask = null;
+
+		//	return buffer.Length;
+		//}
+
+		//private async Task AwaitCurrentWriteTask()
+		//{
+		//	if (_writeTask == null)
+		//		return;
+
+		//	await _writeTask.Value;
+		//}
+
 		public async Task<bool> ConnectAsync(string ip, int port)
 		{
 			await _client.ConnectAsync(ip, port);
-			await Authenticate();
 			return _client.Connected;
-		}
-
-		public async Task Authenticate()
-		{
-			return;
-			await _sslStream.AuthenticateAsClientAsync("DESKTOP-BPFAUJ0");
 		}
 
 		public void ResetSocket()

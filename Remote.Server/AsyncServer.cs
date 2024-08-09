@@ -1,16 +1,17 @@
-﻿using Remote.Server.Common.Contracts;
+﻿using Core.Extensions;
+using Remote.Server.Common.Contracts;
 using System.Collections.Concurrent;
 using System.Net;
-using System.Net.Sockets;
-using Core.Exceptions;
-using Core.Extensions;
 using System.Net.Security;
+using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
+using Core.Helpers;
 
 namespace Remote.Server
 {
 	public class AsyncServer : IAsyncServer, IDisposable
 	{
+		private readonly IAsyncServerSettings _settings;
 		private static int _errorCount;
 		private readonly int _maxErrorCount;
 
@@ -23,6 +24,7 @@ namespace Remote.Server
 
 		public AsyncServer(IAsyncServerSettings settings)
 		{
+			_settings = settings;
 			var asyncServerSettings = settings;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
 			_maxErrorCount = asyncServerSettings.MaxErrorCount;
@@ -61,18 +63,20 @@ namespace Remote.Server
 
 			try
 			{
-				var serverCertificate = new X509Certificate2(@"C:\Users\Stefan\Desktop\Beautiful_Server_Cert.pfx");
+				var serverCertificate = new X509Certificate2(_settings.TlsSettingsObj.CertificatePath);
 
 				while (!_cts.Token.IsCancellationRequested)
 				{
 					this.LogInfo("Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
-					var sslStream = new SslStream(client.GetStream(), false, App_CertificateValidation);
+					var sslStream = new SslStream(client.GetStream(), _settings.TlsSettingsObj.LeaveInnerStreamOpen,
+						ValideAsServer);
 
-					// todo: make configure values
-					await sslStream.AuthenticateAsServerAsync(serverCertificate, false, false);
+					await sslStream.AuthenticateAsServerAsync(serverCertificate,
+						_settings.TlsSettingsObj.CertificateRequired,
+						_settings.TlsSettingsObj.CheckCertificateRevocation);
 
-					var clientId = Guid.NewGuid().ToString();
+					var clientId = GuidIdCreator.CreateString();
 					var addingResult = _connectedClients.TryAdd(clientId, client);
 
 					if (!addingResult)
@@ -112,12 +116,11 @@ namespace Remote.Server
 			}
 		}
 
-		public X509Certificate ServerCertificateFile { get; set; }
-
-		private bool App_CertificateValidation(object sender, X509Certificate? certificate, X509Chain? chain,
-			SslPolicyErrors sslpolicyerrors)
+		private bool ValideAsServer(object sender, X509Certificate? certificate, X509Chain? chain,
+			SslPolicyErrors sslPolicyErrors)
 		{
-			return true;
+			return sslPolicyErrors == SslPolicyErrors.None ||
+			       sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors; // Debugging 
 		}
 
 		public void Dispose()

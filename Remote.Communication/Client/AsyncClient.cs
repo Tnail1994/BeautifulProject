@@ -44,12 +44,14 @@ namespace Remote.Communication.Client
 			return new AsyncClient(client, settings);
 		}
 
+		/// <summary>
+		/// It is obsolete, if tls is enabled. Because of ssl.AuthorizeAs..., the connection is done.
+		/// </summary>
+		/// <returns>Connection result</returns>
+		[Obsolete]
 		public async Task<bool> ConnectAsync()
 		{
-			var connectAsyncResult = await _client.ConnectAsync(_ip, _port);
-
-
-			return connectAsyncResult;
+			return await _client.ConnectAsync(_ip, _port);
 		}
 
 		public async void StartReceivingAsync()
@@ -143,11 +145,6 @@ namespace Remote.Communication.Client
 		public void ResetSocket()
 		{
 			_client.ResetSocket();
-		}
-
-		public Task Authenticate()
-		{
-			return _client.Authenticate();
 		}
 
 		public void Dispose()

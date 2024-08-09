@@ -37,21 +37,43 @@ namespace Remote.Communication.Client
 				_client = new TcpClient(_settings.IpAddress, _settings.Port);
 			}
 
-			if (_sslStream == null)
-			{
-				// Todo: Settings to define the validation. If server or client
+			if (_sslStream != null)
+				return CreateAsyncClient();
 
-				_sslStream = new SslStream(_client.GetStream(), false, App_CertificateValidation);
-				_sslStream.AuthenticateAsClient("DESKTOP-BPFAUJ0", null, false);
+			if (!_settings.IsServerClient)
+			{
+				var clientCertificate = new X509Certificate2(_settings.TlsSettingsObj.CertificatePath);
+				var clientCertificateCollection =
+					new X509CertificateCollection(new X509Certificate[] { clientCertificate });
+
+				_sslStream = new SslStream(_client.GetStream(), _settings.TlsSettingsObj.LeaveInnerStreamOpen,
+					ValidateAsClient);
+				_sslStream.AuthenticateAsClient(_settings.TlsSettingsObj.TargetHost, clientCertificateCollection,
+					_settings.TlsSettingsObj.CheckCertificateRevocation);
 			}
+
+			return CreateAsyncClient();
+		}
+
+		/// <summary>
+		/// Exceptions:
+		/// - InvalidOperationException
+		/// </summary>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException"></exception>
+		private IAsyncClient CreateAsyncClient()
+		{
+			if (_client == null || _sslStream == null)
+				throw new InvalidOperationException("Cannot create AsyncClient without _client and _sslStream set.");
 
 			return AsyncClient.Create(ClientWrapper.Create(_client, _sslStream), _settings);
 		}
 
-		private bool App_CertificateValidation(object sender, X509Certificate? certificate, X509Chain? chain,
-			SslPolicyErrors sslpolicyerrors)
+		private bool ValidateAsClient(object sender, X509Certificate? certificate, X509Chain? chain,
+			SslPolicyErrors sslPolicyErrors)
 		{
-			return true;
+			return sslPolicyErrors == SslPolicyErrors.None ||
+			       sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors; // Debugging 
 		}
 	}
 }

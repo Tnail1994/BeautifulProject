@@ -1,4 +1,6 @@
-﻿using Remote.Server.Common.Contracts;
+﻿using Remote.Communication.Client;
+using Remote.Communication.Common.Client.Contracts;
+using Remote.Server.Common.Contracts;
 
 namespace Remote.Server
 {
@@ -15,12 +17,8 @@ namespace Remote.Server
 		public int MaxErrorCount { get; init; } = DefaultMaxErrorCount;
 		public string IpAddress { get; init; } = DefaultIpAddress;
 
-		public static IAsyncServerSettings Default => new AsyncServerSettings()
-		{
-			Port = DefaultPort,
-			MaxConnections = DefaultMaxConnections,
-			IpAddress = DefaultIpAddress,
-			MaxErrorCount = DefaultMaxErrorCount
-		};
+		public ITlsSettings TlsSettingsObj { get; init; } = TlsSettings.Default;
+
+		public static IAsyncServerSettings Default => new AsyncServerSettings();
 	}
 }

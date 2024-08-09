@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
     <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
   </ItemGroup>
 

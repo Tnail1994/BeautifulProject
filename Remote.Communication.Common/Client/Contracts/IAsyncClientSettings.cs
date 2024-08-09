@@ -6,5 +6,12 @@
 		int ClientTimeout { get; init; }
 		string IpAddress { get; init; }
 		int Port { get; init; }
+
+		/// <summary>
+		/// Should this client operate on the server or client side?
+		/// </summary>
+		bool IsServerClient { get; init; }
+
+		ITlsSettings TlsSettingsObj { get; init; }
 	}
 }

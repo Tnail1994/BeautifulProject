@@ -1,5 +1,4 @@
 ﻿using NSubstitute;
-using System.Net.Sockets;
 using Remote.Communication.Client;
 using Remote.Communication.Common.Client.Contracts;
 

@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-
-namespace Remote.Communication.Common.Client.Contracts
+﻿namespace Remote.Communication.Common.Client.Contracts
 {
 	public interface IClient : IDisposable
 	{
@@ -11,6 +9,5 @@ namespace Remote.Communication.Common.Client.Contracts
 		Task<int> SendAsync(byte[] buffer);
 		Task<bool> ConnectAsync(string ip, int port);
 		void ResetSocket();
-		Task Authenticate();
 	}
 }
