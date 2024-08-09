@@ -66,7 +66,7 @@ namespace Remote.Communication.Client
 			if (_client == null || _sslStream == null)
 				throw new InvalidOperationException("Cannot create AsyncClient without _client and _sslStream set.");
 
-			return AsyncClient.Create(ClientWrapper.Create(_client, _sslStream), _settings);
+			return AsyncClient.Create(TlsClient.Create(_client, _sslStream), _settings);
 		}
 
 		private bool ValidateAsClient(object sender, X509Certificate? certificate, X509Chain? chain,

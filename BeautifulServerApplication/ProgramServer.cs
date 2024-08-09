@@ -113,7 +113,9 @@ namespace BeautifulServerApplication
 							MessageObject = i.ToString()
 						};
 						_sessionManager?.SendMessageToAllClients(randomMessage);
-						await Task.Delay(1);
+
+						// Without delay, the maximum send messages is round about 100
+						//await Task.Delay(1);
 					}
 				}
 #endif
