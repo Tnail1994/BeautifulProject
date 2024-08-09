@@ -2,7 +2,7 @@
 using Remote.Communication.Common.Client.Contracts;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using Remote.Communication.Helpers;
+using Remote.Communication.Common.Helpers;
 
 namespace Remote.Communication.Client
 {
@@ -10,13 +10,17 @@ namespace Remote.Communication.Client
 	{
 		private readonly IAsyncClientFactorySettings _factorySettings;
 		private readonly IAsyncClientSettings _settings;
+		private readonly ITlsSettings _tlsSettings;
+
 		private TcpClient? _client;
 		private SslStream? _sslStream;
 
-		public AsyncClientFactory(IAsyncClientFactorySettings factorySettings, IAsyncClientSettings settings)
+		public AsyncClientFactory(IAsyncClientFactorySettings factorySettings, IAsyncClientSettings settings,
+			ITlsSettings tlsSettings)
 		{
 			_factorySettings = factorySettings;
 			_settings = settings;
+			_tlsSettings = tlsSettings;
 		}
 
 		public void Init(TcpClient client, SslStream sslStream)
@@ -44,12 +48,12 @@ namespace Remote.Communication.Client
 			if (!_settings.IsServerClient)
 			{
 				var clientCertificateCollection =
-					CertificateCreator.CreateAsCollection(_settings.TlsSettingsObj.CertificatePath);
+					CertificateCreator.CreateAsCollection(_tlsSettings.CertificatePath);
 
-				_sslStream = new SslStream(_client.GetStream(), _settings.TlsSettingsObj.LeaveInnerStreamOpen,
+				_sslStream = new SslStream(_client.GetStream(), _tlsSettings.LeaveInnerStreamOpen,
 					ValidateAsClient);
-				_sslStream.AuthenticateAsClient(_settings.TlsSettingsObj.TargetHost, clientCertificateCollection,
-					_settings.TlsSettingsObj.CheckCertificateRevocation);
+				_sslStream.AuthenticateAsClient(_tlsSettings.TargetHost, clientCertificateCollection,
+					_tlsSettings.CheckCertificateRevocation);
 			}
 
 			return CreateAsyncClient();
@@ -73,7 +77,7 @@ namespace Remote.Communication.Client
 			SslPolicyErrors sslPolicyErrors)
 		{
 			return sslPolicyErrors == SslPolicyErrors.None ||
-			       (_settings.TlsSettingsObj.AllowRemoteCertificateChainErrors &&
+			       (_tlsSettings.AllowRemoteCertificateChainErrors &&
 			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 	}

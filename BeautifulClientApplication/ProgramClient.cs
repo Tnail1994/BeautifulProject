@@ -111,6 +111,8 @@ namespace BeautifulClientApplication
 						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
 					services.Configure<SessionKeySettings>(
 						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
+					services.Configure<TlsSettings>(
+						hostContext.Configuration.GetSection(nameof(TlsSettings)));
 
 					services.AddSingleton<IAsyncClientSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
@@ -122,6 +124,8 @@ namespace BeautifulClientApplication
 						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
 					services.AddSingleton<ISessionKeySettings>(provider =>
 						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
+					services.AddSingleton<ITlsSettings>(provider =>
+						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
 				});
 	}
 }

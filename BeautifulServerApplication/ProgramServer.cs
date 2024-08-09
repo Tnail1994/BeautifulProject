@@ -186,6 +186,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
 					services.Configure<SessionKeySettings>(
 						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
+					services.Configure<TlsSettings>(
+						hostContext.Configuration.GetSection(nameof(TlsSettings)));
 
 					services.AddSingleton<IAsyncServerSettings>(provider =>
 						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
@@ -205,6 +207,8 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
 					services.AddSingleton<ISessionKeySettings>(provider =>
 						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
+					services.AddSingleton<ITlsSettings>(provider =>
+						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
 
 					// Session wide
 					services.AddScoped<ISession, Session.Core.Session>();

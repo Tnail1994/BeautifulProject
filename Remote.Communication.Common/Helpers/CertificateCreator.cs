@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 
-namespace Remote.Communication.Helpers
+namespace Remote.Communication.Common.Helpers
 {
 	public static class CertificateCreator
 	{

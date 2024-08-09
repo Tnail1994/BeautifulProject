@@ -6,13 +6,14 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using Core.Helpers;
-using Remote.Communication.Helpers;
+using Remote.Communication.Common.Client.Contracts;
+using Remote.Communication.Common.Helpers;
 
 namespace Remote.Server
 {
 	public class AsyncServer : IAsyncServer, IDisposable
 	{
-		private readonly IAsyncServerSettings _settings;
+		private readonly ITlsSettings _tlsSettings;
 		private static int _errorCount;
 		private readonly int _maxErrorCount;
 
@@ -23,9 +24,9 @@ namespace Remote.Server
 
 		public event Action<ConnectionOccurObject>? NewConnectionOccured;
 
-		public AsyncServer(IAsyncServerSettings settings)
+		public AsyncServer(IAsyncServerSettings settings, ITlsSettings tlsSettings)
 		{
-			_settings = settings;
+			_tlsSettings = tlsSettings;
 			var asyncServerSettings = settings;
 			var ipAddress = IPAddress.Parse(asyncServerSettings.IpAddress);
 			_maxErrorCount = asyncServerSettings.MaxErrorCount;
@@ -64,18 +65,18 @@ namespace Remote.Server
 
 			try
 			{
-				var serverCertificate = CertificateCreator.Create(_settings.TlsSettingsObj.CertificatePath);
+				var serverCertificate = CertificateCreator.Create(_tlsSettings.CertificatePath);
 
 				while (!_cts.Token.IsCancellationRequested)
 				{
 					this.LogInfo("Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
-					var sslStream = new SslStream(client.GetStream(), _settings.TlsSettingsObj.LeaveInnerStreamOpen,
+					var sslStream = new SslStream(client.GetStream(), _tlsSettings.LeaveInnerStreamOpen,
 						ValideAsServer);
 
 					await sslStream.AuthenticateAsServerAsync(serverCertificate,
-						_settings.TlsSettingsObj.CertificateRequired,
-						_settings.TlsSettingsObj.CheckCertificateRevocation);
+						_tlsSettings.CertificateRequired,
+						_tlsSettings.CheckCertificateRevocation);
 
 					var clientId = GuidIdCreator.CreateString();
 					var addingResult = _connectedClients.TryAdd(clientId, client);
@@ -121,7 +122,7 @@ namespace Remote.Server
 			SslPolicyErrors sslPolicyErrors)
 		{
 			return sslPolicyErrors == SslPolicyErrors.None ||
-			       (_settings.TlsSettingsObj.AllowRemoteCertificateChainErrors &&
+			       (_tlsSettings.AllowRemoteCertificateChainErrors &&
 			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 

@@ -15,7 +15,6 @@ namespace Remote.Communication.Client
 
 		public int Port { get; init; } = DefaultPort;
 		public bool IsServerClient { get; init; }
-		public ITlsSettings TlsSettingsObj { get; init; } = TlsSettings.Default;
 
 		public static AsyncClientSettings Default => new()
 		{
