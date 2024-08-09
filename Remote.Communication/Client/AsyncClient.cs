@@ -90,22 +90,32 @@ namespace Remote.Communication.Client
 			}
 			catch (SocketException ex)
 			{
-				switch (ex.ErrorCode)
-				{
-					default:
-						this.LogWarning(ex.Message);
-						break;
-				}
+				HandleSocketException(ex);
 			}
 			catch (Exception ex)
 			{
-				this.LogFatal($"!!! Unexpected error receiving client. Id: {Id}" +
-				              $"{ex.Message}" +
-				              $"Stacktrace: {ex.StackTrace}.");
+				if (ex.InnerException is SocketException socketEx)
+					HandleSocketException(socketEx);
+				else
+				{
+					this.LogFatal($"!!! Unexpected error receiving client. Id: {Id}" +
+					              $"{ex.Message}" +
+					              $"Stacktrace: {ex.StackTrace}.");
+				}
 			}
 			finally
 			{
 				ConnectionLost?.Invoke(this, Id);
+			}
+		}
+
+		private void HandleSocketException(SocketException ex)
+		{
+			switch (ex.ErrorCode)
+			{
+				default:
+					this.LogWarning(ex.Message);
+					break;
 			}
 		}
 
