@@ -6,6 +6,7 @@
 		bool CheckCertificateRevocation { get; init; }
 		string CertificatePath { get; init; }
 		bool LeaveInnerStreamOpen { get; init; }
+		bool AllowRemoteCertificateChainErrors { get; init; }
 		string TargetHost { get; init; }
 	}
 }

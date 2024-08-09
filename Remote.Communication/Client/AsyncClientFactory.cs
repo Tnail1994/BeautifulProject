@@ -73,7 +73,8 @@ namespace Remote.Communication.Client
 			SslPolicyErrors sslPolicyErrors)
 		{
 			return sslPolicyErrors == SslPolicyErrors.None ||
-			       sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors; // Debugging 
+			       (_settings.TlsSettingsObj.AllowRemoteCertificateChainErrors &&
+			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 	}
 }

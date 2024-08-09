@@ -120,7 +120,8 @@ namespace Remote.Server
 			SslPolicyErrors sslPolicyErrors)
 		{
 			return sslPolicyErrors == SslPolicyErrors.None ||
-			       sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors; // Debugging 
+			       (_settings.TlsSettingsObj.AllowRemoteCertificateChainErrors &&
+			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 
 		public void Dispose()
