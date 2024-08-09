@@ -1,8 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Cryptography.X509Certificates;
 using Core.Extensions;
 using Remote.Communication.Common.Client.Contracts;
+using Remote.Communication.Common.Helpers;
 
 namespace Remote.Communication.Client
 {
@@ -26,21 +28,40 @@ namespace Remote.Communication.Client
 		}
 
 		private readonly TcpClient _client;
-		private readonly SslStream _sslStream;
+		private readonly ITlsSettings _tlsSettings;
+		private readonly bool _isServerClient;
+
+		private SslStream? _sslStream;
 
 		private readonly ConcurrentQueue<SendingBuffer> _sendingQueue = new();
 		private readonly CancellationTokenSource _sendingLoopCts = new();
+		private readonly TaskCompletionSource _connectedTcs = new();
 
-		private TlsClient(TcpClient client, SslStream sslStream)
+		private TlsClient(string host, int port, ITlsSettings tlsSettings)
 		{
-			_client = client;
-			_sslStream = sslStream;
-
-			StartSendingLoop();
+			_client = new TcpClient(host, port);
+			_tlsSettings = tlsSettings;
 		}
 
+		private TlsClient(TcpClient client, SslStream sslStream, ITlsSettings tlsSettings)
+		{
+			_isServerClient = true;
+			_client = client;
+			_tlsSettings = tlsSettings;
+			_sslStream = sslStream;
+
+			TryStart();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <exception cref="InvalidOperationException">WHen sslStream not init</exception>
 		private void StartSendingLoop()
 		{
+			if (_sslStream == null)
+				throw new InvalidOperationException("Cannot start sending loop, because sslStream is null.");
+
 			_ = Task.Factory.StartNew(async () =>
 			{
 				try
@@ -63,17 +84,36 @@ namespace Remote.Communication.Client
 			});
 		}
 
-		public static IClient Create(TcpClient client, SslStream sslStream)
+		public static IClient CreateServerClient(TcpClient client, SslStream sslStream, ITlsSettings tlsSettings)
 		{
-			return new TlsClient(client, sslStream);
+			return new TlsClient(client, sslStream, tlsSettings);
 		}
 
-		public bool Connected => _client.Connected;
+		public static IClient CreateClient(string host, int port, ITlsSettings tlsSettings)
+		{
+			return new TlsClient(host, port, tlsSettings);
+		}
+
+		public bool Connected => _client.Connected && _sslStream != null;
 
 		public bool IsNotConnected => !Connected;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="buffer"></param>
+		/// <returns></returns>
+		/// <exception cref="InvalidOperationException">WHen sslStream not init</exception>
 		public async Task<int> ReceiveAsync(byte[] buffer)
 		{
+			if (_sslStream == null)
+			{
+				await _connectedTcs.Task;
+
+				if (_sslStream == null)
+					throw new InvalidOperationException("Cannot receive, because sslStream is null.");
+			}
+
 			return await _sslStream.ReadAsync(buffer);
 		}
 
@@ -87,8 +127,38 @@ namespace Remote.Communication.Client
 
 		public async Task<bool> ConnectAsync(string ip, int port)
 		{
-			await _client.ConnectAsync(ip, port);
-			return _client.Connected;
+			if (!_isServerClient)
+			{
+				var clientCertificateCollection =
+					CertificateCreator.CreateAsCollection(_tlsSettings.CertificatePath);
+
+				_sslStream = new SslStream(_client.GetStream(), _tlsSettings.LeaveInnerStreamOpen,
+					ValidateAsClient);
+
+				await _sslStream.AuthenticateAsClientAsync(_tlsSettings.TargetHost, clientCertificateCollection,
+					_tlsSettings.CheckCertificateRevocation);
+			}
+
+			TryStart();
+
+			return Connected;
+		}
+
+		private void TryStart()
+		{
+			if (Connected)
+			{
+				_connectedTcs.SetResult();
+				StartSendingLoop();
+			}
+		}
+
+		private bool ValidateAsClient(object sender, X509Certificate? certificate, X509Chain? chain,
+			SslPolicyErrors sslPolicyErrors)
+		{
+			return sslPolicyErrors == SslPolicyErrors.None ||
+			       (_tlsSettings.AllowRemoteCertificateChainErrors &&
+			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 
 		// todo: due change of tls, how to reset correctly
@@ -105,11 +175,19 @@ namespace Remote.Communication.Client
 
 		public void Close()
 		{
+			if (_sslStream != null)
+				_sslStream.Close();
+
 			_client.Close();
 		}
 
 		public void Dispose()
 		{
+			Close();
+
+			if (_sslStream != null)
+				_sslStream.Dispose();
+
 			_client.Dispose();
 		}
 	}

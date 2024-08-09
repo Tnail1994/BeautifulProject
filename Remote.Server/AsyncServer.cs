@@ -71,9 +71,10 @@ namespace Remote.Server
 				{
 					this.LogInfo("Listening...");
 					var client = await _listener.AcceptTcpClientAsync();
+
+					// todo: maybe make configurable, if we want to use tls
 					var sslStream = new SslStream(client.GetStream(), _tlsSettings.LeaveInnerStreamOpen,
 						ValideAsServer);
-
 					await sslStream.AuthenticateAsServerAsync(serverCertificate,
 						_tlsSettings.CertificateRequired,
 						_tlsSettings.CheckCertificateRevocation);

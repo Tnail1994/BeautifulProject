@@ -5,7 +5,7 @@ namespace Remote.Communication.Common.Client.Contracts
 {
 	public interface IAsyncClientFactory
 	{
-		void Init(TcpClient client, SslStream sslStream);
+		void Init(TcpClient? client = null, SslStream? sslStream = null, bool isServerClient = true);
 
 		IAsyncClient Create();
 	}

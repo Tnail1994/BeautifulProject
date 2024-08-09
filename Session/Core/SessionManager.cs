@@ -53,7 +53,6 @@ namespace Session.Core
 			await _asyncSocketServer.StartAsync();
 		}
 
-		// todo: Change KeyValuePair to class object and add sslStream
 		private void OnNewConnectionOccured(ConnectionOccurObject connectionOccurObject)
 		{
 			this.LogInfo("Starting new session ...");
