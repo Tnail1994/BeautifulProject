@@ -13,7 +13,7 @@ namespace Remote.Communication.Client
 		public bool CheckCertificateRevocation { get; init; } = DefaultCheckCertificateRevocation;
 		public string CertificatePath { get; init; } = DefaultCertificatePath;
 		public bool LeaveInnerStreamOpen { get; init; }
-		public bool AllowRemoteCertificateChainErrors { get; init; };
+		public bool AllowRemoteCertificateChainErrors { get; init; }
 		public string TargetHost { get; init; } = DefaultTargetHost;
 		public static ITlsSettings Default => new TlsSettings();
 	}
