@@ -37,20 +37,7 @@ namespace Remote.Communication.Client
 		/// <exception cref="InvalidOperationException">When isServerClient, but _client and _sslStream null</exception>
 		public IAsyncClient Create()
 		{
-			if (_isServerClient)
-			{
-				if (_client == null || _sslStream == null)
-				{
-					throw new InvalidOperationException(
-						"Cannot create server client, when _client and/or _sslStream is null");
-				}
-
-				return CreateAsyncServerClient();
-			}
-			else
-			{
-				return CreateAsyncClient();
-			}
+			return _isServerClient ? CreateAsyncServerClient() : CreateAsyncClient();
 		}
 
 		private IAsyncClient CreateAsyncClient()
