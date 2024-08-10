@@ -14,7 +14,7 @@ namespace SharedBeautifulServices
 		private readonly ICheckAliveSettings _settings;
 		private readonly ICommunicationService _communicationService;
 		private readonly ISessionKey _sessionKey;
-		private readonly CancellationTokenSource _cts = new();
+		private CancellationTokenSource _cts = new();
 
 		private bool _running;
 
@@ -139,6 +139,7 @@ namespace SharedBeautifulServices
 
 			_communicationService.ConnectionLost -= OnConnectionLost;
 			_cts.Cancel();
+			_cts = new CancellationTokenSource();
 
 			_running = false;
 		}
