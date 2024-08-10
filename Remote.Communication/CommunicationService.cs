@@ -23,8 +23,6 @@ namespace Remote.Communication
 		private readonly ITransformerService _transformerService;
 		private readonly ISessionKey _sessionKey;
 
-		private readonly CancellationTokenSource _cancellationReceivingTokenSource = new();
-
 		private bool _running;
 
 #if DEBUG
@@ -263,7 +261,6 @@ namespace Remote.Communication
 
 			_transformedObjectWaiters.Clear();
 			_transformedObjects.Clear();
-			_cancellationReceivingTokenSource.Dispose();
 		}
 	}
 }
