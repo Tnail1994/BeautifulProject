@@ -149,8 +149,8 @@ namespace Session.Core
 
 		private void TryRemoveSession()
 		{
-			if (_sessionInfo.SessionState == SessionState.Stopped)
-				return;
+			//if (_sessionInfo.SessionState == SessionState.Stopped)
+			//	return;
 
 			_sessionsService.TryRemove(_sessionKey.SessionId);
 		}

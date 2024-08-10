@@ -39,20 +39,21 @@ namespace DbManagement
 				{
 					var dbContextType = dbContext.GetType();
 
-					if (dbContext.GetEntities() is not List<EntityDto> dbContextEntities)
+					if (dbContext.GetEntities() is not IEnumerable<EntityDto> dbContextEntities)
 					{
 						this.LogWarning($"[CacheDbContext] No entities found in {dbContextType.Name}");
 						continue;
 					}
 
-					if (!dbContextEntities.Any())
+					var contextEntities = dbContextEntities.ToList();
+					if (!contextEntities.Any())
 					{
 						this.LogWarning($"[CacheDbContext] No entries found in {dbContextType.Name}");
 						continue;
 					}
 
 					var cacheKey = CreateCacheKey(dbContext.TypeNameOfCollectionEntries);
-					UpdateCache(cacheKey, dbContextEntities);
+					UpdateCache(cacheKey, contextEntities);
 				}
 			}
 			catch (Exception ex)
@@ -61,7 +62,7 @@ namespace DbManagement
 			}
 		}
 
-		private void UpdateCache(string cacheKey, List<EntityDto> dbContextEntities)
+		private void UpdateCache(string cacheKey, IEnumerable<EntityDto> dbContextEntities)
 		{
 			_cache.Set(cacheKey, dbContextEntities, _cacheOptions);
 		}

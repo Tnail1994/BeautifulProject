@@ -7,6 +7,19 @@ using Microsoft.Extensions.Logging;
 
 namespace DbManagement.Common.Implementations
 {
+	public enum DbContextSyncMode
+	{
+		/// <summary>
+		/// Reloading only entities, knowing of this dbContext
+		/// </summary>
+		LocalEntitiesOnly,
+
+		/// <summary>
+		/// Reloading everything, can gather new entities if available
+		/// </summary>
+		AllGlobalEntities
+	}
+
 	public abstract class BaseDbContext<T> : DbContext, IDbContext where T : EntityDto
 	{
 		enum UpdateType
@@ -52,12 +65,54 @@ namespace DbManagement.Common.Implementations
 		{
 			Task.Factory.StartNew(async () =>
 			{
+				var getChangesFromDbCounter = 0;
+				var updateChangesFromDbThreshold = 10;
+
 				while (!_updateLoopCts.IsCancellationRequested)
 				{
 					await Task.Delay(_dbContextSettings.UpdateDbDelayInMs);
 					await SaveChangesFromUpdateLoop();
+
+					if (getChangesFromDbCounter >= updateChangesFromDbThreshold)
+					{
+						await GetChangesFromDb();
+						getChangesFromDbCounter = 0;
+					}
+
+					getChangesFromDbCounter++;
 				}
 			}, _updateLoopCts.Token);
+		}
+
+		private async Task GetChangesFromDb()
+		{
+			switch (_dbContextSettings.SyncMode)
+			{
+				case DbContextSyncMode.LocalEntitiesOnly:
+					if (Entities == null)
+						return;
+
+					foreach (var entity in Entities)
+					{
+						await Entry(entity).ReloadAsync();
+					}
+
+					break;
+
+				case DbContextSyncMode.AllGlobalEntities:
+
+					var entries = ChangeTracker.Entries().ToList();
+
+					foreach (var entityEntry in entries)
+					{
+						await entityEntry.ReloadAsync();
+					}
+
+					break;
+			}
+
+
+			_set = null;
 		}
 
 		private async Task SaveChangesFromUpdateLoop(bool skipCts = false)

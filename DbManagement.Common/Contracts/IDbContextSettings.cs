@@ -1,4 +1,6 @@
-﻿namespace DbManagement.Common.Contracts
+﻿using DbManagement.Common.Implementations;
+
+namespace DbManagement.Common.Contracts
 {
 	public interface IDbContextSettings
 	{
@@ -21,5 +23,18 @@
 		/// Hint: Setting th
 		/// </summary>
 		bool AnalyzeUpdateSet { get; init; }
+
+		/// <summary>
+		/// How to synchronize the local data with the database.
+		/// </summary>
+		DbContextSyncMode SyncMode { get; init; }
+
+		/// <summary>
+		/// Whenever the update loop is running it counts ++.
+		/// If the counter has reached this threshold, then it executes
+		/// updating from database. Means: Do you have a delay timer of 1000ms (1s)
+		/// and setting this value to 10, means it executes every 10 seconds.
+		/// </summary>
+		int UpdateChangesFromDbThreshold { get; init; }
 	}
 }
