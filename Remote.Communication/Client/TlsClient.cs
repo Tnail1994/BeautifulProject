@@ -27,7 +27,7 @@ namespace Remote.Communication.Client
 			public TaskCompletionSource SendingCompletedTcs { get; set; }
 		}
 
-		private readonly TcpClient _client;
+		private TcpClient _client;
 		private readonly ITlsSettings _tlsSettings;
 		private readonly bool _isServerClient;
 
@@ -35,13 +35,23 @@ namespace Remote.Communication.Client
 
 		private readonly ConcurrentQueue<SendingBuffer> _sendingQueue = new();
 		private readonly CancellationTokenSource _sendingLoopCts = new();
-		private readonly TaskCompletionSource _connectedTcs = new();
+		private TaskCompletionSource _connectedTcs = new();
+		private readonly string? _host;
+		private readonly int _port;
 
 		private TlsClient(string host, int port, ITlsSettings tlsSettings)
 		{
-			_client = new TcpClient(host, port);
+			_host = host;
+			_port = port;
+			_client = CreateTcpClient();
 			_tlsSettings = tlsSettings;
 		}
+
+		public static IClient CreateClient(string host, int port, ITlsSettings tlsSettings)
+		{
+			return new TlsClient(host, port, tlsSettings);
+		}
+
 
 		private TlsClient(TcpClient client, SslStream sslStream, ITlsSettings tlsSettings)
 		{
@@ -51,6 +61,18 @@ namespace Remote.Communication.Client
 			_sslStream = sslStream;
 
 			TryStart();
+		}
+
+		/// <summary>
+		/// Creating server client, using this ctor.
+		/// No need of host and port, because due listener it is already connected.
+		/// </summary>
+		/// <param name="client">From listeners client</param>
+		/// <param name="sslStream">Clients stream</param>
+		/// <param name="tlsSettings">Settings</param>
+		public static IClient CreateServerClient(TcpClient client, SslStream sslStream, ITlsSettings tlsSettings)
+		{
+			return new TlsClient(client, sslStream, tlsSettings);
 		}
 
 		/// <summary>
@@ -84,17 +106,8 @@ namespace Remote.Communication.Client
 			});
 		}
 
-		public static IClient CreateServerClient(TcpClient client, SslStream sslStream, ITlsSettings tlsSettings)
-		{
-			return new TlsClient(client, sslStream, tlsSettings);
-		}
 
-		public static IClient CreateClient(string host, int port, ITlsSettings tlsSettings)
-		{
-			return new TlsClient(host, port, tlsSettings);
-		}
-
-		public bool Connected => _client.Connected && _sslStream != null;
+		public bool Connected => _client.Connected && _sslStream is { CanRead: true, CanWrite: true };
 
 		public bool IsNotConnected => !Connected;
 
@@ -127,6 +140,11 @@ namespace Remote.Communication.Client
 
 		public async Task<bool> ConnectAsync(string ip, int port)
 		{
+			if (!_client.Connected && _host != null && port != 0)
+			{
+				await _client.ConnectAsync(_host, port);
+			}
+
 			if (!_isServerClient)
 			{
 				var clientCertificateCollection =
@@ -149,6 +167,7 @@ namespace Remote.Communication.Client
 			if (Connected)
 			{
 				_connectedTcs.SetResult();
+				_connectedTcs = new TaskCompletionSource();
 				StartSendingLoop();
 			}
 		}
@@ -161,11 +180,10 @@ namespace Remote.Communication.Client
 			        sslPolicyErrors == SslPolicyErrors.RemoteCertificateChainErrors);
 		}
 
-		// todo: due change of tls, how to reset correctly
 		public void ResetSocket()
 		{
 			Close();
-			_client.Client = new TcpClient().Client;
+			_client = CreateTcpClient();
 		}
 
 		public NetworkStream GetStream()
@@ -189,6 +207,23 @@ namespace Remote.Communication.Client
 				_sslStream.Dispose();
 
 			_client.Dispose();
+		}
+
+		private TcpClient CreateTcpClient()
+		{
+			try
+			{
+				if (_host == null || _port == 0)
+					throw new SocketException();
+
+				return new TcpClient(_host, _port);
+			}
+			catch (SocketException)
+			{
+				this.LogDebug($"Cannot create and connect with TcpClient({_host}´,{_port}\n" +
+				              $"Creating TcpClient without connection settings, which will lead into a needed connect call");
+				return new TcpClient();
+			}
 		}
 	}
 }

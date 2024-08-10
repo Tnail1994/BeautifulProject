@@ -10,7 +10,7 @@ namespace Remote.Communication.Client
 	{
 		private readonly IClient _client;
 
-		private readonly CancellationTokenSource _receivingCancellationTokenSource;
+		private CancellationTokenSource _receivingCancellationTokenSource;
 		private readonly TimeSpan _clientTimeout;
 
 		private readonly int _bufferSize;
@@ -44,11 +44,6 @@ namespace Remote.Communication.Client
 			return new AsyncClient(client, settings);
 		}
 
-		/// <summary>
-		/// It is obsolete, if tls is enabled. Because of ssl.AuthorizeAs..., the connection is done.
-		/// </summary>
-		/// <returns>Connection result</returns>
-		[Obsolete]
 		public async Task<bool> ConnectAsync()
 		{
 			return await _client.ConnectAsync(_ip, _port);
@@ -150,10 +145,12 @@ namespace Remote.Communication.Client
 		public void StopReceiving()
 		{
 			_receivingCancellationTokenSource.Cancel();
+			_receivingCancellationTokenSource = new CancellationTokenSource();
 		}
 
 		public void ResetSocket()
 		{
+			StopReceiving();
 			_client.ResetSocket();
 		}
 
