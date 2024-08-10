@@ -44,7 +44,6 @@ namespace SharedBeautifulServices
 				throw new CheckAliveException("FrequencyInSeconds must be at least 20", 0);
 
 			_communicationService.ConnectionLost += OnConnectionLost;
-			_cts.TryReset();
 
 			switch (_settings.Mode)
 			{

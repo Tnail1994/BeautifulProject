@@ -130,6 +130,7 @@ namespace Remote.Server
 		public void Dispose()
 		{
 			_listener.Stop();
+			_cts.Cancel();
 			_cts.Dispose();
 		}
 	}

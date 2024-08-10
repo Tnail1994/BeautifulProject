@@ -34,7 +34,7 @@ namespace Remote.Communication.Client
 		private SslStream? _sslStream;
 
 		private readonly ConcurrentQueue<SendingBuffer> _sendingQueue = new();
-		private readonly CancellationTokenSource _sendingLoopCts = new();
+		private CancellationTokenSource _sendingLoopCts = new();
 		private TaskCompletionSource _connectedTcs = new();
 		private readonly string? _host;
 		private readonly int _port;
@@ -195,6 +195,9 @@ namespace Remote.Communication.Client
 
 		public void Close()
 		{
+			_sendingLoopCts.Cancel();
+			_sendingLoopCts = new CancellationTokenSource();
+
 			if (_sslStream != null)
 				_sslStream.Close();
 
@@ -203,6 +206,8 @@ namespace Remote.Communication.Client
 
 			if (_sendingLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
 				_sendingLoopTask?.Dispose();
+
+			_sendingLoopTask = null;
 		}
 
 		public void Dispose()
