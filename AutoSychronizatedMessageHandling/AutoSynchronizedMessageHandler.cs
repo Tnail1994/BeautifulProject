@@ -18,6 +18,7 @@ namespace AutoSynchronizedMessageHandling
 		private readonly Dictionary<string, CancellationTokenSource> _publishingCtSources = new();
 
 		private readonly SynchronizationContext _syncContext;
+		private Task<Task>? _publishingLoopTask;
 
 
 		public AutoSynchronizedMessageHandler(ICommunicationService communicationService)
@@ -123,7 +124,7 @@ namespace AutoSynchronizedMessageHandling
 				return;
 			}
 
-			Task.Factory.StartNew(async () =>
+			_publishingLoopTask = Task.Factory.StartNew(async () =>
 			{
 				while (!publishingLoopCts.Token.IsCancellationRequested)
 				{
@@ -190,6 +191,9 @@ namespace AutoSynchronizedMessageHandling
 			{
 				publishingCts.Cancel();
 			}
+
+			if (_publishingLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
+				_publishingLoopTask?.Dispose();
 		}
 
 		private class AutoSynchronizedMessageContext

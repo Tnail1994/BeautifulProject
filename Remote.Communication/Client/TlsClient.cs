@@ -39,6 +39,8 @@ namespace Remote.Communication.Client
 		private readonly string? _host;
 		private readonly int _port;
 
+		private Task<Task>? _sendingLoopTask;
+
 		private TlsClient(string host, int port, ITlsSettings tlsSettings)
 		{
 			_host = host;
@@ -84,7 +86,7 @@ namespace Remote.Communication.Client
 			if (_sslStream == null)
 				throw new InvalidOperationException("Cannot start sending loop, because sslStream is null.");
 
-			_ = Task.Factory.StartNew(async () =>
+			_sendingLoopTask = Task.Factory.StartNew(async () =>
 			{
 				try
 				{
@@ -103,7 +105,7 @@ namespace Remote.Communication.Client
 					              $"{ex.Message}\n" +
 					              $"Stacktrace: {ex.StackTrace}");
 				}
-			});
+			}, _sendingLoopCts.Token);
 		}
 
 
@@ -197,6 +199,10 @@ namespace Remote.Communication.Client
 				_sslStream.Close();
 
 			_client.Close();
+
+
+			if (_sendingLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
+				_sendingLoopTask?.Dispose();
 		}
 
 		public void Dispose()

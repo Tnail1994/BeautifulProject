@@ -50,6 +50,7 @@ namespace DbManagement.Common.Implementations
 		private readonly CancellationTokenSource _updateLoopCts = new();
 
 		private List<T>? _set;
+		private Task<Task>? _updateLoopTask;
 
 		protected BaseDbContext(IDbContextSettings dbContextSettings)
 		{
@@ -63,7 +64,7 @@ namespace DbManagement.Common.Implementations
 
 		private void RunUpdateLoop()
 		{
-			Task.Factory.StartNew(async () =>
+			_updateLoopTask = Task.Factory.StartNew(async () =>
 			{
 				var getChangesFromDbCounter = 0;
 				var updateChangesFromDbThreshold = 10;
@@ -236,6 +237,10 @@ namespace DbManagement.Common.Implementations
 		public override async ValueTask DisposeAsync()
 		{
 			_updateLoopCts.Cancel();
+
+			if (_updateLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
+				_updateLoopTask?.Dispose();
+
 			await SaveChangesFromUpdateLoop(true);
 			await base.DisposeAsync();
 		}
