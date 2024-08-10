@@ -68,11 +68,9 @@ namespace Tests.Session.Core
 
 		private void RaiseNewConnectionEvent(TcpClient dummySocket)
 		{
-			var dummySslStream = new SslStream(dummySocket.GetStream());
-
 			_asyncSocketServerMock.NewConnectionOccured +=
 				Raise.Event<Action<ConnectionOccurObject>>(ConnectionOccurObject.Create("anyId", dummySocket,
-					dummySslStream));
+					Arg.Any<SslStream>()));
 		}
 
 		private static TcpClient CreateDummySocket()

@@ -41,6 +41,7 @@ namespace Tests.Remote.Communication
 				_sessionKeyMock, _settingsMock);
 
 			_clientMock.ConnectAsync().Returns(Task.FromResult(false));
+			_clientMock.IsNotConnected.Returns(true);
 
 			_connectionService.Start();
 
