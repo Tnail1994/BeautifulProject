@@ -139,6 +139,7 @@ namespace Session.Core
 		{
 			this.LogDebug($"Stopping session {Id}", Id);
 			_connectionService.ConnectionLost -= OnConnectionLost;
+			_connectionService.ConnectionEstablished -= OnConnectionEstablished;
 
 			SetState(SessionState.Stopped);
 
@@ -149,8 +150,8 @@ namespace Session.Core
 
 		private void TryRemoveSession()
 		{
-			//if (_sessionInfo.SessionState == SessionState.Stopped)
-			//	return;
+			if (_sessionInfo.SessionState == SessionState.Stopped)
+				return;
 
 			_sessionsService.TryRemove(_sessionKey.SessionId);
 		}
