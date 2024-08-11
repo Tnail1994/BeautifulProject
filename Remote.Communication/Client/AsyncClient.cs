@@ -16,7 +16,7 @@ namespace Remote.Communication.Client
 		private readonly int _bufferSize;
 		private readonly int _port;
 		private readonly string _ip;
-		private bool _connectionRequested;
+		private bool _disconnectionRequested;
 
 		public AsyncClient(IClient client, IAsyncClientSettings settings)
 		{
@@ -47,7 +47,7 @@ namespace Remote.Communication.Client
 
 		public async Task<bool> ConnectAsync()
 		{
-			_connectionRequested = true;
+			_disconnectionRequested = false;
 
 			return await _client.ConnectAsync(_ip, _port);
 		}
@@ -108,7 +108,7 @@ namespace Remote.Communication.Client
 			}
 			finally
 			{
-				if (_connectionRequested)
+				if (!_disconnectionRequested)
 					ConnectionLost?.Invoke(this, Id);
 			}
 		}
@@ -165,7 +165,7 @@ namespace Remote.Communication.Client
 
 		public void Disconnect()
 		{
-			_connectionRequested = false;
+			_disconnectionRequested = true;
 
 			StopReceiving();
 			_client.Dispose();
