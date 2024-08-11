@@ -204,6 +204,11 @@ namespace Remote.Communication.Client
 			_client.Close();
 
 
+			while (_sendingQueue.TryDequeue(out var sendingBuffer))
+			{
+				sendingBuffer.SendingCompletedTcs.SetCanceled();
+			}
+
 			if (_sendingLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
 				_sendingLoopTask?.Dispose();
 

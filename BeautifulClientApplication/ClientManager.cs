@@ -31,6 +31,7 @@ namespace BeautifulClientApplication
 			await Login();
 		}
 
+
 		private async Task Login()
 		{
 			var maschineName = Environment.MachineName;
@@ -44,10 +45,16 @@ namespace BeautifulClientApplication
 			var loginReply = await TryLogin(LoginRequestType.DeviceIdent, maschineName, true);
 
 			var username = "a";
-			while (loginReply is { Success: false })
+			while (loginReply is { Success: false, CanRetry: true })
 			{
 				await Task.Delay(1000, _cancellationToken);
 				loginReply = await TryLogin(LoginRequestType.Username, username, true);
+			}
+
+			if (loginReply is { Success: false })
+			{
+				await StopAsync(_cancellationToken);
+				_connectionService.Stop(true);
 			}
 		}
 

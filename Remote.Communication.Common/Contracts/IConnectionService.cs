@@ -6,5 +6,6 @@
 		event Action<string> ConnectionLost;
 		event Action Reconnected;
 		void Start();
+		void Stop(bool force = false);
 	}
 }

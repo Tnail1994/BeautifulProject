@@ -16,6 +16,7 @@ namespace Remote.Communication.Client
 		private readonly int _bufferSize;
 		private readonly int _port;
 		private readonly string _ip;
+		private bool _connectionRequested;
 
 		public AsyncClient(IClient client, IAsyncClientSettings settings)
 		{
@@ -46,6 +47,8 @@ namespace Remote.Communication.Client
 
 		public async Task<bool> ConnectAsync()
 		{
+			_connectionRequested = true;
+
 			return await _client.ConnectAsync(_ip, _port);
 		}
 
@@ -87,6 +90,11 @@ namespace Remote.Communication.Client
 			{
 				HandleSocketException(ex);
 			}
+			catch (ObjectDisposedException ex)
+			{
+				this.LogDebug("Receiving stopped. Object disposed.\n" +
+				              $"Disposed object name: {ex.ObjectName}");
+			}
 			catch (Exception ex)
 			{
 				if (ex.InnerException is SocketException socketEx)
@@ -100,7 +108,8 @@ namespace Remote.Communication.Client
 			}
 			finally
 			{
-				ConnectionLost?.Invoke(this, Id);
+				if (_connectionRequested)
+					ConnectionLost?.Invoke(this, Id);
 			}
 		}
 
@@ -152,6 +161,14 @@ namespace Remote.Communication.Client
 		{
 			StopReceiving();
 			_client.ResetSocket();
+		}
+
+		public void Disconnect()
+		{
+			_connectionRequested = false;
+
+			StopReceiving();
+			_client.Dispose();
 		}
 
 		public void Dispose()

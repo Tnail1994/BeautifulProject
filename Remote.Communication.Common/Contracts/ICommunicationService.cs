@@ -22,6 +22,6 @@ namespace Remote.Communication.Common.Contracts
 		Task<TAwaitMessageType> ReceiveAndSendAsync<TAwaitMessageType>(object messageObj)
 			where TAwaitMessageType : INetworkMessage;
 
-		void Stop();
+		void Stop(bool force = false);
 	}
 }

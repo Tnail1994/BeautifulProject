@@ -88,7 +88,7 @@ namespace Session.Core
 
 		private void OnSessionStopped(object? sender, SessionStoppedEventArgs sessionStoppedEventArgs)
 		{
-			if (sender is not ISession)
+			if (sender is not ISession session)
 			{
 				this.LogFatal(
 					$"sender is not ISession. This is fatal. SessionManager cannot remove session. Error Handling failed!");
@@ -97,6 +97,8 @@ namespace Session.Core
 
 			this.LogDebug(
 				$"[SessionManager] session stopped, start destroying it {sessionStoppedEventArgs.SessionKey.SessionId}");
+
+			session.SessionStopped -= OnSessionStopped;
 
 			_scopeManager.Destroy(sessionStoppedEventArgs.SessionKey);
 

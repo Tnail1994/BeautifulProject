@@ -11,6 +11,7 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Common.Transformation.Implementations;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
+using SharedBeautifulData.Messages.Authorize;
 
 namespace Remote.Communication
 {
@@ -43,7 +44,7 @@ namespace Remote.Communication
 		private string SessionId => _sessionKey.SessionId;
 
 
-		public void Start()
+		public async void Start()
 		{
 			if (_running)
 			{
@@ -77,7 +78,7 @@ namespace Remote.Communication
 
 		private void TryRemoveTransformedObject(string discriminator, TransformedObject transformedObject)
 		{
-			if (_transformedObjectWaiters.Values.Any(waiter => waiter.Discriminator == discriminator))
+			if (_transformedObjectWaiters.Values.Any(waiter => waiter.Discriminator.Equals(discriminator)))
 				return;
 
 			var removeRes = _transformedObjects.TryRemove(transformedObject.Id, out _);
@@ -112,7 +113,7 @@ namespace Remote.Communication
 			return awaitMessage;
 		}
 
-		public void Stop()
+		public void Stop(bool force = false)
 		{
 			if (!_running)
 			{
@@ -120,10 +121,24 @@ namespace Remote.Communication
 				return;
 			}
 
+			_running = false;
+
 			_asyncClient.MessageReceived -= OnMessageReceived;
 			_asyncClient.ConnectionLost -= ConnectionLost;
 
-			_running = false;
+
+			if (force)
+			{
+				_asyncClient.Disconnect();
+
+				foreach (var waiter in _transformedObjectWaiters)
+				{
+					waiter.Value.TaskCompletionSource.SetCanceled();
+				}
+
+				_transformedObjectWaiters.Clear();
+				_transformedObjects.Clear();
+			}
 		}
 
 
@@ -134,7 +149,7 @@ namespace Remote.Communication
 
 			var transformedObject = await transformedObjectWaiter.TaskCompletionSource.Task;
 
-			_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out transformedObjectWaiter);
+			_transformedObjectWaiters.TryRemove(transformedObjectWaiter.Id, out _);
 
 			TryRemoveTransformedObject(transformedObject.Discriminator, transformedObject);
 
@@ -252,15 +267,7 @@ namespace Remote.Communication
 
 		public void Dispose()
 		{
-			Stop();
-
-			foreach (var waiter in _transformedObjectWaiters)
-			{
-				waiter.Value.TaskCompletionSource.SetCanceled();
-			}
-
-			_transformedObjectWaiters.Clear();
-			_transformedObjects.Clear();
+			Stop(true);
 		}
 	}
 }

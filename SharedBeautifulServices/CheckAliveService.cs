@@ -17,6 +17,8 @@ namespace SharedBeautifulServices
 		private CancellationTokenSource _cts = new();
 
 		private bool _running;
+		private Task? _replyTask;
+		private Task? _sendTask;
 
 		public CheckAliveService(ICheckAliveSettings settings, ICommunicationService communicationService,
 			ISessionKey sessionKey)
@@ -48,10 +50,10 @@ namespace SharedBeautifulServices
 			switch (_settings.Mode)
 			{
 				case 0:
-					Task.Run(ReplyCheckAlive);
+					_replyTask = Task.Run(ReplyCheckAlive, _cts.Token);
 					break;
 				case 1:
-					Task.Run(SendCheckAlive);
+					_sendTask = Task.Run(SendCheckAlive, _cts.Token);
 					break;
 				default:
 					throw new CheckAliveException("Invalid mode", 1);
@@ -128,7 +130,7 @@ namespace SharedBeautifulServices
 			Stop();
 		}
 
-		public void Stop()
+		public void Stop(bool force = false)
 		{
 			if (!_running)
 			{
@@ -147,6 +149,18 @@ namespace SharedBeautifulServices
 		{
 			Stop();
 			_cts.Dispose();
+
+			if (_replyTask != null && (_replyTask.IsCompleted || _replyTask.IsCanceled || _replyTask.IsFaulted))
+			{
+				_replyTask.Dispose();
+				_replyTask = null;
+			}
+
+			if (_sendTask != null && (_sendTask.IsCompleted || _sendTask.IsCanceled || _sendTask.IsFaulted))
+			{
+				_sendTask.Dispose();
+				_sendTask = null;
+			}
 		}
 	}
 }

@@ -70,6 +70,8 @@ namespace Session.Core
 				if (!authorizationInfo.IsAuthorized)
 				{
 					SetState(SessionState.FailedAuthorization);
+					InvokeSessionOnHold("Authorization failed");
+
 					return;
 				}
 
@@ -181,7 +183,14 @@ namespace Session.Core
 #if DEBUG
 		public void SendMessageToClient(object message)
 		{
-			_communicationService.SendAsync(message);
+			try
+			{
+				_communicationService.SendAsync(message);
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
 		}
 #endif
 	}

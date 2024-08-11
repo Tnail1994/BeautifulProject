@@ -89,6 +89,8 @@ namespace BeautifulClientApplication
 					services.AddTransient<INetworkMessage, RandomDataReply>();
 					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
 					services.AddTransient<INetworkMessage, DeviceIdentReply>();
+					services.AddTransient<INetworkMessage, LogoutRequest>();
+					services.AddTransient<INetworkMessage, LogoutReply>();
 
 					services.AddSingleton<ISessionKey, SessionKey>();
 

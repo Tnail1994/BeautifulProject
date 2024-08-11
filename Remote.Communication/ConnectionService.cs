@@ -73,7 +73,7 @@ namespace Remote.Communication
 			return false;
 		}
 
-		public void Stop()
+		public void Stop(bool force = false)
 		{
 			//if (!_running)
 			//{
@@ -82,6 +82,12 @@ namespace Remote.Communication
 			//}
 
 			_running = false;
+
+			if (force)
+			{
+				_checkAliveService.Stop(force);
+				_communicationService.Stop(force);
+			}
 		}
 
 		private void OnConnectionLost(object? sender, string reason)

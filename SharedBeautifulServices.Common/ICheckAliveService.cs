@@ -4,6 +4,6 @@
 	{
 		event Action ConnectionLost;
 		void Start();
-		void Stop();
+		void Stop(bool force = false);
 	}
 }

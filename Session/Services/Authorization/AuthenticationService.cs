@@ -11,6 +11,7 @@ namespace Session.Services.Authorization
 	{
 		private readonly IUsersService _usersService;
 		private readonly IAuthenticationSettings _settings;
+		private static LoginReply? _loginReplyObj;
 
 		public AuthenticationService(IUsersService usersService, IAuthenticationSettings settings)
 		{
@@ -38,7 +39,7 @@ namespace Session.Services.Authorization
 				user.StayActive = loginRequest.RequestValue?.StayActive == true;
 				_usersService.SetUser(user);
 
-				SendLoginReply(communicationService, true);
+				SendLoginReply(communicationService, true, true);
 
 				return AuthorizationInfo.Create(user.Name);
 			}
@@ -67,6 +68,8 @@ namespace Session.Services.Authorization
 			var requestValueType = loginRequest.RequestValue?.Type;
 			var requestValueValue = loginRequest.RequestValue?.Value;
 
+			var canRetry = attempts <= _settings.MaxAuthAttempts;
+
 			if (requestValueType?.Equals(LoginRequestType.Username) == true &&
 			    !string.IsNullOrEmpty(requestValueValue) &&
 			    _usersService.TryGetUserByUsername(requestValueValue, out var user) && user is { IsNotActive: true })
@@ -76,27 +79,32 @@ namespace Session.Services.Authorization
 				user.LastLoggedInDeviceIdent = deviceIdent;
 				user.StayActive = loginRequest.RequestValue?.StayActive == true;
 				_usersService.SetUser(user);
-				SendLoginReply(communicationService, true);
+				SendLoginReply(communicationService, true, canRetry);
 				return AuthorizationInfo.Create(user.Name);
 			}
 
-			SendLoginReply(communicationService, false);
+			SendLoginReply(communicationService, false, canRetry);
 
-			if (attempts <= _settings.MaxAuthAttempts)
+			if (canRetry)
 				return await Authorize(communicationService, attempts + 1, deviceIdent);
 
 			return AuthorizationInfo.Failed;
 		}
 
-		private static void SendLoginReply(ICommunicationService communicationService, bool loginSuccess)
+		private static void SendLoginReply(ICommunicationService communicationService, bool loginSuccess, bool canRetry)
 		{
-			communicationService.SendAsync(new LoginReply
+			_loginReplyObj ??= new LoginReply
 			{
-				Success = loginSuccess
-			});
+				LoginResult = new LoginResult()
+			};
+
+			_loginReplyObj.Success = loginSuccess;
+			_loginReplyObj.CanRetry = canRetry;
+
+			communicationService.SendAsync(_loginReplyObj);
 		}
 
-		public async Task UnAuthorize(ICommunicationService communicationService, string username)
+		public async Task UnAuthorize(ICommunicationService communicationService, string anyIdentifier)
 		{
 			try
 			{
@@ -104,7 +112,8 @@ namespace Session.Services.Authorization
 
 				if (!logoutReply.IsOk)
 				{
-					this.LogWarning($"Logging out fo user {username} was not successful on client side...");
+					this.LogWarning(
+						$"Logging out fo (user or session id) {anyIdentifier} was not successful on client side...");
 				}
 			}
 			catch (CommunicationServiceException communicationServiceException)
@@ -127,8 +136,8 @@ namespace Session.Services.Authorization
 			}
 			finally
 			{
-				if (!string.IsNullOrEmpty(username))
-					_usersService.SetUsersActiveState(username, false);
+				if (!string.IsNullOrEmpty(anyIdentifier))
+					_usersService.SetUsersActiveState(anyIdentifier, false);
 			}
 		}
 	}
