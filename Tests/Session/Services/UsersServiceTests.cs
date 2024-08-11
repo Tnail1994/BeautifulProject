@@ -32,7 +32,7 @@ namespace Tests.Session.Services
 		public void WhenTryGetSessionInfoCalled_ThenShouldReturnFalse()
 		{
 			_sessionsService = new SessionsService(_dbManagerMock);
-			var result = _sessionsService.TryGetSessionInfo("test", out _);
+			var result = _sessionsService.TryGetPendingSessionInfo("test", out _);
 			Assert.False(result);
 		}
 
@@ -51,7 +51,7 @@ namespace Tests.Session.Services
 			var sessionInfoMock = Substitute.For<ISessionInfo>();
 			_sessionsService.TryAdd(sessionMock, sessionInfoMock);
 
-			var result = _sessionsService.TryGetSessionInfo("mockName", out var sessionInfo);
+			var result = _sessionsService.TryGetPendingSessionInfo("mockName", out var sessionInfo);
 			Assert.True(result);
 			Assert.Equal("testId", sessionInfo.Id);
 		}

@@ -8,7 +8,7 @@
 		IEnumerable<ISession> GetSessions();
 #endif
 		void SaveSessionInfo(ISessionInfo sessionInfo);
-		bool TryGetSessionInfo(string username, out ISessionInfo sessionInfo);
+		bool TryGetPendingSessionInfo(string username, out ISessionInfo sessionInfo);
 		void UpdateSession(ISession session, ISessionInfo sessionInfo);
 	}
 }

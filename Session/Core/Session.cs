@@ -75,7 +75,7 @@ namespace Session.Core
 					return;
 				}
 
-				if (_sessionsService.TryGetSessionInfo(authorizationInfo.Username, out ISessionInfo sessionInfo))
+				if (_sessionsService.TryGetPendingSessionInfo(authorizationInfo.Username, out ISessionInfo sessionInfo))
 				{
 					ReestablishSession(sessionInfo);
 				}

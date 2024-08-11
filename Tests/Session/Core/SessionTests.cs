@@ -56,7 +56,7 @@ namespace Tests.Session.Core
 			_session.Start();
 
 			_connectionServiceMock.ConnectionEstablished += Raise.Event<Action>();
-			_sessionsServiceMock.Received(1).TryGetSessionInfo("mockName", out Arg.Any<ISessionInfo>());
+			_sessionsServiceMock.Received(1).TryGetPendingSessionInfo("mockName", out Arg.Any<ISessionInfo>());
 		}
 
 		[Fact]

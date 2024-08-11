@@ -145,7 +145,7 @@ namespace Session.Services
 				bundle.SessionInfo?.Username == username && bundle.SessionInfo?.SessionState == SessionState.Stopped);
 		}
 
-		public bool TryGetSessionInfo(string username, out ISessionInfo sessionInfo)
+		public bool TryGetPendingSessionInfo(string username, out ISessionInfo sessionInfo)
 		{
 			if (HasPendingSession(username))
 			{
