@@ -11,7 +11,6 @@ using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Common.Transformation.Implementations;
 using Remote.Communication.Transformation;
 using Session.Common.Implementations;
-using SharedBeautifulData.Messages.Authorize;
 
 namespace Remote.Communication
 {
@@ -44,7 +43,7 @@ namespace Remote.Communication
 		private string SessionId => _sessionKey.SessionId;
 
 
-		public async void Start()
+		public void Start()
 		{
 			if (_running)
 			{
