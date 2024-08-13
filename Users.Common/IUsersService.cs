@@ -1,6 +1,6 @@
 ﻿using SharedBeautifulData.Objects;
 
-namespace Session.Common.Contracts
+namespace Users.Common
 {
 	public interface IUsersService
 	{

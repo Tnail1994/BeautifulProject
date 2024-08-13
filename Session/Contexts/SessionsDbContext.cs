@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DbManagement.Contexts
+namespace Session.Contexts
 {
 	public class SessionsDbContext : BaseDbContext<SessionInfoDto>
 	{

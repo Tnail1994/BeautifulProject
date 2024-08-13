@@ -4,6 +4,7 @@ using Remote.Communication.Common.Implementations;
 using Session.Common.Contracts;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Objects;
+using Users.Common;
 
 namespace Session.Services.Authorization
 {

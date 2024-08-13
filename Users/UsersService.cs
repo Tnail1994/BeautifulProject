@@ -1,10 +1,9 @@
 ﻿using Core.Extensions;
 using DbManagement.Common.Contracts;
-using DbManagement.Contexts;
-using Session.Common.Contracts;
 using SharedBeautifulData.Objects;
+using Users.Common;
 
-namespace Session.Services
+namespace Users
 {
 	public class UsersService : IUsersService, IDisposable
 	{

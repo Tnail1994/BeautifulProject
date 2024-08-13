@@ -1,12 +1,13 @@
 ﻿using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
-using DbManagement.Contexts;
 using NSubstitute;
 using Session.Common.Contracts;
+using Session.Contexts;
 using Session.Core;
 using Session.Services;
+using Users;
 
-namespace Tests.Session.Services
+namespace Tests.UsersManagement
 {
 	public class SessionsServiceTests
 	{

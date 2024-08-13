@@ -1,9 +1,9 @@
-﻿using DbManagement.Common.Contracts;
-using DbManagement.Common.Implementations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+using DbManagement.Common.Contracts;
+using DbManagement.Common.Implementations;
 
-namespace DbManagement.Contexts
+namespace Users
 {
 	public class UsersDbContext : BaseDbContext<UserDto>
 	{

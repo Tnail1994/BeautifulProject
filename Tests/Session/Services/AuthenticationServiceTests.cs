@@ -1,9 +1,9 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
-using Session.Common.Contracts;
 using Session.Services.Authorization;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Objects;
+using Users.Common;
 
 namespace Tests.Session.Services
 {
