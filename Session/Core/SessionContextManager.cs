@@ -10,9 +10,9 @@ namespace Session.Core
 		private readonly IDbManager _dbManager;
 		private readonly IEnumerable<string> _collectionContextTypeNames;
 
-		public SessionContextManager(IServiceProvider serviceProvider, IDbManager dbManager)
+		public SessionContextManager(IServiceProvider serviceProvider)
 		{
-			_dbManager = dbManager;
+			_dbManager = serviceProvider.GetRequiredService<IDbManager>();
 			_collectionContextTypeNames = serviceProvider.GetServices<IContextCollection>()
 				.Select(contextCollection => contextCollection.TypeNameOfCollectionEntries).ToList();
 		}

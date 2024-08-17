@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 using Session.Contexts;
 
 namespace Session.Example
@@ -48,9 +49,17 @@ namespace Session.Example
 			return base.GetHashCode() ^ PlayerName.GetHashCode();
 		}
 
-		public override ISessionDetail Convert()
+		public override ISessionDetail Convert(ISessionKey sessionKey)
 		{
-			return new CurrentPlayerDetails(SessionId, PlayerName);
+			return new CurrentPlayerDetails(sessionKey, PlayerName);
+		}
+
+		public override void Update(ISessionDetail sessionDetail)
+		{
+			if (sessionDetail is ICurrentPlayerDetails currentPlayerDetails)
+			{
+				PlayerName = currentPlayerDetails.PlayerName;
+			}
 		}
 	}
 
@@ -77,9 +86,17 @@ namespace Session.Example
 			return base.GetHashCode() ^ TurnCounter.GetHashCode();
 		}
 
-		public override ISessionDetail Convert()
+		public override ISessionDetail Convert(ISessionKey sessionKey)
 		{
-			return new TurnDetails(SessionId, TurnCounter);
+			return new TurnDetails(sessionKey, TurnCounter);
+		}
+
+		public override void Update(ISessionDetail sessionDetail)
+		{
+			if (sessionDetail is ITurnDetails turnDetails)
+			{
+				TurnCounter = turnDetails.TurnCounter;
+			}
 		}
 	}
 
@@ -105,9 +122,17 @@ namespace Session.Example
 			return base.GetHashCode() ^ RoundCounter.GetHashCode();
 		}
 
-		public override ISessionDetail Convert()
+		public override ISessionDetail Convert(ISessionKey sessionKey)
 		{
-			return new RoundDetails(SessionId, RoundCounter);
+			return new RoundDetails(sessionKey, RoundCounter);
+		}
+
+		public override void Update(ISessionDetail sessionDetail)
+		{
+			if (sessionDetail is IRoundDetails roundDetails)
+			{
+				RoundCounter = roundDetails.RoundCounter;
+			}
 		}
 	}
 }

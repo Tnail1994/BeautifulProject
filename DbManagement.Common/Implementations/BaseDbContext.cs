@@ -17,7 +17,13 @@ namespace DbManagement.Common.Implementations
 		/// <summary>
 		/// Reloading everything, can gather new entities if available
 		/// </summary>
-		AllGlobalEntities
+		AllGlobalEntities,
+
+
+		/// <summary>
+		/// Reloading only entities, which are not available
+		/// </summary>
+		OnlyMissingEntities
 	}
 
 	public abstract class BaseDbContext<T> : DbContext, IDbContext where T : EntityDto
@@ -111,7 +117,6 @@ namespace DbManagement.Common.Implementations
 
 					break;
 			}
-
 
 			_set = null;
 		}

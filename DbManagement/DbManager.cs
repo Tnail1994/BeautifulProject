@@ -110,7 +110,7 @@ namespace DbManagement
 
 		public void SaveChanges<T>(T dto, ISessionKey? sessionKey = null) where T : EntityDto
 		{
-			var requestedTypeName = CleanTypeName(typeof(T).Name);
+			var requestedTypeName = CleanTypeName(dto.TypeName);
 			var cacheKey = CreateCacheKey(requestedTypeName, sessionKey?.SessionId);
 
 			var foundDbContext = _dbContexts.Values.FirstOrDefault(dbContext =>

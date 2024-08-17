@@ -238,7 +238,7 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IAsyncClientFactory>().Create());
 
 					services.AddScoped<ISessionContext, SessionContext>();
-					services.AddScoped<ISessionDetailsProvider, SessionDetailsProvider>();
+					services.AddScoped<ISessionDetailsManager, SessionDetailsManager>();
 
 					// Make it lazy, because the details needed to be initialized. This happens, will
 					// build and start the session. If the session is ready, then the loop will be needed.
@@ -249,18 +249,57 @@ namespace BeautifulServerApplication
 					services.AddScoped<ISessionLoop, TestSessionLoop>();
 
 					// Add the context, which should be got and saved automatically
-					services.AddScoped<ITurnDetails>(sp =>
-						sp.GetRequiredService<ISessionDetailsProvider>()
-							.GetSessionDetail<TurnContextEntryDto, TurnDetails>() ??
-						new TurnDetails(sp.GetRequiredService<ISessionKey>().SessionId));
-					services.AddScoped<IRoundDetails>(sp =>
-						sp.GetRequiredService<ISessionDetailsProvider>()
-							.GetSessionDetail<RoundContextEntryDto, RoundDetails>() ??
-						new RoundDetails(sp.GetRequiredService<ISessionKey>().SessionId));
-					services.AddScoped<ICurrentPlayerDetails>(sp =>
-						sp.GetRequiredService<ISessionDetailsProvider>()
-							.GetSessionDetail<CurrentPlayerContextEntryDto, CurrentPlayerDetails>() ??
-						new CurrentPlayerDetails(sp.GetRequiredService<ISessionKey>().SessionId));
+					// EntryDto: The entry of the context collection, which should be saved inside db. Must provide
+					//			 a convert and update method. Convert to ISessionDetail and update from ISessionDetail
+					// SessionDetail: The object to work with. Must provide a convert method as well to create the Entity correctly
+					services.AddScoped<ITurnDetails>(GetTurnDetails);
+					services.AddScoped<IRoundDetails>(GetRoundDetails);
+					services.AddScoped<ICurrentPlayerDetails>(GetCurrentPlayerDetails);
 				});
+
+		private static ITurnDetails GetTurnDetails(IServiceProvider sp)
+		{
+			var sessionDetailsManager = sp.GetRequiredService<ISessionDetailsManager>();
+			var sessionDetail = sessionDetailsManager
+				.GetSessionDetail<TurnContextEntryDto, TurnDetails>();
+
+			if (sessionDetail == null)
+			{
+				sessionDetail = new TurnDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetailsManager.Observe(sessionDetail);
+			}
+
+			return sessionDetail;
+		}
+
+		private static IRoundDetails GetRoundDetails(IServiceProvider sp)
+		{
+			var sessionDetailsManager = sp.GetRequiredService<ISessionDetailsManager>();
+			var sessionDetail = sessionDetailsManager
+				.GetSessionDetail<RoundContextEntryDto, RoundDetails>();
+
+			if (sessionDetail == null)
+			{
+				sessionDetail = new RoundDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetailsManager.Observe(sessionDetail);
+			}
+
+			return sessionDetail;
+		}
+
+		private static ICurrentPlayerDetails GetCurrentPlayerDetails(IServiceProvider sp)
+		{
+			var sessionDetailsManager = sp.GetRequiredService<ISessionDetailsManager>();
+			var sessionDetail = sessionDetailsManager
+				.GetSessionDetail<CurrentPlayerContextEntryDto, CurrentPlayerDetails>();
+
+			if (sessionDetail == null)
+			{
+				sessionDetail = new CurrentPlayerDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetailsManager.Observe(sessionDetail);
+			}
+
+			return sessionDetail;
+		}
 	}
 }

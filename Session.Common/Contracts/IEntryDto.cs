@@ -1,9 +1,11 @@
-﻿namespace Session.Common.Contracts
+﻿using Session.Common.Implementations;
+
+namespace Session.Common.Contracts
 {
 	public interface IEntryDto
 	{
 		string TypeName { get; }
-
-		ISessionDetail Convert();
+		ISessionDetail Convert(ISessionKey sessionKey);
+		void Update(ISessionDetail sessionDetail);
 	}
 }

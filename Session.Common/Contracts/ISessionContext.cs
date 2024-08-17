@@ -2,11 +2,13 @@
 
 namespace Session.Common.Contracts
 {
-	public interface ISessionDetailsProvider
+	public interface ISessionDetailsManager
 	{
 		TSessionDetail? GetSessionDetail<TSessionEntryDto, TSessionDetail>()
 			where TSessionEntryDto : class, IEntryDto
 			where TSessionDetail : class, ISessionDetail;
+
+		void Observe(ISessionDetail sessionDetail);
 	}
 
 

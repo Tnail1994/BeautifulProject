@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Implementations;
 using Session.Common.Contracts;
+using Session.Common.Implementations;
 
 namespace Session.Contexts
 {
@@ -26,6 +27,7 @@ namespace Session.Contexts
 		}
 
 		public string TypeName => GetType().Name;
-		public abstract ISessionDetail Convert();
+		public abstract ISessionDetail Convert(ISessionKey sessionContextSessionKey);
+		public abstract void Update(ISessionDetail sessionDetail);
 	}
 }
