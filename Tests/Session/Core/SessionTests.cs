@@ -1,7 +1,6 @@
 ﻿using NSubstitute;
 using Remote.Communication.Common.Contracts;
 using Session.Common.Contracts;
-using Session.Common.Implementations;
 using Session.Core;
 using Session.Services.Authorization;
 
@@ -19,11 +18,15 @@ namespace Tests.Session.Core
 		{
 			_communicationServiceMock = Substitute.For<ICommunicationService>();
 			_connectionServiceMock = Substitute.For<IConnectionService>();
-			var sessionKeyMock = Substitute.For<ISessionKey>();
+			var sessionContextMock = Substitute.For<ISessionContext>();
 			_authenticationServiceMock = Substitute.For<IAuthenticationService>();
 			_sessionsServiceMock = Substitute.For<ISessionsService>();
+			var sessionContextManagerMock = Substitute.For<ISessionContextManager>();
 
-			_session = new global::Session.Core.Session(sessionKeyMock, _connectionServiceMock,
+			var sessionLoop = Substitute.For<Lazy<ISessionLoop>>();
+
+			_session = new global::Session.Core.Session(sessionLoop, sessionContextMock, sessionContextManagerMock,
+				_connectionServiceMock,
 				_authenticationServiceMock, _communicationServiceMock, _sessionsServiceMock);
 		}
 

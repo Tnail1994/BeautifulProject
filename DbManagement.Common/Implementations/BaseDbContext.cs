@@ -124,7 +124,7 @@ namespace DbManagement.Common.Implementations
 				return;
 			}
 
-			var hasChanges = true;
+			var hasChanges = false;
 
 			// todo: how to add analyzing of the updateQueue? 
 			if (_dbContextSettings.AnalyzeUpdateSet)
@@ -170,17 +170,6 @@ namespace DbManagement.Common.Implementations
 
 		public string Id { get; }
 		public string TypeNameOfCollectionEntries { get; }
-
-		public IEnumerable<TDto> GetEntities<TDto>() where TDto : EntityDto
-		{
-			if (_set == null)
-			{
-				this.LogError($"Cannot get entities because Set is not initialized ");
-				return Enumerable.Empty<TDto>();
-			}
-
-			return _set.Cast<TDto>();
-		}
 
 		public void AddEntity<TDto>(TDto dto) where TDto : EntityDto
 		{

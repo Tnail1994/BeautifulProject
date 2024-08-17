@@ -8,7 +8,9 @@ namespace Session.Core
 {
 	public class Session : ISession, IDisposable
 	{
-		private readonly ISessionKey _sessionKey;
+		private readonly Lazy<ISessionLoop> _sessionLoop;
+		private readonly ISessionContext _sessionContext;
+		private readonly ISessionContextManager _sessionContextManager;
 		private readonly IConnectionService _connectionService;
 		private readonly IAuthenticationService _authenticationService;
 
@@ -17,21 +19,27 @@ namespace Session.Core
 
 		private SessionInfo _sessionInfo;
 
-		public Session(ISessionKey sessionKey, IConnectionService connectionService,
+		public Session(Lazy<ISessionLoop> sessionLoop, ISessionContext sessionContext,
+			ISessionContextManager sessionContextManager,
+			IConnectionService connectionService,
 			IAuthenticationService authenticationService, ICommunicationService communicationService,
 			ISessionsService sessionsService)
 		{
-			_sessionKey = sessionKey;
+			_sessionLoop = sessionLoop;
+			_sessionContext = sessionContext;
+			_sessionContextManager = sessionContextManager;
 			_connectionService = connectionService;
 			_authenticationService = authenticationService;
 			_communicationService = communicationService;
 			_sessionsService = sessionsService;
 
-			_sessionInfo = SessionInfo.Create(_sessionKey.SessionId, string.Empty);
+			_sessionInfo = SessionInfo.Create(Id, string.Empty);
 		}
 
-		public string Id => _sessionKey.SessionId;
+		public string Id => _sessionContext.SessionId;
 		public event EventHandler<SessionStoppedEventArgs>? SessionStopped;
+		private ISessionLoop SessionLoop => _sessionLoop.Value;
+
 
 		public void Start()
 		{
@@ -77,12 +85,10 @@ namespace Session.Core
 
 				if (_sessionsService.TryGetPendingSessionInfo(authorizationInfo.Username, out ISessionInfo sessionInfo))
 				{
-					ReestablishSession(sessionInfo);
+					ReestablishSessionContext(sessionInfo);
 				}
-				else
-				{
-					RunSession();
-				}
+
+				RunSession();
 
 				SetState(SessionState.Running);
 			}
@@ -98,17 +104,27 @@ namespace Session.Core
 			}
 		}
 
-		private void ReestablishSession(ISessionInfo sessionInfo)
+		private void ReestablishSessionContext(ISessionInfo sessionInfo)
 		{
 			this.LogDebug($"Reestablishing session {Id}", Id);
 
-			// Update internal session info data
+			UpdateInternalSessionInfoData(sessionInfo);
+
+			// Grab session context data
+			if (!_sessionContextManager.TryFillSessionContext(_sessionContext))
+			{
+				this.LogWarning($"Could not fill session context for {Id}. Try to reestablished failed.", Id);
+			}
+
+			RunSession();
+		}
+
+		private void UpdateInternalSessionInfoData(ISessionInfo sessionInfo)
+		{
 			_sessionsService.UpdateSession(this, sessionInfo);
 			_sessionsService.TryRemove(_sessionInfo.Id);
 			_sessionInfo = (SessionInfo)sessionInfo;
-			_sessionKey.UpdateId(sessionInfo.Id);
-
-			// Grab session context data
+			_sessionContext.SessionKey.UpdateId(sessionInfo.Id);
 		}
 
 		private void RunSession()
@@ -118,6 +134,8 @@ namespace Session.Core
 			// From here the session can be used to communicate with the client.
 			// All what happens here, should happen parallel to the main thread.
 			// So beware of writing to collections or doing other blocking operations.
+
+			SessionLoop.Start();
 		}
 
 		private void SetInfo(IAuthorizationInfo authorizationInfo, bool save = true)
@@ -155,7 +173,7 @@ namespace Session.Core
 			if (_sessionInfo.SessionState == SessionState.Stopped)
 				return;
 
-			_sessionsService.TryRemove(_sessionKey.SessionId);
+			_sessionsService.TryRemove(_sessionContext.SessionId);
 		}
 
 		private void SaveSession()
@@ -171,7 +189,8 @@ namespace Session.Core
 
 		private void InvokeSessionOnHold(string reason)
 		{
-			SessionStopped?.Invoke(this, SessionStoppedEventArgs.Create(_sessionKey, $"Connection lost: {reason}"));
+			SessionStopped?.Invoke(this,
+				SessionStoppedEventArgs.Create(_sessionContext.SessionKey, $"Connection lost: {reason}"));
 		}
 
 		public void Dispose()

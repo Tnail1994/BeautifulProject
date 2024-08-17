@@ -4,6 +4,7 @@ using DbManagement.Common.Implementations;
 using Microsoft.Extensions.Caching.Memory;
 using Session.Common.Implementations;
 using System.Collections.Concurrent;
+using Session.Common.Contracts;
 
 namespace DbManagement
 {
@@ -76,7 +77,12 @@ namespace DbManagement
 		public IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey = null) where T : EntityDto
 		{
 			var requestedType = typeof(T);
-			var cacheKey = CreateCacheKey(requestedType.Name, sessionKey?.SessionId);
+			return GetEntities<T>(sessionKey, requestedType.Name);
+		}
+
+		private IEnumerable<T>? GetEntities<T>(ISessionKey? sessionKey, string requestedTypeName) where T : EntityDto
+		{
+			var cacheKey = CreateCacheKey(requestedTypeName, sessionKey?.SessionId);
 
 			if (!_cache.TryGetValue(cacheKey, out IEnumerable<EntityDto>? entities))
 			{
@@ -86,7 +92,7 @@ namespace DbManagement
 
 				if (entities == null)
 				{
-					this.LogWarning($"[GetEntities] No entities found for {requestedType.Name}");
+					this.LogWarning($"[GetEntities] No entities found for {requestedTypeName}");
 					return Enumerable.Empty<T>();
 				}
 
@@ -94,6 +100,12 @@ namespace DbManagement
 			}
 
 			return entities?.Cast<T>();
+		}
+
+		public IContextCollection? GetContextCollection(string requestedTypeName)
+		{
+			return _dbContexts.Values.FirstOrDefault(dbContext =>
+				dbContext.TypeNameOfCollectionEntries.Equals(requestedTypeName)) as IContextCollection;
 		}
 
 		public void SaveChanges<T>(T dto, ISessionKey? sessionKey = null) where T : EntityDto
@@ -123,6 +135,7 @@ namespace DbManagement
 
 			UpdateCache(cacheKey, entities);
 		}
+
 
 		/// <summary>
 		/// Removes the Dto suffix from the typeName

@@ -30,6 +30,7 @@
     <ProjectReference Include="..\DbManagement\DbManagement.csproj" />
     <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
     <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
+    <ProjectReference Include="..\Session.Example\Session.Example.csproj" />
     <ProjectReference Include="..\Session\Session.csproj" />
     <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
     <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />

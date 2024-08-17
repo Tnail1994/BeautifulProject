@@ -98,9 +98,6 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddSingleton<ICheckAliveSettings>(_ =>
 				config.GetSection(nameof(CheckAliveSettings)).Get<CheckAliveSettings>() ??
 				CheckAliveSettings.Default);
-			builder.Services.AddSingleton<IAsyncClientFactorySettings>(_ =>
-				config.GetSection(nameof(AsyncClientFactorySettings)).Get<AsyncClientFactorySettings>() ??
-				AsyncClientFactorySettings.Default);
 			builder.Services.AddSingleton<IConnectionSettings>(_ =>
 				config.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
 				ConnectionSettings.Default);

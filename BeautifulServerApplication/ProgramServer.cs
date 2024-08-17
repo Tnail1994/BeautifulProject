@@ -17,6 +17,7 @@ using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Contexts;
 using Session.Core;
+using Session.Example;
 using Session.Services;
 using Session.Services.Authorization;
 using SharedBeautifulData.Messages.Authorize;
@@ -157,8 +158,24 @@ namespace BeautifulServerApplication
 					services.AddTransient<INetworkMessage, RandomDataReply>();
 					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
 					services.AddTransient<INetworkMessage, DeviceIdentReply>();
-					services.AddTransient<IDbContext, UsersDbContext>();
-					services.AddTransient<IDbContext, SessionsDbContext>();
+
+					services.AddSingleton<UsersDbContext>();
+					services.AddSingleton<SessionsDbContext>();
+					services.AddSingleton<TurnContextCollection>();
+					services.AddSingleton<RoundContextCollection>();
+					services.AddSingleton<CurrentPlayerContextCollection>();
+
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<UsersDbContext>());
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<SessionsDbContext>());
+
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<TurnContextCollection>());
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<RoundContextCollection>());
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<CurrentPlayerContextCollection>());
+
+					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<TurnContextCollection>());
+					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<RoundContextCollection>());
+					services.AddSingleton<IContextCollection>(sp =>
+						sp.GetRequiredService<CurrentPlayerContextCollection>());
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
 					services.AddSingleton<IAsyncServer, AsyncServer>();
@@ -168,6 +185,8 @@ namespace BeautifulServerApplication
 					services.AddSingleton<IAuthenticationService, AuthenticationService>();
 					services.AddSingleton<IUsersService, UsersService>();
 					services.AddSingleton<ISessionsService, SessionsService>();
+
+					services.AddSingleton<ISessionContextManager, SessionContextManager>();
 
 
 					services.Configure<AsyncServerSettings>(
@@ -217,6 +236,31 @@ namespace BeautifulServerApplication
 					services.AddScoped<IAsyncClientFactory, AsyncClientFactory>();
 					services.AddScoped<IAsyncClient>(provider =>
 						provider.GetRequiredService<IAsyncClientFactory>().Create());
+
+					services.AddScoped<ISessionContext, SessionContext>();
+					services.AddScoped<ISessionDetailsProvider, SessionDetailsProvider>();
+
+					// Make it lazy, because the details needed to be initialized. This happens, will
+					// build and start the session. If the session is ready, then the loop will be needed.
+					services.AddTransient<Lazy<ISessionLoop>>(provider =>
+						new Lazy<ISessionLoop>(provider.GetRequiredService<ISessionLoop>));
+
+					// Add own SessionLoop which extends from SessionLoopBase
+					services.AddScoped<ISessionLoop, TestSessionLoop>();
+
+					// Add the context, which should be got and saved automatically
+					services.AddScoped<ITurnDetails>(sp =>
+						sp.GetRequiredService<ISessionDetailsProvider>()
+							.GetSessionDetail<TurnContextEntryDto, TurnDetails>() ??
+						new TurnDetails(sp.GetRequiredService<ISessionKey>().SessionId));
+					services.AddScoped<IRoundDetails>(sp =>
+						sp.GetRequiredService<ISessionDetailsProvider>()
+							.GetSessionDetail<RoundContextEntryDto, RoundDetails>() ??
+						new RoundDetails(sp.GetRequiredService<ISessionKey>().SessionId));
+					services.AddScoped<ICurrentPlayerDetails>(sp =>
+						sp.GetRequiredService<ISessionDetailsProvider>()
+							.GetSessionDetail<CurrentPlayerContextEntryDto, CurrentPlayerDetails>() ??
+						new CurrentPlayerDetails(sp.GetRequiredService<ISessionKey>().SessionId));
 				});
 	}
 }
