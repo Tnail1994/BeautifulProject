@@ -73,7 +73,7 @@ namespace Session.Core
 
 				var authorizationInfo = await _authenticationService.Authorize(_communicationService);
 
-				SetInfo(authorizationInfo, false);
+				SetInfo(authorizationInfo);
 
 				if (!authorizationInfo.IsAuthorized)
 				{
@@ -125,6 +125,7 @@ namespace Session.Core
 			_sessionsService.TryRemove(_sessionInfo.Id);
 			_sessionInfo = (SessionInfo)sessionInfo;
 			_sessionContext.SessionKey.UpdateId(sessionInfo.Id);
+			_sessionInfo.SetAuthorized(true);
 		}
 
 		private void RunSession()
@@ -138,13 +139,10 @@ namespace Session.Core
 			SessionLoop.Start();
 		}
 
-		private void SetInfo(IAuthorizationInfo authorizationInfo, bool save = true)
+		private void SetInfo(IAuthorizationInfo authorizationInfo)
 		{
 			_sessionInfo.SetUsername(authorizationInfo.Username);
 			_sessionInfo.SetAuthorized(authorizationInfo.IsAuthorized);
-
-			if (save)
-				SaveSession();
 		}
 
 		private void SetState(SessionState state)
