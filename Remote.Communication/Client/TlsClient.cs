@@ -39,7 +39,7 @@ namespace Remote.Communication.Client
 		private readonly string? _host;
 		private readonly int _port;
 
-		private Task<Task>? _sendingLoopTask;
+		private Task? _sendingLoopTask;
 
 		private TlsClient(string host, int port, ITlsSettings tlsSettings)
 		{

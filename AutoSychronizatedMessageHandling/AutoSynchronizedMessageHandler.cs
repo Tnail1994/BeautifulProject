@@ -18,7 +18,7 @@ namespace AutoSynchronizedMessageHandling
 		private readonly Dictionary<string, CancellationTokenSource> _publishingCtSources = new();
 
 		private readonly SynchronizationContext _syncContext;
-		private Task<Task>? _publishingLoopTask;
+		private Task? _publishingLoopTask;
 
 
 		public AutoSynchronizedMessageHandler(ICommunicationService communicationService)

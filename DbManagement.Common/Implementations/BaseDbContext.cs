@@ -56,7 +56,7 @@ namespace DbManagement.Common.Implementations
 		private readonly CancellationTokenSource _updateLoopCts = new();
 
 		private List<T>? _set;
-		private Task<Task>? _updateLoopTask;
+		private Task? _updateLoopTask;
 
 		protected BaseDbContext(IDbContextSettings dbContextSettings)
 		{
