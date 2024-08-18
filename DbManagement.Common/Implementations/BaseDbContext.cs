@@ -97,14 +97,16 @@ namespace DbManagement.Common.Implementations
 			if (_reloadingBehavior is not { Enabled: true })
 				return;
 
-			var dbEntities = Entities?.ToList();
+			var dbEntitiesTask = Entities?.ToListAsync();
 
-			if (dbEntities == null)
+			if (dbEntitiesTask == null)
 			{
 				this.LogWarning($"dbEntities null\n" +
 				                $"Cannot update changes from db for collection entry types: {TypeNameOfCollectionEntries}");
 				return;
 			}
+
+			var dbEntities = await dbEntitiesTask;
 
 			if (_reloadingBehavior.ExceptWithEntities)
 			{
@@ -156,14 +158,10 @@ namespace DbManagement.Common.Implementations
 			if (Entities == null)
 				return;
 
-			List<Task> reloadingTasks = new();
-
 			foreach (var entity in _set.Values)
 			{
-				reloadingTasks.Add(Entry(entity).ReloadAsync());
+				await Entry(entity).ReloadAsync();
 			}
-
-			await Task.WhenAll(reloadingTasks);
 		}
 
 		private void AddToSet(T entity)
