@@ -8,7 +8,7 @@ using Session.Common.Contracts.Context.Db;
 
 namespace DbManagement
 {
-    public class DbManager : IDbManager, IDisposable
+	public class DbManager : IDbManager, IDisposable
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
 
@@ -86,9 +86,10 @@ namespace DbManagement
 
 			if (!_cache.TryGetValue(cacheKey, out IEnumerable<EntityDto>? entities))
 			{
-				entities =
-					_dbContexts.Values.FirstOrDefault(dbContext => dbContext.GetEntities() is IEnumerable<T>)
-						?.GetEntities() as List<T>;
+				var foundContext = _dbContexts.Values.FirstOrDefault(dbContext =>
+					dbContext.TypeNameOfCollectionEntries.Equals(requestedTypeName));
+
+				entities = foundContext?.GetEntities().Cast<T>().ToList();
 
 				if (entities == null)
 				{
@@ -125,13 +126,7 @@ namespace DbManagement
 
 			foundDbContext.AddEntity(dto);
 
-			var entities = foundDbContext.GetEntities()?.Cast<EntityDto>().ToList();
-
-			if (entities == null)
-			{
-				this.LogWarning($"[SaveChanges] No entities found for {requestedTypeName}");
-				return;
-			}
+			var entities = foundDbContext.GetEntities().Cast<EntityDto>().ToList();
 
 			UpdateCache(cacheKey, entities);
 		}

@@ -8,5 +8,13 @@ namespace Tests.TestObjects
 		public TestDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
 		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true
+			};
+		}
 	}
 }

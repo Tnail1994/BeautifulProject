@@ -7,27 +7,23 @@ using Microsoft.Extensions.Logging;
 
 namespace DbManagement.Common.Implementations
 {
-	public enum DbContextSyncMode
-	{
-		/// <summary>
-		/// Reloading only entities, knowing of this dbContext
-		/// </summary>
-		LocalEntitiesOnly,
-
-		/// <summary>
-		/// Reloading everything, can gather new entities if available
-		/// </summary>
-		AllGlobalEntities,
-
-
-		/// <summary>
-		/// Reloading only entities, which are not available
-		/// </summary>
-		OnlyMissingEntities
-	}
-
 	public abstract class BaseDbContext<T> : DbContext, IDbContext where T : EntityDto
 	{
+		protected class ReloadingBehavior
+		{
+			/// <summary>
+			/// Reloading local entities
+			/// </summary>
+			public bool ReloadLocals { get; init; }
+
+			/// <summary>
+			/// Checking if elements are removed or added
+			/// </summary>
+			public bool ExceptWithEntities { get; init; }
+
+			public bool Enabled => ReloadLocals || ExceptWithEntities;
+		}
+
 		enum UpdateType
 		{
 			Add,
@@ -54,9 +50,9 @@ namespace DbManagement.Common.Implementations
 
 		private readonly ConcurrentQueue<UpdateEntityElement> _updateQueue = new();
 		private readonly CancellationTokenSource _updateLoopCts = new();
-
-		private List<T>? _set;
+		private readonly ConcurrentDictionary<int, T> _set = new();
 		private Task? _updateLoopTask;
+		private ReloadingBehavior? _reloadingBehavior;
 
 		protected BaseDbContext(IDbContextSettings dbContextSettings)
 		{
@@ -68,19 +64,24 @@ namespace DbManagement.Common.Implementations
 			RunUpdateLoop();
 		}
 
+		protected abstract ReloadingBehavior GetReloadingBehavior();
+
 		private void RunUpdateLoop()
 		{
 			_updateLoopTask = Task.Factory.StartNew(async () =>
 			{
 				var getChangesFromDbCounter = 0;
-				var updateChangesFromDbThreshold = 10;
 
 				while (!_updateLoopCts.IsCancellationRequested)
 				{
 					await Task.Delay(_dbContextSettings.UpdateDbDelayInMs);
+
+					_reloadingBehavior ??= GetReloadingBehavior();
+
 					await SaveChangesFromUpdateLoop();
 
-					if (getChangesFromDbCounter >= updateChangesFromDbThreshold)
+					if (_reloadingBehavior is { Enabled: true } &&
+					    getChangesFromDbCounter >= _dbContextSettings.UpdateChangesFromDbThreshold)
 					{
 						await GetChangesFromDb();
 						getChangesFromDbCounter = 0;
@@ -93,33 +94,83 @@ namespace DbManagement.Common.Implementations
 
 		private async Task GetChangesFromDb()
 		{
-			switch (_dbContextSettings.SyncMode)
+			if (_reloadingBehavior is not { Enabled: true })
+				return;
+
+			var dbEntities = Entities?.ToList();
+
+			if (dbEntities == null)
 			{
-				case DbContextSyncMode.LocalEntitiesOnly:
-					if (Entities == null)
-						return;
-
-					foreach (var entity in Entities)
-					{
-						await Entry(entity).ReloadAsync();
-					}
-
-					break;
-
-				case DbContextSyncMode.AllGlobalEntities:
-
-					var entries = ChangeTracker.Entries().ToList();
-
-					foreach (var entityEntry in entries)
-					{
-						await entityEntry.ReloadAsync();
-					}
-
-					break;
+				this.LogWarning($"dbEntities null\n" +
+				                $"Cannot update changes from db for collection entry types: {TypeNameOfCollectionEntries}");
+				return;
 			}
 
-			_set = null;
+			if (_reloadingBehavior.ExceptWithEntities)
+			{
+				var missingEntries = dbEntities.Except(_set.Values).ToList();
+				var removedEntries = _set.Values.Except(dbEntities).ToList();
+
+				if (missingEntries.Any())
+				{
+					await HandleNewEntries(missingEntries);
+				}
+
+				if (removedEntries.Any())
+				{
+					await HandleRemovedEntries(removedEntries);
+				}
+			}
+
+			if (_reloadingBehavior.ReloadLocals)
+			{
+				await HandleLocalReloading();
+			}
 		}
+
+
+		protected virtual Task HandleNewEntries(List<T> newEntries)
+		{
+			foreach (var newEntry in newEntries)
+			{
+				var addingResult = _set.TryAdd(newEntry.GetHashCode(), newEntry);
+				this.LogDebug($"{TypeNameOfCollectionEntries}: Adding was {addingResult}");
+			}
+
+			return Task.CompletedTask;
+		}
+
+		protected virtual Task HandleRemovedEntries(List<T> removedEntries)
+		{
+			foreach (var removedEntry in removedEntries)
+			{
+				var removeResult = _set.Remove(removedEntry.GetHashCode(), out _);
+				this.LogDebug($"{TypeNameOfCollectionEntries}: Removing was {removeResult}");
+			}
+
+			return Task.CompletedTask;
+		}
+
+		protected virtual async Task HandleLocalReloading()
+		{
+			if (Entities == null)
+				return;
+
+			List<Task> reloadingTasks = new();
+
+			foreach (var entity in _set.Values)
+			{
+				reloadingTasks.Add(Entry(entity).ReloadAsync());
+			}
+
+			await Task.WhenAll(reloadingTasks);
+		}
+
+		private void AddToSet(T entity)
+		{
+			_set.TryAdd(entity.GetHashCode(), entity);
+		}
+
 
 		private async Task SaveChangesFromUpdateLoop(bool skipCts = false)
 		{
@@ -186,13 +237,7 @@ namespace DbManagement.Common.Implementations
 				return;
 			}
 
-			if (_set == null)
-			{
-				this.LogError($"(_set) Cannot add because Set is not initialized ");
-				return;
-			}
-
-			if (!_set.Contains(entityDto))
+			if (!_set.Values.Contains(entityDto))
 			{
 				this.LogDebug($"(_set) Adding type {typeof(T)}, with {entityDto}");
 				Add(entityDto);
@@ -207,25 +252,32 @@ namespace DbManagement.Common.Implementations
 
 		private void Add(T entityDto)
 		{
-			if (_set == null)
-				return;
+			_set.TryAdd(entityDto.GetHashCode(), entityDto);
+			var updateEntityElement = UpdateEntityElement.Create(entityDto, UpdateType.Add);
+			AddToUpdateQueue(updateEntityElement);
+		}
 
-			_set.Add(entityDto);
-			_updateQueue.Enqueue(UpdateEntityElement.Create(entityDto, UpdateType.Add));
+		private void AddToUpdateQueue(UpdateEntityElement updateEntityElement)
+		{
+			_updateQueue.Enqueue(updateEntityElement);
 		}
 
 		private void Update(T entityDto)
 		{
-			if (_set == null)
-				return;
-
-			_updateQueue.Enqueue(UpdateEntityElement.Create(entityDto, UpdateType.Update));
+			AddToUpdateQueue(UpdateEntityElement.Create(entityDto, UpdateType.Update));
 		}
 
-		public IEnumerable<object>? GetEntities()
+		public IEnumerable<object> GetEntities()
 		{
-			_set ??= Entities?.ToList();
-			return _set;
+			if (_set.IsEmpty && Entities != null)
+			{
+				foreach (var entity in Entities)
+				{
+					AddToSet(entity);
+				}
+			}
+
+			return _set.Values;
 		}
 
 		public override async ValueTask DisposeAsync()

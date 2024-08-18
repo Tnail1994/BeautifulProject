@@ -1,6 +1,4 @@
-﻿using DbManagement.Common.Implementations;
-
-namespace DbManagement.Common.Contracts
+﻿namespace DbManagement.Common.Contracts
 {
 	public interface IDbContextSettings
 	{
@@ -23,11 +21,6 @@ namespace DbManagement.Common.Contracts
 		/// Hint: Setting th
 		/// </summary>
 		bool AnalyzeUpdateSet { get; init; }
-
-		/// <summary>
-		/// How to synchronize the local data with the database.
-		/// </summary>
-		DbContextSyncMode SyncMode { get; init; }
 
 		/// <summary>
 		/// Whenever the update loop is running it counts ++.

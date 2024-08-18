@@ -10,6 +10,14 @@ namespace Users
 		public UsersDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
 		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true
+			};
+		}
 	}
 
 	[Table("Users")]

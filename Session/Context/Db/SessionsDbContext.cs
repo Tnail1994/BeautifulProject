@@ -10,6 +10,15 @@ namespace Session.Context.Db
 		public SessionsDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
 		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true,
+				ReloadLocals = true,
+			};
+		}
 	}
 
 	[Table("Sessions")]

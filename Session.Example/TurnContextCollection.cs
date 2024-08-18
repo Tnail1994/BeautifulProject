@@ -6,10 +6,18 @@ using Session.Context.Db;
 
 namespace Session.Example
 {
-    public class TurnContextCollection : ContextCollection<TurnContextEntryDto>
+	public class TurnContextCollection : ContextCollection<TurnContextEntryDto>
 	{
 		public TurnContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
+		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true
+			};
 		}
 	}
 
@@ -18,12 +26,29 @@ namespace Session.Example
 		public RoundContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
 		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true,
+				ReloadLocals = true,
+			};
+		}
 	}
 
 	public class CurrentPlayerContextCollection : ContextCollection<CurrentPlayerContextEntryDto>
 	{
 		public CurrentPlayerContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
+		}
+
+		protected override ReloadingBehavior GetReloadingBehavior()
+		{
+			return new ReloadingBehavior
+			{
+				ExceptWithEntities = true
+			};
 		}
 	}
 

@@ -1,5 +1,4 @@
 ﻿using DbManagement.Common.Contracts;
-using DbManagement.Common.Implementations;
 
 namespace DbManagement
 {
@@ -12,7 +11,6 @@ namespace DbManagement
 		private const string DefaultPassword = "somePassword";
 		private const int DefaultUpdateDbDelayInMs = 1000;
 		private const int DefaultUpdateChangesFromDbThreshold = 3600;
-		private const DbContextSyncMode DefaultSyncMode = DbContextSyncMode.LocalEntitiesOnly;
 
 		public string ServerAdresse { get; init; } = DefaultServerAdresse;
 		public int Port { get; init; } = DefaultPort;
@@ -21,7 +19,6 @@ namespace DbManagement
 		public string Password { get; init; } = DefaultPassword;
 		public int UpdateDbDelayInMs { get; init; } = DefaultUpdateDbDelayInMs;
 		public bool AnalyzeUpdateSet { get; init; }
-		public DbContextSyncMode SyncMode { get; init; } = DefaultSyncMode;
 		public int UpdateChangesFromDbThreshold { get; init; } = DefaultUpdateChangesFromDbThreshold;
 
 		public static IDbContextSettings Default => new DbContextSettings();
