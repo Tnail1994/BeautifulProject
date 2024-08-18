@@ -15,7 +15,8 @@ namespace Users
 		{
 			return new ReloadingBehavior
 			{
-				ExceptWithEntities = true
+				ExceptWithEntities = true,
+				ReloadLocals = true
 			};
 		}
 	}

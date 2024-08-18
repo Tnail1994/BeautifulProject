@@ -16,7 +16,6 @@ namespace Session.Context.Db
 			return new ReloadingBehavior
 			{
 				ExceptWithEntities = true,
-				ReloadLocals = true,
 			};
 		}
 	}

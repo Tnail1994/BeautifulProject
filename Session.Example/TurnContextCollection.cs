@@ -32,7 +32,6 @@ namespace Session.Example
 			return new ReloadingBehavior
 			{
 				ExceptWithEntities = true,
-				ReloadLocals = true,
 			};
 		}
 	}
