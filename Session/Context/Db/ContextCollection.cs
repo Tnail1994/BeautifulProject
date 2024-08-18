@@ -32,17 +32,9 @@ namespace Session.Context.Db
 			return GetEntryBySession(sessionId);
 		}
 
-		protected override Task HandleNewEntries(List<TEntryDto> newEntries)
+		protected override bool CustomMissingEntriesFilter(TEntryDto entry)
 		{
-			foreach (var newEntry in newEntries)
-			{
-				if (!GetSessionState(newEntry.SessionId).Equals(SessionState.Stopped))
-					continue;
-
-				AddToSet(newEntry);
-			}
-
-			return Task.CompletedTask;
+			return GetSessionState(entry.SessionId).Equals((int)SessionState.Stopped);
 		}
 
 		private SessionState GetSessionState(string sessionId)
