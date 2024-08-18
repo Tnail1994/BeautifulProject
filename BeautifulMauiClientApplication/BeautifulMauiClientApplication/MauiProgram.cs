@@ -104,6 +104,9 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddSingleton<ISessionKeySettings>(_ =>
 				config.GetSection(nameof(SessionKeySettings)).Get<SessionKeySettings>() ??
 				SessionKeySettings.Default);
+			builder.Services.AddSingleton<ITlsSettings>(_ =>
+				config.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
+				TlsSettings.Default);
 
 			// Pages
 			builder.Services.AddTransient<MainView>();
