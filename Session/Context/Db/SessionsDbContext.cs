@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Core.Extensions;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
 using Session.Common.Contracts.Context.Db;
@@ -22,17 +21,9 @@ namespace Session.Context.Db
 			};
 		}
 
-		protected override Task HandleNewEntries(List<SessionInfoDto> newEntries)
+		protected override bool CustomMissingEntriesFilter(SessionInfoDto entry)
 		{
-			foreach (var newEntry in newEntries)
-			{
-				if (newEntry.SessionState != (int)SessionState.Stopped)
-					continue;
-
-				AddToSet(newEntry);
-			}
-
-			return Task.CompletedTask;
+			return entry.SessionState.Equals((int)SessionState.Stopped);
 		}
 
 		public bool TryGetSessionState(string sessionId, out SessionState sessionState)

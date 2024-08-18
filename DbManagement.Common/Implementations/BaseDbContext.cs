@@ -110,8 +110,8 @@ namespace DbManagement.Common.Implementations
 
 			if (_reloadingBehavior.ExceptWithEntities)
 			{
-				var missingEntries = dbEntities.Except(_set.Values).ToList();
-				var removedEntries = _set.Values.Except(dbEntities).ToList();
+				var missingEntries = dbEntities.Where(CustomMissingEntriesFilter).Except(_set.Values).ToList();
+				var removedEntries = _set.Values.Except(dbEntities.Where(CustomRemovedEntriesFilter)).ToList();
 
 				if (missingEntries.Any())
 				{

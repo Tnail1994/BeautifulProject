@@ -191,10 +191,10 @@ namespace Session.Services
 			return bundle.SessionInfo?.SessionState.Equals(state) == true;
 		}
 
-		private static bool FilterBundleById(SessionBundle bundle, string sessionId)
-		{
-			return bundle.SessionInfo?.Id.Equals(sessionId) == true;
-		}
+		//private static bool FilterBundleById(SessionBundle bundle, string sessionId)
+		//{
+		//	return bundle.SessionInfo?.Id.Equals(sessionId) == true;
+		//}
 
 		private ISessionInfo Map(SessionInfoDto dto)
 		{

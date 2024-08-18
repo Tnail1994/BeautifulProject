@@ -1,7 +1,6 @@
 ﻿using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
 using Session.Common.Contracts.Context.Db;
-using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 
 namespace Session.Context.Db

@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using Session.Common.Contracts.Context;
-using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 using Session.Context.Db;
 
