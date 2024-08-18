@@ -1,6 +1,6 @@
 ﻿using Session.Common.Implementations;
 
-namespace Session.Common.Contracts
+namespace Session.Common.Contracts.Core
 {
 	public interface ISession
 	{

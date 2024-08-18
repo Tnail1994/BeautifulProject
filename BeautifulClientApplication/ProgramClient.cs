@@ -8,7 +8,6 @@ using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
 using Remote.Communication.Common.Transformation.Contracts;
 using Remote.Communication.Transformation;
-using Session.Common.Contracts;
 using Session.Common.Implementations;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Messages.CheckAlive;

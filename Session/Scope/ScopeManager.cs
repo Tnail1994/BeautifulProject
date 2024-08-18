@@ -1,10 +1,10 @@
 ﻿using System.Collections.Concurrent;
 using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Scope;
 using Session.Common.Implementations;
 
-namespace Session.Core
+namespace Session.Scope
 {
 	public class ScopeManager : IScopeManager, IDisposable
 	{

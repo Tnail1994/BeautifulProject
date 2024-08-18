@@ -9,13 +9,15 @@ using Microsoft.Extensions.Hosting;
 
 using Remote.Communication.Common.Client.Contracts;
 using Remote.Server.Common.Contracts;
-using Session.Common.Contracts;
 using Session.Common.Implementations;
 using System.Net.Sockets;
+using Session.Common.Contracts.Services;
+using Session.Common.Contracts.Scope;
+using Session.Common.Contracts.Core;
 
 namespace Session.Core
 {
-	public class SessionManager : ISessionManager, IHostedService
+    public class SessionManager : ISessionManager, IHostedService
 	{
 		private readonly IAsyncServer _asyncSocketServer;
 		private readonly IScopeManager _scopeManager;

@@ -1,15 +1,15 @@
 ﻿using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
 using NSubstitute;
-using Session.Common.Contracts;
-using Session.Contexts;
+using Session.Common.Contracts.Core;
+using Session.Context.Db;
 using Session.Core;
 using Session.Services;
 using Users;
 
 namespace Tests.UsersManagement
 {
-	public class SessionsServiceTests
+    public class SessionsServiceTests
 	{
 		private readonly IDbManager _dbManagerMock = Substitute.For<IDbManager>();
 		private SessionsService? _sessionsService;

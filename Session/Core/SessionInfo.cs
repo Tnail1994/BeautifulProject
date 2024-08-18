@@ -1,10 +1,10 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Core;
 using Session.Common.Implementations;
 using SharedBeautifulData.Contracts;
 
 namespace Session.Core
 {
-	internal class SessionInfo : ISessionInfo, IEntity
+    internal class SessionInfo : ISessionInfo, IEntity
 	{
 		private SessionInfo(string id, string username, SessionState sessionState)
 		{

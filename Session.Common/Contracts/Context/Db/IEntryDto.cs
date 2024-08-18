@@ -1,6 +1,6 @@
 ﻿using Session.Common.Implementations;
 
-namespace Session.Common.Contracts
+namespace Session.Common.Contracts.Context.Db
 {
 	public interface IEntryDto
 	{

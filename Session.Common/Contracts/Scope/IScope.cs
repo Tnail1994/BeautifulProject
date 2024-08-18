@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Session.Common.Contracts
+namespace Session.Common.Contracts.Scope
 {
 	public interface IScope
 	{

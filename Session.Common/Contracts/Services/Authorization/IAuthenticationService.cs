@@ -1,0 +1,10 @@
+﻿using Remote.Communication.Common.Contracts;
+
+namespace Session.Common.Contracts.Services.Authorization
+{
+    public interface IAuthenticationService
+    {
+        Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService);
+        Task UnAuthorize(ICommunicationService communicationServicestring, string anyIdentifier);
+    }
+}

@@ -13,11 +13,18 @@ using Remote.Communication.Transformation;
 using Remote.Server;
 using Remote.Server.Common.Contracts;
 using Serilog;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
+using Session.Common.Contracts.Core;
+using Session.Common.Contracts.Scope;
+using Session.Common.Contracts.Services;
+using Session.Common.Contracts.Services.Authorization;
 using Session.Common.Implementations;
-using Session.Contexts;
+using Session.Context;
+using Session.Context.Db;
 using Session.Core;
 using Session.Example;
+using Session.Scope;
 using Session.Services;
 using Session.Services.Authorization;
 using SharedBeautifulData.Messages.Authorize;
@@ -234,7 +241,7 @@ namespace BeautifulServerApplication
 					services.AddScoped<ISessionKey, SessionKey>();
 					services.AddScoped<ICheckAliveService, CheckAliveService>();
 					services.AddScoped<IAsyncClientFactory, AsyncClientFactory>();
-					services.AddScoped<IAsyncClient>(provider =>
+					services.AddScoped(provider =>
 						provider.GetRequiredService<IAsyncClientFactory>().Create());
 
 					services.AddScoped<ISessionContext, SessionContext>();
@@ -252,9 +259,9 @@ namespace BeautifulServerApplication
 					// EntryDto: The entry of the context collection, which should be saved inside db. Must provide
 					//			 a convert and update method. Convert to ISessionDetail and update from ISessionDetail
 					// SessionDetail: The object to work with. Must provide a convert method as well to create the Entity correctly
-					services.AddScoped<ITurnDetails>(GetTurnDetails);
-					services.AddScoped<IRoundDetails>(GetRoundDetails);
-					services.AddScoped<ICurrentPlayerDetails>(GetCurrentPlayerDetails);
+					services.AddScoped(GetTurnDetails);
+					services.AddScoped(GetRoundDetails);
+					services.AddScoped(GetCurrentPlayerDetails);
 				});
 
 		private static ITurnDetails GetTurnDetails(IServiceProvider sp)

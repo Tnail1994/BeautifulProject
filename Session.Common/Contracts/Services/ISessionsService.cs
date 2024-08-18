@@ -1,6 +1,8 @@
-﻿namespace Session.Common.Contracts
+﻿using Session.Common.Contracts.Core;
+
+namespace Session.Common.Contracts.Services
 {
-	public interface ISessionsService
+    public interface ISessionsService
 	{
 		void TryAdd(ISession session, ISessionInfo sessionInfo);
 		bool TryRemove(string sessionId);

@@ -1,11 +1,12 @@
 ﻿using Core.Extensions;
 using DbManagement.Common.Contracts;
 using Microsoft.Extensions.DependencyInjection;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
 
-namespace Session.Core
+namespace Session.Context
 {
-	public class SessionContextManager : ISessionContextManager
+    public class SessionContextManager : ISessionContextManager
 	{
 		private readonly IDbManager _dbManager;
 		private readonly IEnumerable<string> _collectionContextTypeNames;

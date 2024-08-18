@@ -1,12 +1,12 @@
-﻿using System.Security.AccessControl;
+﻿using Core.Extensions;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
-using Session.Common.Contracts;
-using Session.Contexts;
+using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
 
-namespace Session.Core
+namespace Session.Context
 {
-	public class SessionDetailsManager : ISessionDetailsManager, IDisposable
+    public class SessionDetailsManager : ISessionDetailsManager, IDisposable
 	{
 		private class SessionDataMap
 		{
@@ -29,26 +29,9 @@ namespace Session.Core
 			public ISessionDetail SessionDetail { get; set; }
 			public IEntryDto? EntryDto { get; set; }
 
-			public string SessionId => SessionDetail.SessionId;
+			//public string SessionId => SessionDetail.SessionId;
 
 			public bool HasEntryDto => EntryDto != null;
-		}
-
-		private class DetailsEntryDtoLink
-		{
-			private DetailsEntryDtoLink(string detailsType, string entryDtoType)
-			{
-				DetailsType = detailsType;
-				EntryDtoType = entryDtoType;
-			}
-
-			public static DetailsEntryDtoLink Create(string detailsType, string entryDtoType)
-			{
-				return new DetailsEntryDtoLink(detailsType, entryDtoType);
-			}
-
-			public string DetailsType { get; set; }
-			public string EntryDtoType { get; set; }
 		}
 
 		private readonly ISessionContext _sessionContext;
@@ -59,9 +42,6 @@ namespace Session.Core
 		/// Value: Data Object which holds all session detail with entry dto
 		/// </summary>
 		private readonly Dictionary<string, SessionDataMap> _sessionDataMaps = new();
-
-		private readonly List<DetailsEntryDtoLink> _links = new();
-
 
 		public SessionDetailsManager(ISessionContext sessionContext, IDbManager dbManager)
 		{
@@ -84,7 +64,6 @@ namespace Session.Core
 			{
 				sessionDetail.DetailsChanged += OnDetailsChanged;
 				_sessionDataMaps.Add(sessionDetail.TypeName, SessionDataMap.Create(sessionDetail, sessionEntryDto));
-				_links.Add(DetailsEntryDtoLink.Create(sessionDetail.TypeName, sessionEntryDto.TypeName));
 			}
 
 			return sessionDetail;
@@ -93,24 +72,22 @@ namespace Session.Core
 		// Automatically save changes when details changing
 		private void OnDetailsChanged(object? sender, DetailsChangedArgs e)
 		{
-			if (_sessionDataMaps.TryGetValue(e.DetailsTypeName, out var sessionDataMap))
+			if (!_sessionDataMaps.TryGetValue(e.DetailsTypeName, out var sessionDataMap))
 			{
-				// todo check if are the same
-				var savedSessionDetail = sessionDataMap.SessionDetail;
-				var newSessionDetail = sender as ISessionDetail;
+				this.LogDebug($"No details for {e.DetailsTypeName} found.", _sessionContext.SessionId);
+				return;
+			}
 
-				if (!sessionDataMap.HasEntryDto)
-				{
-					sessionDataMap.EntryDto = sessionDataMap.SessionDetail.Convert();
-					_links.Add(DetailsEntryDtoLink.Create(sessionDataMap.SessionDetail.TypeName,
-						sessionDataMap.EntryDto.TypeName));
-				}
+			// Late init, because db entry did not exist
+			if (!sessionDataMap.HasEntryDto)
+			{
+				sessionDataMap.EntryDto = sessionDataMap.SessionDetail.Convert();
+			}
 
-				if (sessionDataMap.EntryDto is EntityDto entity)
-				{
-					sessionDataMap.EntryDto.Update(savedSessionDetail);
-					_dbManager.SaveChanges(entity, e.SessionKey);
-				}
+			if (sessionDataMap.EntryDto is EntityDto entity)
+			{
+				sessionDataMap.EntryDto.Update(sessionDataMap.SessionDetail);
+				_dbManager.SaveChanges(entity, e.SessionKey);
 			}
 		}
 

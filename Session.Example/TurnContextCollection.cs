@@ -1,12 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context;
 using Session.Common.Implementations;
-using Session.Contexts;
+using Session.Context.Db;
 
 namespace Session.Example
 {
-	public class TurnContextCollection : ContextCollection<TurnContextEntryDto>
+    public class TurnContextCollection : ContextCollection<TurnContextEntryDto>
 	{
 		public TurnContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{

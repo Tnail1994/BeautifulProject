@@ -1,9 +1,10 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
 using Session.Common.Implementations;
 
-namespace Session.Core
+namespace Session.Context
 {
-	public class SessionContext : ISessionContext
+    public class SessionContext : ISessionContext
 	{
 		/// <summary>
 		/// Key: The type name of the entry

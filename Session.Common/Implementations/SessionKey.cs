@@ -1,5 +1,4 @@
 ﻿using Core.Helpers;
-using Session.Common.Contracts;
 
 namespace Session.Common.Implementations
 {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
 
-namespace Session.Contexts
+namespace Session.Context.Db
 {
 	public class SessionsDbContext : BaseDbContext<SessionInfoDto>
 	{

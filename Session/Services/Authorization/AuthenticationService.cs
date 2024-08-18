@@ -1,14 +1,14 @@
 ﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
 using Remote.Communication.Common.Implementations;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Services.Authorization;
 using SharedBeautifulData.Messages.Authorize;
 using SharedBeautifulData.Objects;
 using Users.Common;
 
 namespace Session.Services.Authorization
 {
-	public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : IAuthenticationService
 	{
 		private readonly IUsersService _usersService;
 		private readonly IAuthenticationSettings _settings;

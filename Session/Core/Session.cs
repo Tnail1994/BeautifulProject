@@ -1,6 +1,9 @@
 ﻿using Core.Extensions;
 using Remote.Communication.Common.Contracts;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Core;
+using Session.Common.Contracts.Services;
+using Session.Common.Contracts.Services.Authorization;
 using Session.Common.Implementations;
 using SharedBeautifulData.Exceptions;
 

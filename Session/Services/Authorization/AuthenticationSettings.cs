@@ -1,8 +1,8 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Services.Authorization;
 
 namespace Session.Services.Authorization
 {
-	public class AuthenticationSettings : IAuthenticationSettings
+    public class AuthenticationSettings : IAuthenticationSettings
 	{
 		private const int DefaultMaxAuthAttempts = 3;
 		private const int DefaultAuthTimeoutInMinutes = 1;

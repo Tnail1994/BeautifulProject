@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Implementations;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
 using Session.Common.Implementations;
 
-namespace Session.Contexts
+namespace Session.Context.Db
 {
-	public abstract class EntryDto : EntityDto, IEntryDto
+    public abstract class EntryDto : EntityDto, IEntryDto
 	{
 		public EntryDto(string sessionId)
 		{
@@ -26,7 +27,6 @@ namespace Session.Contexts
 			return SessionId.GetHashCode();
 		}
 
-		public string TypeName => GetType().Name;
 		public abstract ISessionDetail Convert(ISessionKey sessionContextSessionKey);
 		public abstract void Update(ISessionDetail sessionDetail);
 	}

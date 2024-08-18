@@ -1,12 +1,13 @@
 ﻿using Remote.Communication.Common.Contracts;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context.Db;
 using Session.Common.Implementations;
+using Session.Context;
 using Session.Core;
 using SharedBeautifulData.Messages.CheckAlive;
 
 namespace Session.Example
 {
-	public class TestSessionLoop : SessionLoopBase
+    public class TestSessionLoop : SessionLoopBase
 	{
 		private readonly ITurnDetails _turnDetails;
 		private readonly IRoundDetails _roundDetails;

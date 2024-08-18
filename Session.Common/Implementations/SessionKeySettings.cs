@@ -1,7 +1,10 @@
-﻿using Session.Common.Contracts;
-
-namespace Session.Common.Implementations
+﻿namespace Session.Common.Implementations
 {
+	public interface ISessionKeySettings
+	{
+		bool GenerateId { get; init; }
+	}
+
 	public class SessionKeySettings : ISessionKeySettings
 	{
 		private const bool DefaultGenerateId = true;

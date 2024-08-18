@@ -1,4 +1,4 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Core;
 using Session.Common.Implementations;
 
 namespace Session.Core

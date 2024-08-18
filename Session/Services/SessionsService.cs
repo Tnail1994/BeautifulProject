@@ -1,14 +1,15 @@
 ﻿using DbManagement.Common.Contracts;
-using Session.Common.Contracts;
 using System.Collections.Concurrent;
 using Core.Extensions;
 using Session.Common.Implementations;
-using Session.Contexts;
+using Session.Context.Db;
 using Session.Core;
+using Session.Common.Contracts.Services;
+using Session.Common.Contracts.Core;
 
 namespace Session.Services
 {
-	public class SessionsService : ISessionsService
+    public class SessionsService : ISessionsService
 	{
 		private class SessionBundle
 		{

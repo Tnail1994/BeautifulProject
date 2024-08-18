@@ -1,8 +1,8 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Services.Authorization;
 
 namespace Session.Services.Authorization
 {
-	internal class AuthorizationInfo : IAuthorizationInfo
+    internal class AuthorizationInfo : IAuthorizationInfo
 	{
 		private AuthorizationInfo(string username)
 		{

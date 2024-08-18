@@ -1,10 +1,10 @@
 ﻿using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context.Db;
 
-namespace Session.Contexts
+namespace Session.Context.Db
 {
-	public abstract class ContextCollection<TEntryDto> : BaseDbContext<TEntryDto>, IContextCollection
+    public abstract class ContextCollection<TEntryDto> : BaseDbContext<TEntryDto>, IContextCollection
 		where TEntryDto : EntryDto
 	{
 		protected ContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
@@ -16,9 +16,6 @@ namespace Session.Contexts
 			if (GetEntities() is IEnumerable<TEntryDto> entriesDto)
 			{
 				return entriesDto.FirstOrDefault(entryDto => entryDto.SessionId.Equals(sessionId));
-			}
-			else
-			{
 			}
 
 			return null;

@@ -4,11 +4,11 @@ using DbManagement.Common.Implementations;
 using Microsoft.Extensions.Caching.Memory;
 using Session.Common.Implementations;
 using System.Collections.Concurrent;
-using Session.Common.Contracts;
+using Session.Common.Contracts.Context.Db;
 
 namespace DbManagement
 {
-	public class DbManager : IDbManager, IDisposable
+    public class DbManager : IDbManager, IDisposable
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";
 

@@ -3,9 +3,11 @@ using NSubstitute;
 using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
 using Remote.Communication.Common.Client.Contracts;
-using Session.Common.Contracts;
 using Session.Common.Implementations;
 using Session.Core;
+using Session.Common.Contracts.Services;
+using Session.Common.Contracts.Scope;
+using Session.Common.Contracts.Core;
 
 namespace Tests.Session.Core
 {

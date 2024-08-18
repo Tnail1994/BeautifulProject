@@ -1,9 +1,10 @@
-﻿using Session.Common.Contracts;
+﻿using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Context.Db;
 using Session.Common.Implementations;
 
-namespace Session.Core
+namespace Session.Context
 {
-	public abstract class SessionDetail : ISessionDetail
+    public abstract class SessionDetail : ISessionDetail
 	{
 		public SessionDetail(ISessionKey sessionKey)
 		{
