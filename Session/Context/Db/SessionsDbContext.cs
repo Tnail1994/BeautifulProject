@@ -1,11 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Extensions;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
+using Session.Common.Contracts.Context.Db;
+using Session.Common.Implementations;
 
 namespace Session.Context.Db
 {
-	public class SessionsDbContext : BaseDbContext<SessionInfoDto>
+	public class SessionsDbContext : BaseDbContext<SessionInfoDto>, ISessionsDbContext, ISessionDataProvider
 	{
 		public SessionsDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{
@@ -17,6 +20,34 @@ namespace Session.Context.Db
 			{
 				ExceptWithEntities = true,
 			};
+		}
+
+		protected override Task HandleNewEntries(List<SessionInfoDto> newEntries)
+		{
+			foreach (var newEntry in newEntries)
+			{
+				if (newEntry.SessionState != (int)SessionState.Stopped)
+					continue;
+
+				AddToSet(newEntry);
+			}
+
+			return Task.CompletedTask;
+		}
+
+		public bool TryGetSessionState(string sessionId, out SessionState sessionState)
+		{
+			var foundEntity = GetEntities().Cast<SessionInfoDto>()
+				.FirstOrDefault(entity => entity.Id.Equals(sessionId));
+
+			if (foundEntity == null)
+			{
+				sessionState = SessionState.None;
+				return false;
+			}
+
+			sessionState = (SessionState)foundEntity.SessionState;
+			return true;
 		}
 	}
 

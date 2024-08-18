@@ -9,5 +9,6 @@
 		FailedAuthorization = 5,
 		Empty = 6,
 		Connecting = 7,
+		None = 8,
 	}
 }

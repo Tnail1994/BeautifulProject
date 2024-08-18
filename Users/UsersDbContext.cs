@@ -2,10 +2,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using DbManagement.Common.Implementations;
+using Users.Common;
 
 namespace Users
 {
-	public class UsersDbContext : BaseDbContext<UserDto>
+	public class UsersDbContext : BaseDbContext<UserDto>, IUsersDbContext
 	{
 		public UsersDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)
 		{

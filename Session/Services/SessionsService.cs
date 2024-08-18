@@ -9,7 +9,7 @@ using Session.Common.Contracts.Core;
 
 namespace Session.Services
 {
-    public class SessionsService : ISessionsService
+	public class SessionsService : ISessionsService
 	{
 		private class SessionBundle
 		{
@@ -188,7 +188,12 @@ namespace Session.Services
 
 		private static bool FilterBundleByState(SessionBundle bundle, SessionState state)
 		{
-			return bundle.SessionInfo?.SessionState == state;
+			return bundle.SessionInfo?.SessionState.Equals(state) == true;
+		}
+
+		private static bool FilterBundleById(SessionBundle bundle, string sessionId)
+		{
+			return bundle.SessionInfo?.Id.Equals(sessionId) == true;
 		}
 
 		private ISessionInfo Map(SessionInfoDto dto)

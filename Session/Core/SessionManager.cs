@@ -17,7 +17,7 @@ using Session.Common.Contracts.Core;
 
 namespace Session.Core
 {
-    public class SessionManager : ISessionManager, IHostedService
+	public class SessionManager : ISessionManager, IHostedService
 	{
 		private readonly IAsyncServer _asyncSocketServer;
 		private readonly IScopeManager _scopeManager;

@@ -1,14 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using DbManagement.Common.Contracts;
 using Session.Common.Contracts.Context;
+using Session.Common.Contracts.Services;
 using Session.Common.Implementations;
 using Session.Context.Db;
 
 namespace Session.Example
 {
-	public class TurnContextCollection : ContextCollection<TurnContextEntryDto>
+	public class TurnContextCollection : ContextCollection<TurnContextEntryDto>, ITurnContextCollection
 	{
-		public TurnContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
+		public TurnContextCollection(IDbContextSettings dbContextSettings, SessionsDbContext sessionDataProvider) :
+			base(
+				dbContextSettings, sessionDataProvider)
 		{
 		}
 
@@ -21,9 +24,15 @@ namespace Session.Example
 		}
 	}
 
-	public class RoundContextCollection : ContextCollection<RoundContextEntryDto>
+	public interface ITurnContextCollection
 	{
-		public RoundContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
+	}
+
+	public class RoundContextCollection : ContextCollection<RoundContextEntryDto>, IRoundContextCollection
+	{
+		public RoundContextCollection(IDbContextSettings dbContextSettings, SessionsDbContext sessionDataProvider) :
+			base(
+				dbContextSettings, sessionDataProvider)
 		{
 		}
 
@@ -36,9 +45,17 @@ namespace Session.Example
 		}
 	}
 
-	public class CurrentPlayerContextCollection : ContextCollection<CurrentPlayerContextEntryDto>
+	public interface IRoundContextCollection
 	{
-		public CurrentPlayerContextCollection(IDbContextSettings dbContextSettings) : base(dbContextSettings)
+	}
+
+	public class CurrentPlayerContextCollection : ContextCollection<CurrentPlayerContextEntryDto>,
+		ICurrentPlayerContextCollection
+	{
+		public CurrentPlayerContextCollection(IDbContextSettings dbContextSettings,
+			SessionsDbContext sessionDataProvider) :
+			base(
+				dbContextSettings, sessionDataProvider)
 		{
 		}
 
@@ -49,6 +66,10 @@ namespace Session.Example
 				ExceptWithEntities = true
 			};
 		}
+	}
+
+	public interface ICurrentPlayerContextCollection
+	{
 	}
 
 	[Table("CurrentPlayerContexts")]

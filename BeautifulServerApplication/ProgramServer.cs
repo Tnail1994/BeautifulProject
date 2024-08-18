@@ -168,6 +168,7 @@ namespace BeautifulServerApplication
 
 					services.AddSingleton<UsersDbContext>();
 					services.AddSingleton<SessionsDbContext>();
+					services.AddSingleton<ISessionDataProvider, SessionsDbContext>();
 					services.AddSingleton<TurnContextCollection>();
 					services.AddSingleton<RoundContextCollection>();
 					services.AddSingleton<CurrentPlayerContextCollection>();

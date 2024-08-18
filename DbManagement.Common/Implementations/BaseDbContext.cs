@@ -130,6 +130,16 @@ namespace DbManagement.Common.Implementations
 			}
 		}
 
+		protected virtual bool CustomRemovedEntriesFilter(T entry)
+		{
+			return true;
+		}
+
+		protected virtual bool CustomMissingEntriesFilter(T entry)
+		{
+			return true;
+		}
+
 
 		protected virtual Task HandleNewEntries(List<T> newEntries)
 		{
@@ -164,7 +174,7 @@ namespace DbManagement.Common.Implementations
 			}
 		}
 
-		private void AddToSet(T entity)
+		protected void AddToSet(T entity)
 		{
 			_set.TryAdd(entity.GetHashCode(), entity);
 		}
