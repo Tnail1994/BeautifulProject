@@ -41,9 +41,21 @@ namespace DbManagement.Common.Implementations
 
 			public static UpdateEntityElement Create(T entityDto, UpdateType updateType) => new(entityDto, updateType);
 
-			public T EntityDto { get; set; }
+			public T EntityDto { get; }
 
-			public UpdateType Type { get; set; }
+			public UpdateType Type { get; }
+
+			public override bool Equals(object? obj)
+			{
+				return obj is UpdateEntityElement other &&
+				       EntityDto.Equals(other.EntityDto) &&
+				       Type.Equals(other.Type);
+			}
+
+			public override int GetHashCode()
+			{
+				return EntityDto.GetHashCode() + Type.GetHashCode();
+			}
 		}
 
 		private readonly IDbContextSettings _dbContextSettings;
@@ -182,12 +194,6 @@ namespace DbManagement.Common.Implementations
 
 		private async Task SaveChangesFromUpdateLoop(bool skipCts = false)
 		{
-			if (Entities == null)
-			{
-				this.LogWarning($"DbSet of {TypeNameOfCollectionEntries} is null");
-				return;
-			}
-
 			var hasChanges = false;
 
 			// todo: how to add analyzing of the updateQueue? 
@@ -200,26 +206,36 @@ namespace DbManagement.Common.Implementations
 				if (!_updateQueue.TryDequeue(out var updateEntityElement))
 					continue;
 
-				switch (updateEntityElement.Type)
-				{
-					case UpdateType.Add:
-						this.LogDebug($"Adding type {typeof(T)}, with {updateEntityElement.EntityDto}");
-						await Entities.AddAsync(updateEntityElement.EntityDto);
-						hasChanges = true;
-						break;
-					case UpdateType.Delete:
-						this.LogDebug($"Removing type {typeof(T)}, with {updateEntityElement.EntityDto}");
-						Entities.Remove(updateEntityElement.EntityDto);
-						hasChanges = true;
-						break;
-					case UpdateType.Update:
-						hasChanges = true;
-						break;
-				}
+				hasChanges = await ExecuteChange(updateEntityElement);
 			}
 
 			if (hasChanges)
 				await SaveChangesAsync();
+		}
+
+		private async Task<bool> ExecuteChange(UpdateEntityElement updateEntityElement)
+		{
+			if (Entities == null)
+			{
+				this.LogWarning($"DbSet of {TypeNameOfCollectionEntries} is null");
+				return false;
+			}
+
+			switch (updateEntityElement.Type)
+			{
+				case UpdateType.Add:
+					this.LogDebug($"Adding type {typeof(T)}, with {updateEntityElement.EntityDto}");
+					await Entities.AddAsync(updateEntityElement.EntityDto);
+					return true;
+				case UpdateType.Delete:
+					this.LogDebug($"Removing type {typeof(T)}, with {updateEntityElement.EntityDto}");
+					Entities.Remove(updateEntityElement.EntityDto);
+					return true;
+				case UpdateType.Update:
+					return true;
+			}
+
+			return false;
 		}
 
 
@@ -267,6 +283,11 @@ namespace DbManagement.Common.Implementations
 
 		private void AddToUpdateQueue(UpdateEntityElement updateEntityElement)
 		{
+			if (_updateQueue.Contains(updateEntityElement))
+			{
+				return;
+			}
+
 			_updateQueue.Enqueue(updateEntityElement);
 		}
 
