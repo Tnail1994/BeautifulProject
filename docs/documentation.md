@@ -228,16 +228,17 @@ The goal is to create a flexible and robust foundation for C# applications that 
 
 The diagram shows a base that includes all essential standard components. The features provided include:
 
-Asynchronous encrypted communication between client and server
-Automatic message transformation (JSON)
-Automatic client reconnection
-Automatic session recovery
-Automatic context saving and synchronization in the database
-File and console logging
-CheckAlive functionality
-User login (rudimentary)
-Configurable via AppSettings
-Das Ziel ist es, ein abstraktes Fundament für C# Applikationen zu erschaffen. Dieses soll so Skalierbar, Wartbar, Testbar und Lesbar wie möglich sein. 
+- Asynchronous encrypted communication between client and server
+- Automatic message transformation (JSON)
+- Automatic client reconnection
+- Automatic session recovery
+- Automatic context saving and synchronization in the database
+- File and console logging
+- CheckAlive functionality
+- User login (rudimentary)
+- Configurable via AppSettings
+
+The goal is to create an abstract foundation for C# applications that is as scalable, maintainable, testable, and readable as possible.
 
 # Step by Step 
 In this chapter, we provide an overview of the key aspects of the foundation and explain step by step how to achieve the final result.
