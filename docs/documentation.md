@@ -238,7 +238,7 @@ The diagram shows a base that includes all essential standard components. The fe
 - User login (rudimentary)
 - Configurable via AppSettings
 
-The goal is to create an abstract foundation for C# applications that is as scalable, maintainable, testable, and readable as possible.
+The goal is to create an abstract foundation for C# applications that is as scalable, maintainable, testable, and readable as possible. On top of it, you can build your "pillars" and your "ui".
 
 # Step by Step 
 In this chapter, we provide an overview of the key aspects of the foundation and explain step by step how to achieve the final result.
