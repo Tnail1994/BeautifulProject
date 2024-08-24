@@ -18,7 +18,7 @@ namespace AutoSynchronizedMessageHandling
 		private readonly Dictionary<string, CancellationTokenSource> _publishingCtSources = new();
 
 		private readonly SynchronizationContext _syncContext;
-		private Task? _publishingLoopTask;
+		private List<Task>? _publishingLoopTasks;
 
 
 		public AutoSynchronizedMessageHandler(ICommunicationService communicationService)
@@ -124,7 +124,9 @@ namespace AutoSynchronizedMessageHandling
 				return;
 			}
 
-			_publishingLoopTask = Task.Factory.StartNew(async () =>
+			_publishingLoopTasks ??= new List<Task>();
+
+			_publishingLoopTasks.Add(Task.Factory.StartNew(async () =>
 			{
 				while (!publishingLoopCts.Token.IsCancellationRequested)
 				{
@@ -154,7 +156,7 @@ namespace AutoSynchronizedMessageHandling
 						}
 					}
 				}
-			}, publishingLoopCts.Token);
+			}, publishingLoopCts.Token));
 		}
 
 		private void PostExecuteReplyMessageAction<TRequestMessage>(
@@ -192,8 +194,13 @@ namespace AutoSynchronizedMessageHandling
 				publishingCts.Cancel();
 			}
 
-			if (_publishingLoopTask is { IsCompleted: true, IsCanceled: true, IsFaulted: true })
-				_publishingLoopTask?.Dispose();
+			if (_publishingLoopTasks == null)
+				return;
+
+			foreach (var publishingLoopTask in _publishingLoopTasks)
+			{
+				publishingLoopTask.Dispose();
+			}
 		}
 
 		private class AutoSynchronizedMessageContext
