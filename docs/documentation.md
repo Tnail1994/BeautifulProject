@@ -240,9 +240,7 @@ The diagram shows a base that includes all essential standard components. The fe
 
 The goal is to create an abstract foundation for C# applications that is as scalable, maintainable, testable, and readable as possible. On top of it, you can build your "pillars" and your "ui".
 
-# Step by Step 
-In this chapter, we provide an overview of the key aspects of the foundation and explain step by step how to achieve the final result.
-
+# Some explanations
 ## Setup the application
 - Create a Console project for both the client and server
 - Add appsettings.json and appsettings.Development.json files to both projects; leave them empty for now
@@ -328,7 +326,9 @@ After creating all the certificates, they need to be placed in the desired locat
 [`Server Appsettings`](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulServerApplication/appsettings.json)
 
 ## Setup the session
-## Setup the database handling
+The SessionManager responds to new clients reported by the server listener. When a new client is detected, a session is created. Each session has its own scope within the IoC container. The advantage of this approach is that the scope must be managed, ensuring that all resources within it are properly disposed of.
+
+After creation, the SessionManager automatically starts the session. The session authorizes itself by retrieving information about the PC identity and the user. Once the session has gathered all the necessary information, it can either be restored, if possible, and then execute the SessionLoop. The SessionLoop represents the core functionality of the application, which is not covered here as we are focusing only on the foundational aspects.
 
 # Statistics
 
