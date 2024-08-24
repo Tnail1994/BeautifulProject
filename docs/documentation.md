@@ -5,6 +5,9 @@ Our primary focus is on developing maintainable, high-performance, and scalable 
 One of the challenges we'll address is the danger of UI applications and asynchronous operations, particularly when element changes occur from a different task. These tasks may not be in the UI thread, potentially causing exceptions that lead to application crashes or malfunctions. This learning project addresses this challenge by developing a generalized solution, applicable not only to UI scenarios but to a broader range of asynchronous programming contexts.
 Join me on this exciting journey as we explore the intricacies of modern application development. 
 
+# How to use this tutorial
+This document is not a traditional tutorial. Instead, it requires a high degree of initiative. You need to actively engage with the project, analyze the code, and conduct additional research. Try to build and understand the system by thoroughly exploring and reconstructing it.
+
 # What you will learn
 You will learn how to create a well-structured server and client console application that communicates asynchronously via TCP/IP.
 You will also learn how to
