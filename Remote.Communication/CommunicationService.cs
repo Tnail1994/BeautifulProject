@@ -164,7 +164,10 @@ namespace Remote.Communication
 		{
 			try
 			{
-				this.LogDebug($"OnMessageReceived with {jsonString}", SessionId);
+				this.LogDebug($"OnMessageReceived with \n" +
+				              $"-----------------------\n" +
+				              $"{jsonString}\n" +
+				              $"-----------------------\n", SessionId);
 
 #if DEBUG
 				this.LogDebug("Start transforming with Service...", SessionId);
