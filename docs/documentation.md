@@ -9,6 +9,7 @@ Join me on this exciting journey as we explore the intricacies of modern applica
 You will learn how to create a well-structured server and client console application that communicates asynchronously via TCP/IP.
 You will also learn how to
 - Use the IoC container ([.Net Dependency Injection](https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection))
+- Using TLS and creating own certifactes to test
 - Use `TcpClient` from the .Net Sockets framework and create asynchronous communication between client and server.
 - Create asyncron running sessions on the server to identify an identical client/server interaction and keep separate logs.
 - Learn to use Microsoft.Extentions such as `IHostedService` within the hosting framework.
@@ -132,7 +133,8 @@ To get started with Serilog and learn how to configure it for your application, 
 - [Serilog File Sink](https://github.com/serilog/serilog-sinks-file)
 
 ## Client-Side Implementation
-*[In development... How to really use the full magic of asyncron communication on UI side](#todos)* 
+Since the `ICommunicationService` handles all messages asynchronously, it can happen that changes to the user interface fail because they are not executed on the UI thread. The solution to this issue is the `AutoSynchronizedMessageHandler`, which automatically posts messages to the UI context.
+
 ## Server-Side Implementation
 ## Asynchronous Communication and Operations
 
@@ -220,27 +222,123 @@ To mitigate these risks, consider the following strategies:
 - **Comprehensive Testing**: Thoroughly test async code, including stress tests.
 
 # And that's why we do this
+The goal is to create a flexible and robust foundation for C# applications that offers maximum scalability, maintainability, testability, and readability. 
+
 ![image](draws/A_example_what_we_are_doing.png "This is an experimental graphic about what we built. We built a part of the fundament of an overall bigger picture.")
 
+The diagram shows a base that includes all essential standard components. The features provided include:
+
+Asynchronous encrypted communication between client and server
+Automatic message transformation (JSON)
+Automatic client reconnection
+Automatic session recovery
+Automatic context saving and synchronization in the database
+File and console logging
+CheckAlive functionality
+User login (rudimentary)
+Configurable via AppSettings
+Das Ziel ist es, ein abstraktes Fundament für C# Applikationen zu erschaffen. Dieses soll so Skalierbar, Wartbar, Testbar und Lesbar wie möglich sein. 
 
 # Step by Step 
+In this chapter, we provide an overview of the key aspects of the foundation and explain step by step how to achieve the final result.
+
+## Setup the application
+- Create a Console project for both the client and server
+- Add appsettings.json and appsettings.Development.json files to both projects; leave them empty for now
+- Configure logging as described here: [SetupLogging](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulServerApplication/SetupLogging.cs)
+- Set up configuration following this:  [SetupConfig](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulServerApplication/SetupConfig.cs)
+- Create the application and its container: [ServerApp](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulServerApplication/ProgramServer.cs) | [ClientApp](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulClientApplication/ProgramClient.cs)
+
+
+
+### Server App
+The [`SessionManager`](https://github.com/Tnail1994/BeautifulProject/blob/main/Session/Core/SessionManager.cs) must be of type HostedService, as it is the instance that manages the application. The `MemoryCache` is useful for caching data within the application to reduce queries and improve performance.
+
+``` C#
+	private static IHostBuilder CreateHostBuilder(string[] args) =>
+		Host.CreateDefaultBuilder(args)
+			.ConfigureServices((hostContext, services) =>
+			{
+				services.AddMemoryCache();
+
+				services.AddHostedService<SessionManager>();
+
+            ... // Adding here other types for ioc
+         }
+```
+
+### Client App
+The [`ClientManager`](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulClientApplication/ClientManager.cs) must be of type HostedService, as it is the instance responsible for managing the application.
+``` C#
+	private static IHostBuilder CreateHostBuilder(string[] args) =>
+		Host.CreateDefaultBuilder(args)
+			.ConfigureServices((hostContext, services) =>
+			{
+				services.AddHostedService<ClientManager>();
+
+            ... // Adding here other types for ioc
+         }
+```
+
+## Setup the communication
+In this chapter, we focus on the TCP/IP connection and TLS encryption. First, we'll examine the core of asynchronous communication. This time, we'll approach it from a different perspective. Our goal is to create an interface that allows us to easily receive a message:
+
+``` C#
+await communicationService.ReceiveAsync<LoginRequest>();
+```
+[`CommunicationService`](https://github.com/Tnail1994/BeautifulProject/blob/main/Remote.Communication/CommunicationService.cs)
+
+
+We only specify the type of message we want to receive (in this example, `LoginRequest`). The key points are:
+- `ConcurrentDictionary<string, TransformedObject> _transformedObjects` This member tracks all incoming transformed messages, with the type name as the key in the dictionary.
+- `ConcurrentDictionary<string, TransformedObjectWaiter> _transformedObjectWaiters` This member tracks all tasks waiting for a transformed message of a specific type (using the type name as the key). When a message of that type arrives, all waiting tasks for that type name are triggered.
+- [`ITransformerService _transformerService`](https://github.com/Tnail1994/BeautifulProject/blob/main/Remote.Communication/Transformation/TransformerService.cs) Automatically transforms JSON messages.
+- [`TlsClient`](https://github.com/Tnail1994/BeautifulProject/blob/main/Remote.Communication/Client/TlsClient.cs) Secure communication
+
+Please have a look in all of these classes. I do not cover all in detail. There are unlimited resources online.
+However, the next topic covers the step by step creation of your self-signed certificates for development.
+
+- Download xca-Tool https://www.hohnstaedt.de/xca/
+- Create CA: 
+   - Select CA Template
+   - Apply for everything
+   ![image](imgs/1CA.png "Creating CA")
+   - Go to Subject and fill your preferences
+   - Create a key
+   ![image](imgs/2CaSubject.png "Subject CA")
+   
+- Create a Server certificate:
+   - Select TLS Server Template
+   - Apply for everything
+   ![image](imgs/3ServerCert.png "Creating Server cert")
+   - Go to Subject and fill your preferences
+   - Create a key
+   ![image](imgs/4ServerCertSubject.png "Subject Server cert")
+   - (Optional) Create for server authorization some extensions. Enables to authorize by IP or Hostname.
+   ![image](imgs/5ServerCertExtension.png "Subject Server cert")
+
+- Creating a Client certificate:
+   - Select TLS Client Template
+   - Apply for everything
+   - Subject can be anything
+
+After creating all the certificates, they need to be placed in the desired location. Note: Ensure that the CertifcatePaths in the AppSettings are correctly configured. This is also a good time to review the files and locate the `TlsSettings`.
+[`Client Appsettings`](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulClientApplication/appsettings.json) |
+[`Server Appsettings`](https://github.com/Tnail1994/BeautifulProject/blob/main/BeautifulServerApplication/appsettings.json)
+
+## Setup the session
+## Setup the database handling
 
 # Statistics
 
 # Limitation
-
+## Automatically transform JSON Messages
+Currently, both Applications need to use the some object. (e.g. BeautifulSharedData)
 # Conclusion 
 
+
 # Todos
-
-- Security Considerations
-    1. Authentication and uthorization
-    2. Data Protection
-
-- How to really use the full magic of asyncron communication on UI side.
-
 - Deployment
     1. Deployment process
-    2. Continuous Integration/Continuous Deployment (CI/CD)
 
 - Looking in the future: Dockerize

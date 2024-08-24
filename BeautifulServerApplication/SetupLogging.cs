@@ -4,6 +4,13 @@ using SharedBeautifulData.Constants;
 
 namespace BeautifulServerApplication
 {
+	/// <summary>
+	/// This will automatically get call, when the applications start.
+	/// Setting up the Logger configuration.
+	/// Writing to:
+	/// 1. Console: 
+	/// 2. File/Map: For every key an own logfile created. Default is Entries.
+	/// </summary>
 	public class SetupLogging
 	{
 		[ModuleInitializer]

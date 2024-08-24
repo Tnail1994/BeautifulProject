@@ -4,6 +4,14 @@ using Serilog;
 
 namespace BeautifulServerApplication
 {
+	/// <summary>
+	/// This will automatically get call, when the applications start.
+	/// Setting up the configuration.
+	/// Setting up environment variables.
+	/// Try to get the app settings json file (Development as well).
+	/// Use the appsettings.Development.json file, if you want to have specific settings
+	/// for developing mode.
+	/// </summary>
 	public class SetupConfig
 	{
 		[ModuleInitializer]
