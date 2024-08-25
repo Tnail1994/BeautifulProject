@@ -1,16 +1,15 @@
-﻿using NSubstitute;
-using Remote.Communication.Common.Contracts;
-using Session.Common.Implementations;
-using SharedBeautifulData.Exceptions;
-using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulServices;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Services.CheckAlive;
+using NSubstitute;
 
 namespace Tests.SharedBeautifulServices.CheckAliveService
 {
 	public class CheckAliveServiceTests
 	{
 		private readonly ICommunicationService _communicationServiceMock = Substitute.For<ICommunicationService>();
-		private readonly ISessionKey _sessionKeyMock = Substitute.For<ISessionKey>();
+		private readonly IIdentificationKey _identificationKeyMock = Substitute.For<IIdentificationKey>();
 
 
 		[Fact]
@@ -28,11 +27,13 @@ namespace Tests.SharedBeautifulServices.CheckAliveService
 			Assert.Throws<CheckAliveException>(() => checkAliveService.Start());
 		}
 
-		private global::SharedBeautifulServices.CheckAliveService CreateCheckAliveService(CheckAliveSettings settings)
+		private global::BeautifulFundamental.Core.Services.CheckAlive.CheckAliveService CreateCheckAliveService(
+			CheckAliveSettings settings)
 		{
 			var checkAliveService =
-				new global::SharedBeautifulServices.CheckAliveService(settings, _communicationServiceMock,
-					_sessionKeyMock);
+				new global::BeautifulFundamental.Core.Services.CheckAlive.CheckAliveService(settings,
+					_communicationServiceMock,
+					_identificationKeyMock);
 			return checkAliveService;
 		}
 

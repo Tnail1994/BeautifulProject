@@ -1,10 +1,8 @@
-﻿using NSubstitute;
-using Remote.Communication;
-using Remote.Communication.Client;
-using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
-using Session.Common.Implementations;
-using SharedBeautifulServices.Common;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.Services.CheckAlive;
+using NSubstitute;
 
 namespace Tests.Remote.Communication
 {
@@ -14,7 +12,7 @@ namespace Tests.Remote.Communication
 		private readonly IAsyncClient _clientMock = Substitute.For<IAsyncClient>();
 		private readonly ICommunicationService _communicationServiceMock = Substitute.For<ICommunicationService>();
 		private readonly ICheckAliveService _checkAliveServiceMock = Substitute.For<ICheckAliveService>();
-		private readonly ISessionKey _sessionKeyMock = Substitute.For<ISessionKey>();
+		private readonly IIdentificationKey _identificationKeyMock = Substitute.For<IIdentificationKey>();
 
 		private IConnectionService? _connectionService;
 
@@ -23,7 +21,7 @@ namespace Tests.Remote.Communication
 			WhenStartGetCalled_AndConnectionSuccessful_ThenStartFrom_CheckAlive_AndCommunicationService_ShouldBeCalledAsWell()
 		{
 			_connectionService = new ConnectionService(_clientMock, _communicationServiceMock, _checkAliveServiceMock,
-				_sessionKeyMock, _settingsMock);
+				_identificationKeyMock, _settingsMock);
 
 			_clientMock.ConnectAsync().Returns(Task.FromResult(true));
 
@@ -38,7 +36,7 @@ namespace Tests.Remote.Communication
 			WhenStartGetCalled_AndConnectionFailed_ThenStartFrom_CheckAlive_AndCommunicationService_ShouldNotBeCalled()
 		{
 			_connectionService = new ConnectionService(_clientMock, _communicationServiceMock, _checkAliveServiceMock,
-				_sessionKeyMock, _settingsMock);
+				_identificationKeyMock, _settingsMock);
 
 			_clientMock.ConnectAsync().Returns(Task.FromResult(false));
 			_clientMock.IsNotConnected.Returns(true);
@@ -61,7 +59,7 @@ namespace Tests.Remote.Communication
 			};
 
 			_connectionService = new ConnectionService(_clientMock, _communicationServiceMock, _checkAliveServiceMock,
-				_sessionKeyMock, connectionSettings);
+				_identificationKeyMock, connectionSettings);
 
 			_clientMock.ConnectAsync().Returns(Task.FromResult(false));
 
@@ -83,7 +81,7 @@ namespace Tests.Remote.Communication
 			};
 
 			_connectionService = new ConnectionService(_clientMock, _communicationServiceMock, _checkAliveServiceMock,
-				_sessionKeyMock, connectionSettings);
+				_identificationKeyMock, connectionSettings);
 
 			_clientMock.ConnectAsync().Returns(Task.FromResult(false));
 

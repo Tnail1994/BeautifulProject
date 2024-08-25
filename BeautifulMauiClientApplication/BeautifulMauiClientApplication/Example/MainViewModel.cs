@@ -1,10 +1,10 @@
-﻿using AutoSynchronizedMessageHandling.Common.Contracts;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Remote.Communication.Common.Implementations;
-using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulData.Messages.RandomTestData;
 using System.Collections.ObjectModel;
+using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.MessageHandling;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Messages.RandomTestData;
 
 namespace BeautifulMauiClientApplication.Example
 {

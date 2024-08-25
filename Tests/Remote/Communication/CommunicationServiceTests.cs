@@ -1,10 +1,9 @@
-﻿using NSubstitute;
-using Remote.Communication;
-using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
-using Remote.Communication.Common.Transformation.Contracts;
-using Remote.Communication.Common.Transformation.Implementations;
-using Session.Common.Implementations;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Core.Communication.Transformation;
+using BeautifulFundamental.Core.Communication.Transformation.Implementations;
+using BeautifulFundamental.Core.Identification;
+using NSubstitute;
 using Tests.TestObjects;
 
 namespace Tests.Remote.Communication
@@ -18,7 +17,7 @@ namespace Tests.Remote.Communication
 		public CommunicationServiceTests()
 		{
 			_transformerServiceMock = Substitute.For<ITransformerService>();
-			var sessionKeyMock = Substitute.For<ISessionKey>();
+			var sessionKeyMock = Substitute.For<IIdentificationKey>();
 			_client = Substitute.For<IAsyncClient>();
 			_communicationService = new CommunicationService(_client, _transformerServiceMock, sessionKeyMock);
 		}

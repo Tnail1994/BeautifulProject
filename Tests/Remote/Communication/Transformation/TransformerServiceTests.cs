@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.Communication.Transformation;
+using BeautifulFundamental.Core.Communication.Transformation.Implementations;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Remote.Communication.Common.Implementations;
-using Remote.Communication.Common.Transformation.Implementations;
-using Remote.Communication.Transformation;
 using Tests.TestObjects;
 
 namespace Tests.Remote.Communication.Transformation

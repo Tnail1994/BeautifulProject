@@ -1,15 +1,14 @@
-﻿using DbManagement.Common.Contracts;
-using DbManagement.Common.Implementations;
+﻿using BeautifulFundamental.Server.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
+using BeautifulFundamental.Server.Session.Contracts.Core;
+using BeautifulFundamental.Server.Session.Core;
+using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.UserManagement;
 using NSubstitute;
-using Session.Common.Contracts.Core;
-using Session.Context.Db;
-using Session.Core;
-using Session.Services;
-using Users;
 
 namespace Tests.UsersManagement
 {
-    public class SessionsServiceTests
+	public class SessionsServiceTests
 	{
 		private readonly IDbManager _dbManagerMock = Substitute.For<IDbManager>();
 		private SessionsService? _sessionsService;

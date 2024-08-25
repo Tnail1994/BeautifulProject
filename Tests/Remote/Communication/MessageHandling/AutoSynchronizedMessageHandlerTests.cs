@@ -1,6 +1,6 @@
-﻿using AutoSynchronizedMessageHandling;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.MessageHandling;
 using NSubstitute;
-using Remote.Communication.Common.Contracts;
 using Tests.TestObjects;
 
 namespace Tests.Remote.Communication.MessageHandling

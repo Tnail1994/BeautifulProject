@@ -1,5 +1,4 @@
-﻿using DbManagement;
-using DbManagement.Common.Contracts;
+﻿using BeautifulFundamental.Server.Db;
 using Microsoft.Extensions.Caching.Memory;
 using NSubstitute;
 using Tests.TestObjects;

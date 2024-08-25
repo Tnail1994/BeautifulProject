@@ -1,11 +1,11 @@
-﻿using NSubstitute;
-using Remote.Communication.Common.Contracts;
-using Session.Common.Contracts.Context;
-using Session.Common.Contracts.Core;
-using Session.Common.Contracts.Services;
-using Session.Common.Contracts.Services.Authorization;
-using Session.Core;
-using Session.Services.Authorization;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Server.Session.Contracts.Context;
+using BeautifulFundamental.Server.Session.Contracts.Core;
+using BeautifulFundamental.Server.Session.Contracts.Services;
+using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
+using BeautifulFundamental.Server.Session.Core;
+using BeautifulFundamental.Server.Session.Services.Authorization;
+using NSubstitute;
 
 namespace Tests.Session.Core
 {
@@ -28,7 +28,8 @@ namespace Tests.Session.Core
 
 			var sessionLoop = Substitute.For<Lazy<ISessionLoop>>();
 
-			_session = new global::Session.Core.Session(sessionLoop, sessionContextMock, sessionContextManagerMock,
+			_session = new global::BeautifulFundamental.Server.Session.Core.Session(sessionLoop, sessionContextMock,
+				sessionContextManagerMock,
 				_connectionServiceMock,
 				_authenticationServiceMock, _communicationServiceMock, _sessionsServiceMock);
 		}
@@ -72,8 +73,8 @@ namespace Tests.Session.Core
 				.Returns(Task.FromResult(AuthorizationInfo.Create("anyUser")));
 			_session.Start();
 			_connectionServiceMock.ConnectionEstablished += Raise.Event<Action>();
-			((global::Session.Core.Session)_session).Dispose();
-			_sessionsServiceMock.Received(2).SaveSessionInfo(Arg.Any<SessionInfo>());
+			((global::BeautifulFundamental.Server.Session.Core.Session)_session).Dispose();
+			_sessionsServiceMock.Received().SaveSessionInfo(Arg.Any<SessionInfo>());
 		}
 	}
 }

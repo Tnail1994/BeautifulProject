@@ -1,6 +1,5 @@
-﻿using NSubstitute;
-using Remote.Communication.Client;
-using Remote.Communication.Common.Client.Contracts;
+﻿using BeautifulFundamental.Core.Communication.Client;
+using NSubstitute;
 
 namespace Tests.Remote.Communication.Client
 {

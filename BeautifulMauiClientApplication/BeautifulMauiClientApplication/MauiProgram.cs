@@ -1,25 +1,19 @@
-﻿using AutoSynchronizedMessageHandling;
-using AutoSynchronizedMessageHandling.Common.Contracts;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.Communication.Transformation;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.MessageHandling;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Messages.RandomTestData;
+using BeautifulFundamental.Core.Services.CheckAlive;
 using BeautifulMauiClientApplication.Example;
 using BeautifulMauiClientApplication.Login;
 using BeautifulMauiClientApplication.Startup;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Remote.Communication;
-using Remote.Communication.Client;
-using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
-using Remote.Communication.Common.Implementations;
-using Remote.Communication.Common.Transformation.Contracts;
-using Remote.Communication.Transformation;
-using Session.Common.Contracts;
-using Session.Common.Implementations;
-using SharedBeautifulData.Messages.Authorize;
-using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulData.Messages.RandomTestData;
-using SharedBeautifulServices;
-using SharedBeautifulServices.Common;
 
 namespace BeautifulMauiClientApplication
 {
@@ -72,7 +66,7 @@ namespace BeautifulMauiClientApplication
 			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();
 
-			builder.Services.AddSingleton<ISessionKey, SessionKey>();
+			builder.Services.AddSingleton<IIdentificationKey, IdentificationKey>();
 
 			builder.Services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 
@@ -101,9 +95,9 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddSingleton<IConnectionSettings>(_ =>
 				config.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
 				ConnectionSettings.Default);
-			builder.Services.AddSingleton<ISessionKeySettings>(_ =>
-				config.GetSection(nameof(SessionKeySettings)).Get<SessionKeySettings>() ??
-				SessionKeySettings.Default);
+			builder.Services.AddSingleton<IIdentificationKeySettings>(_ =>
+				config.GetSection(nameof(IdentificationKeySettings)).Get<IdentificationKeySettings>() ??
+				IdentificationKeySettings.Default);
 			builder.Services.AddSingleton<ITlsSettings>(_ =>
 				config.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
 				TlsSettings.Default);

@@ -1,13 +1,13 @@
 ﻿using System.Net.Security;
 using NSubstitute;
-using Remote.Server.Common.Contracts;
 using System.Net.Sockets;
-using Remote.Communication.Common.Client.Contracts;
-using Session.Common.Implementations;
-using Session.Core;
-using Session.Common.Contracts.Services;
-using Session.Common.Contracts.Scope;
-using Session.Common.Contracts.Core;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Server.Core;
+using BeautifulFundamental.Server.Session.Contracts.Core;
+using BeautifulFundamental.Server.Session.Contracts.Scope;
+using BeautifulFundamental.Server.Session.Contracts.Services;
+using BeautifulFundamental.Server.Session.Core;
+using BeautifulFundamental.Server.Session.Implementations;
 
 namespace Tests.Session.Core
 {

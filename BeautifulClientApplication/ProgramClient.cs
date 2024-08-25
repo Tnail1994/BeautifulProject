@@ -1,19 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.Communication.Transformation;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Messages.RandomTestData;
+using BeautifulFundamental.Core.Services.CheckAlive;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Remote.Communication;
-using Remote.Communication.Client;
-using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
-using Remote.Communication.Common.Implementations;
-using Remote.Communication.Common.Transformation.Contracts;
-using Remote.Communication.Transformation;
-using Session.Common.Implementations;
-using SharedBeautifulData.Messages.Authorize;
-using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulData.Messages.RandomTestData;
-using SharedBeautifulServices;
-using SharedBeautifulServices.Common;
 
 namespace BeautifulClientApplication
 {
@@ -92,7 +88,7 @@ namespace BeautifulClientApplication
 					services.AddTransient<INetworkMessage, LogoutRequest>();
 					services.AddTransient<INetworkMessage, LogoutReply>();
 
-					services.AddSingleton<ISessionKey, SessionKey>();
+					services.AddSingleton<IIdentificationKey, IdentificationKey>();
 
 					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
 
@@ -109,8 +105,8 @@ namespace BeautifulClientApplication
 						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
 					services.Configure<ConnectionSettings>(
 						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
-					services.Configure<SessionKeySettings>(
-						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
+					services.Configure<IdentificationKeySettings>(
+						hostContext.Configuration.GetSection(nameof(IdentificationKeySettings)));
 					services.Configure<TlsSettings>(
 						hostContext.Configuration.GetSection(nameof(TlsSettings)));
 
@@ -120,8 +116,8 @@ namespace BeautifulClientApplication
 						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
 					services.AddSingleton<IConnectionSettings>(provider =>
 						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
-					services.AddSingleton<ISessionKeySettings>(provider =>
-						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
+					services.AddSingleton<IIdentificationKeySettings>(provider =>
+						provider.GetRequiredService<IOptions<IdentificationKeySettings>>().Value);
 					services.AddSingleton<ITlsSettings>(provider =>
 						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
 				});

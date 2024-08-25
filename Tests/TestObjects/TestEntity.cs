@@ -1,4 +1,4 @@
-﻿using SharedBeautifulData.Contracts;
+﻿using BeautifulFundamental.Core;
 
 namespace Tests.TestObjects
 {

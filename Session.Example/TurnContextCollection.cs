@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using DbManagement.Common.Contracts;
-using Session.Common.Contracts.Context;
-using Session.Common.Implementations;
-using Session.Context.Db;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Server.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
+using BeautifulFundamental.Server.Session.Contracts.Context;
 
 namespace Session.Example
 {
@@ -23,9 +23,7 @@ namespace Session.Example
 		}
 	}
 
-	public interface ITurnContextCollection
-	{
-	}
+	public interface ITurnContextCollection;
 
 	public class RoundContextCollection : ContextCollection<RoundContextEntryDto>, IRoundContextCollection
 	{
@@ -44,9 +42,7 @@ namespace Session.Example
 		}
 	}
 
-	public interface IRoundContextCollection
-	{
-	}
+	public interface IRoundContextCollection;
 
 	public class CurrentPlayerContextCollection : ContextCollection<CurrentPlayerContextEntryDto>,
 		ICurrentPlayerContextCollection
@@ -67,9 +63,7 @@ namespace Session.Example
 		}
 	}
 
-	public interface ICurrentPlayerContextCollection
-	{
-	}
+	public interface ICurrentPlayerContextCollection;
 
 	[Table("CurrentPlayerContexts")]
 	public class CurrentPlayerContextEntryDto : EntryDto
@@ -93,9 +87,9 @@ namespace Session.Example
 			return base.GetHashCode() ^ PlayerName.GetHashCode();
 		}
 
-		public override ISessionDetail Convert(ISessionKey sessionKey)
+		public override ISessionDetail Convert(IIdentificationKey identificationKey)
 		{
-			return new CurrentPlayerDetails(sessionKey, PlayerName);
+			return new CurrentPlayerDetails(identificationKey, PlayerName);
 		}
 
 		public override void Update(ISessionDetail sessionDetail)
@@ -130,9 +124,9 @@ namespace Session.Example
 			return base.GetHashCode() ^ TurnCounter.GetHashCode();
 		}
 
-		public override ISessionDetail Convert(ISessionKey sessionKey)
+		public override ISessionDetail Convert(IIdentificationKey identificationKey)
 		{
-			return new TurnDetails(sessionKey, TurnCounter);
+			return new TurnDetails(identificationKey, TurnCounter);
 		}
 
 		public override void Update(ISessionDetail sessionDetail)
@@ -166,9 +160,9 @@ namespace Session.Example
 			return base.GetHashCode() ^ RoundCounter.GetHashCode();
 		}
 
-		public override ISessionDetail Convert(ISessionKey sessionKey)
+		public override ISessionDetail Convert(IIdentificationKey identificationKey)
 		{
-			return new RoundDetails(sessionKey, RoundCounter);
+			return new RoundDetails(identificationKey, RoundCounter);
 		}
 
 		public override void Update(ISessionDetail sessionDetail)

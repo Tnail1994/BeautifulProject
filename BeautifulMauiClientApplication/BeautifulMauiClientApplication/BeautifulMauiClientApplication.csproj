@@ -93,32 +93,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="AutoSynchronizedMessageHandling">
-	    <HintPath>..\..\bin\Dlls\AutoSynchronizedMessageHandling.dll</HintPath>
-	  </Reference>
-	  <Reference Include="AutoSynchronizedMessageHandling.Common">
-	    <HintPath>..\..\bin\Dlls\AutoSynchronizedMessageHandling.Common.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Core">
-	    <HintPath>..\..\bin\Dlls\Core.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Remote.Communication">
-	    <HintPath>..\..\bin\Dlls\Remote.Communication.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Remote.Communication.Common">
-	    <HintPath>..\..\bin\Dlls\Remote.Communication.Common.dll</HintPath>
-	  </Reference>
-	  <Reference Include="Session.Common">
-	    <HintPath>..\..\bin\Dlls\Session.Common.dll</HintPath>
-	  </Reference>
-	  <Reference Include="SharedBeautifulData">
-	    <HintPath>..\..\bin\Dlls\SharedBeautifulData.dll</HintPath>
-	  </Reference>
-	  <Reference Include="SharedBeautifulServices">
-	    <HintPath>..\..\bin\Dlls\SharedBeautifulServices.dll</HintPath>
-	  </Reference>
-	  <Reference Include="SharedBeautifulServices.Common">
-	    <HintPath>..\..\bin\Dlls\SharedBeautifulServices.Common.dll</HintPath>
+	  <Reference Include="BeautifulFundamental.Core">
+	    <HintPath>..\..\bin\Dlls\BeautifulFundamental.Core.dll</HintPath>
 	  </Reference>
 	</ItemGroup>
 

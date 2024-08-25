@@ -1,21 +1,23 @@
-﻿using Remote.Communication.Common.Contracts;
-using Session.Common.Contracts.Context.Db;
-using Session.Common.Implementations;
-using Session.Context;
-using Session.Core;
-using SharedBeautifulData.Messages.CheckAlive;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Server.Session.Context;
+using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Core;
 
 namespace Session.Example
 {
-    public class TestSessionLoop : SessionLoopBase
+	public class TestSessionLoop : SessionLoopBase
 	{
 		private readonly ITurnDetails _turnDetails;
 		private readonly IRoundDetails _roundDetails;
 		private readonly ICurrentPlayerDetails _currentPlayerDetails;
 		private readonly ICommunicationService _communicationService;
 
-		public TestSessionLoop(ISessionKey sessionKey, ITurnDetails turnDetails, IRoundDetails roundDetails,
-			ICurrentPlayerDetails currentPlayerDetails, ICommunicationService communicationService) : base(sessionKey)
+		public TestSessionLoop(IIdentificationKey identificationKey, ITurnDetails turnDetails,
+			IRoundDetails roundDetails,
+			ICurrentPlayerDetails currentPlayerDetails,
+			ICommunicationService communicationService) : base(identificationKey)
 		{
 			_turnDetails = turnDetails;
 			_roundDetails = roundDetails;
@@ -47,11 +49,11 @@ namespace Session.Example
 			TriggerUpdate();
 		}
 
-		public TurnDetails(ISessionKey sessionKey) : base(sessionKey)
+		public TurnDetails(IIdentificationKey identificationKey) : base(identificationKey)
 		{
 		}
 
-		public TurnDetails(ISessionKey sessionKey, int turnCounter) : base(sessionKey)
+		public TurnDetails(IIdentificationKey identificationKey, int turnCounter) : base(identificationKey)
 		{
 			TurnCounter = turnCounter;
 		}
@@ -72,12 +74,12 @@ namespace Session.Example
 	{
 		public int RoundCounter { get; }
 
-		public RoundDetails(ISessionKey sessionKey) : base(sessionKey)
+		public RoundDetails(IIdentificationKey identificationKey) : base(identificationKey)
 		{
 			RoundCounter = 0;
 		}
 
-		public RoundDetails(ISessionKey sessionKey, int roundCounter) : base(sessionKey)
+		public RoundDetails(IIdentificationKey identificationKey, int roundCounter) : base(identificationKey)
 		{
 			RoundCounter = roundCounter;
 		}
@@ -98,12 +100,12 @@ namespace Session.Example
 		public string PlayerName { get; }
 
 
-		public CurrentPlayerDetails(ISessionKey sessionKey) : base(sessionKey)
+		public CurrentPlayerDetails(IIdentificationKey identificationKey) : base(identificationKey)
 		{
 			PlayerName = string.Empty;
 		}
 
-		public CurrentPlayerDetails(ISessionKey sessionKey, string playerName) : base(sessionKey)
+		public CurrentPlayerDetails(IIdentificationKey identificationKey, string playerName) : base(identificationKey)
 		{
 			PlayerName = playerName;
 		}

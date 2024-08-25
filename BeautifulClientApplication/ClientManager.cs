@@ -1,9 +1,9 @@
-﻿using Core.Extensions;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Extensions;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulFundamental.Core.Services.CheckAlive;
 using Microsoft.Extensions.Hosting;
-using Remote.Communication.Common.Contracts;
 using Serilog;
-using SharedBeautifulData.Exceptions;
-using SharedBeautifulData.Messages.Authorize;
 
 namespace BeautifulClientApplication
 {

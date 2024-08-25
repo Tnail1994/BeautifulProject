@@ -22,19 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AutoSychronizatedMessageHandling\AutoSynchronizedMessageHandling.csproj" />
     <ProjectReference Include="..\BeautifulClientApplication\BeautifulClientApplication.csproj" />
+    <ProjectReference Include="..\BeautifulFundamental.Core\BeautifulFundamental.Core.csproj" />
+    <ProjectReference Include="..\BeautifulFundamental.Server\BeautifulFundamental.Server.csproj" />
     <ProjectReference Include="..\BeautifulServerApplication\BeautifulServerApplication.csproj" />
-    <ProjectReference Include="..\Core\Core.csproj" />
-    <ProjectReference Include="..\Remote.Communication.Common\Remote.Communication.Common.csproj" />
-    <ProjectReference Include="..\Remote.Communication\Remote.Communication.csproj" />
-    <ProjectReference Include="..\Remote.Server.Common\Remote.Server.Common.csproj" />
-    <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
-    <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
-    <ProjectReference Include="..\Session\Session.csproj" />
-    <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
-    <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
-    <ProjectReference Include="..\SharedBeautifulServices\SharedBeautifulServices.csproj" />
+    <ProjectReference Include="..\Session.Example\Session.Example.csproj" />
   </ItemGroup>
 
   <ItemGroup>

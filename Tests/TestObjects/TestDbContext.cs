@@ -1,5 +1,4 @@
-﻿using DbManagement.Common.Contracts;
-using DbManagement.Common.Implementations;
+﻿using BeautifulFundamental.Server.Db;
 
 namespace Tests.TestObjects
 {

@@ -43,20 +43,20 @@ namespace BeautifulServerApplication
 			{
 				Log.Error($"Wrong basePath: {currentDirectory}\n" +
 				          $"[{argumentException.ParamName}]: {argumentException.Message}" +
-				          " ||{SessionKey}||", "server_config");
+				          " ||{IdentificationKey}||", "server_config");
 			}
 			catch (FileNotFoundException fileNotFoundException)
 			{
 				Log.Error($"File not found: {fileNotFoundException.FileName}\n" +
 				          $"[{fileNotFoundException.GetType()}]: {fileNotFoundException.Message}" +
-				          " ||{SessionKey}||", "server_config");
+				          " ||{IdentificationKey}||", "server_config");
 			}
 			catch (Exception ex)
 			{
 				Log.Fatal("!!! Unexpected error\n" +
 				          "Base path is null or empty. Cannot load configuration." +
 				          $"{ex.Message}" +
-				          " ||{SessionKey}||", "server_config");
+				          " ||{IdentificationKey}||", "server_config");
 			}
 		}
 	}

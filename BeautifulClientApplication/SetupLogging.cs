@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
+using BeautifulFundamental.Core.Constants;
 using Serilog;
-using SharedBeautifulData.Constants;
 
 namespace BeautifulClientApplication
 {

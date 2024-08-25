@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json;
-using Remote.Communication.Common.Implementations;
-using Remote.Communication.Common.Transformation.Implementations;
+﻿using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.Communication.Transformation.Implementations;
+using Newtonsoft.Json;
 
 namespace Tests.TestObjects
 {

@@ -1,9 +1,8 @@
-﻿using NSubstitute;
-using Remote.Communication.Common.Contracts;
-using Session.Services.Authorization;
-using SharedBeautifulData.Messages.Authorize;
-using SharedBeautifulData.Objects;
-using Users.Common;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulFundamental.Server.Session.Services.Authorization;
+using BeautifulFundamental.Server.UserManagement;
+using NSubstitute;
 
 namespace Tests.Session.Services
 {

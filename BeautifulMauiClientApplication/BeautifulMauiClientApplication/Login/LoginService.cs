@@ -1,7 +1,7 @@
-﻿using BeautifulMauiClientApplication.Startup;
-using Core.Extensions;
-using Remote.Communication.Common.Contracts;
-using SharedBeautifulData.Messages.Authorize;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Extensions;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulMauiClientApplication.Startup;
 
 namespace BeautifulMauiClientApplication.Login
 {

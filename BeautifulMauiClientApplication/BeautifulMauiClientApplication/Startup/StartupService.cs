@@ -1,4 +1,4 @@
-﻿using Core.Extensions;
+﻿using BeautifulFundamental.Core.Extensions;
 
 namespace BeautifulMauiClientApplication.Startup
 {

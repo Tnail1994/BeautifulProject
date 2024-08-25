@@ -1,39 +1,32 @@
-﻿using DbManagement;
-using DbManagement.Common.Contracts;
+﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.Communication.Client;
+using BeautifulFundamental.Core.Communication.Implementations;
+using BeautifulFundamental.Core.Communication.Transformation;
+using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.Messages.Authorize;
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Messages.RandomTestData;
+using BeautifulFundamental.Core.Services.CheckAlive;
+using BeautifulFundamental.Server.Core;
+using BeautifulFundamental.Server.Db;
+using BeautifulFundamental.Server.Session.Context;
+using BeautifulFundamental.Server.Session.Context.Db;
+using BeautifulFundamental.Server.Session.Contracts.Context;
+using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Contracts.Core;
+using BeautifulFundamental.Server.Session.Contracts.Scope;
+using BeautifulFundamental.Server.Session.Contracts.Services;
+using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
+using BeautifulFundamental.Server.Session.Core;
+using BeautifulFundamental.Server.Session.Scope;
+using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.Session.Services.Authorization;
+using BeautifulFundamental.Server.UserManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Remote.Communication;
-using Remote.Communication.Client;
-using Remote.Communication.Common.Client.Contracts;
-using Remote.Communication.Common.Contracts;
-using Remote.Communication.Common.Implementations;
-using Remote.Communication.Common.Transformation.Contracts;
-using Remote.Communication.Transformation;
-using Remote.Server;
-using Remote.Server.Common.Contracts;
 using Serilog;
-using Session.Common.Contracts.Context;
-using Session.Common.Contracts.Context.Db;
-using Session.Common.Contracts.Core;
-using Session.Common.Contracts.Scope;
-using Session.Common.Contracts.Services;
-using Session.Common.Contracts.Services.Authorization;
-using Session.Common.Implementations;
-using Session.Context;
-using Session.Context.Db;
-using Session.Core;
 using Session.Example;
-using Session.Scope;
-using Session.Services;
-using Session.Services.Authorization;
-using SharedBeautifulData.Messages.Authorize;
-using SharedBeautifulData.Messages.CheckAlive;
-using SharedBeautifulData.Messages.RandomTestData;
-using SharedBeautifulServices;
-using SharedBeautifulServices.Common;
-using Users;
-using Users.Common;
 
 namespace BeautifulServerApplication
 {
@@ -199,8 +192,8 @@ namespace BeautifulServerApplication
 						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
 					services.Configure<AuthenticationSettings>(
 						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
-					services.Configure<SessionKeySettings>(
-						hostContext.Configuration.GetSection(nameof(SessionKeySettings)));
+					services.Configure<IdentificationKeySettings>(
+						hostContext.Configuration.GetSection(nameof(IdentificationKeySettings)));
 					services.Configure<TlsSettings>(
 						hostContext.Configuration.GetSection(nameof(TlsSettings)));
 
@@ -218,16 +211,16 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
 					services.AddSingleton<IAuthenticationSettings>(provider =>
 						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
-					services.AddSingleton<ISessionKeySettings>(provider =>
-						provider.GetRequiredService<IOptions<SessionKeySettings>>().Value);
+					services.AddSingleton<IIdentificationKeySettings>(provider =>
+						provider.GetRequiredService<IOptions<IdentificationKeySettings>>().Value);
 					services.AddSingleton<ITlsSettings>(provider =>
 						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
 
 					// Session wide
-					services.AddScoped<ISession, Session.Core.Session>();
+					services.AddScoped<ISession, BeautifulFundamental.Server.Session.Core.Session>();
 					services.AddScoped<IConnectionService, ConnectionService>();
 					services.AddScoped<ICommunicationService, CommunicationService>();
-					services.AddScoped<ISessionKey, SessionKey>();
+					services.AddScoped<IIdentificationKey, IdentificationKey>();
 					services.AddScoped<ICheckAliveService, CheckAliveService>();
 					services.AddScoped<IAsyncClientFactory, AsyncClientFactory>();
 					services.AddScoped(provider =>
@@ -274,7 +267,7 @@ namespace BeautifulServerApplication
 
 			if (sessionDetail == null)
 			{
-				sessionDetail = new TurnDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetail = new TurnDetails(sp.GetRequiredService<IIdentificationKey>());
 				sessionDetailsManager.Observe(sessionDetail);
 			}
 
@@ -289,7 +282,7 @@ namespace BeautifulServerApplication
 
 			if (sessionDetail == null)
 			{
-				sessionDetail = new RoundDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetail = new RoundDetails(sp.GetRequiredService<IIdentificationKey>());
 				sessionDetailsManager.Observe(sessionDetail);
 			}
 
@@ -304,7 +297,7 @@ namespace BeautifulServerApplication
 
 			if (sessionDetail == null)
 			{
-				sessionDetail = new CurrentPlayerDetails(sp.GetRequiredService<ISessionKey>());
+				sessionDetail = new CurrentPlayerDetails(sp.GetRequiredService<IIdentificationKey>());
 				sessionDetailsManager.Observe(sessionDetail);
 			}
 

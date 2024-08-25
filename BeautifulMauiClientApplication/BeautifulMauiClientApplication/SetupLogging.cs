@@ -1,5 +1,5 @@
-﻿using Serilog;
-using SharedBeautifulData.Constants;
+﻿using BeautifulFundamental.Core.Constants;
+using Serilog;
 using System.Runtime.CompilerServices;
 
 namespace BeautifulMauiClientApplication

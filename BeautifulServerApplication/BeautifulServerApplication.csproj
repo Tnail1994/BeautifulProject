@@ -19,24 +19,15 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
-    <PackageReference Include="Serilog" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.Map" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DbManagement.Common\DbManagement.Common.csproj" />
-    <ProjectReference Include="..\DbManagement\DbManagement.csproj" />
-    <ProjectReference Include="..\Remote.Server\Remote.Server.csproj" />
-    <ProjectReference Include="..\Session.Common\Session.Common.csproj" />
+    <ProjectReference Include="..\BeautifulFundamental.Core\BeautifulFundamental.Core.csproj" />
+    <ProjectReference Include="..\BeautifulFundamental.Server\BeautifulFundamental.Server.csproj" />
     <ProjectReference Include="..\Session.Example\Session.Example.csproj" />
-    <ProjectReference Include="..\Session\Session.csproj" />
-    <ProjectReference Include="..\SharedBeautifulData\SharedBeautifulData.csproj" />
-    <ProjectReference Include="..\SharedBeautifulServices.Common\SharedBeautifulServices.Common.csproj" />
-    <ProjectReference Include="..\SharedBeautifulServices\SharedBeautifulServices.csproj" />
-    <ProjectReference Include="..\Users.Common\Users.Common.csproj" />
-    <ProjectReference Include="..\Users\Users.csproj" />
   </ItemGroup>
 
   <ItemGroup>
