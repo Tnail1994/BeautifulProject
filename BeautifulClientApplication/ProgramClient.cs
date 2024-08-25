@@ -1,4 +1,5 @@
-﻿using BeautifulFundamental.Core.Communication;
+﻿using BeautifulFundamental.Core;
+using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Communication.Transformation;
@@ -72,33 +73,14 @@ namespace BeautifulClientApplication
 
 		private static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
+				.UseBeautifulFundamentalCore()
 				.ConfigureServices((hostContext, services) =>
 				{
 					// --- GENERAL ---
 					services.AddHostedService<ClientManager>();
 
-					services.AddTransient<INetworkMessage, CheckAliveRequest>();
-					services.AddTransient<INetworkMessage, CheckAliveReply>();
-					services.AddTransient<INetworkMessage, LoginReply>();
-					services.AddTransient<INetworkMessage, LoginRequest>();
-					services.AddTransient<INetworkMessage, RandomDataRequest>();
-					services.AddTransient<INetworkMessage, RandomDataReply>();
-					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
-					services.AddTransient<INetworkMessage, DeviceIdentReply>();
-					services.AddTransient<INetworkMessage, LogoutRequest>();
-					services.AddTransient<INetworkMessage, LogoutReply>();
 
-					services.AddSingleton<IIdentificationKey, IdentificationKey>();
-
-					services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
-
-					services.AddSingleton<ITransformerService, TransformerService>();
-					services.AddSingleton<IConnectionService, ConnectionService>();
-					services.AddSingleton<ICommunicationService, CommunicationService>();
-					services.AddSingleton<ICheckAliveService, CheckAliveService>();
-					services.AddSingleton<IAsyncClient>(provider =>
-						provider.GetRequiredService<IAsyncClientFactory>().Create());
-
+					// --- CONFIGURATION ---
 					services.Configure<AsyncClientSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
 					services.Configure<CheckAliveSettings>(

@@ -1,4 +1,5 @@
-﻿using BeautifulFundamental.Core.Communication;
+﻿using BeautifulFundamental.Core;
+using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Communication.Transformation;
@@ -51,34 +52,10 @@ namespace BeautifulMauiClientApplication
 
 			builder.Configuration.AddConfiguration(config);
 
-			// Message types
-			builder.Services.AddTransient<INetworkMessage, CheckAliveRequest>();
-			builder.Services.AddTransient<INetworkMessage, CheckAliveReply>();
-			builder.Services.AddTransient<INetworkMessage, LoginReply>();
-			builder.Services.AddTransient<INetworkMessage, LoginRequest>();
-			builder.Services.AddTransient<INetworkMessage, LogoutReply>();
-			builder.Services.AddTransient<INetworkMessage, LogoutRequest>();
-			builder.Services.AddTransient<INetworkMessage, RandomDataRequest>();
-			builder.Services.AddTransient<INetworkMessage, RandomDataReply>();
-			builder.Services.AddTransient<INetworkMessage, DeviceIdentRequest>();
-			builder.Services.AddTransient<INetworkMessage, DeviceIdentReply>();
+			FundamentalApplicationBuilder.RegisterBeautifulFundamentalCore(builder.Services);
 
-			// Services
 			builder.Services.AddSingleton<IDataService, DataService>();
-
-			builder.Services.AddSingleton<IIdentificationKey, IdentificationKey>();
-
-			builder.Services.AddSingleton<IAsyncClientFactory, AsyncClientFactory>();
-
-			builder.Services.AddSingleton<ITransformerService, TransformerService>();
-			builder.Services.AddSingleton<IConnectionService, ConnectionService>();
-			builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
-			builder.Services.AddSingleton<ICheckAliveService, CheckAliveService>();
-			builder.Services.AddSingleton<IAsyncClient>(provider =>
-				provider.GetRequiredService<IAsyncClientFactory>().Create());
-
 			builder.Services.AddSingleton<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
-
 			builder.Services.AddSingleton<IStartupService, StartupService>();
 
 			// Auto start services

@@ -1,27 +1,18 @@
-﻿using BeautifulFundamental.Core.Communication;
+﻿using BeautifulFundamental.Core;
+using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Communication.Client;
-using BeautifulFundamental.Core.Communication.Implementations;
-using BeautifulFundamental.Core.Communication.Transformation;
 using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Core.Messages.RandomTestData;
 using BeautifulFundamental.Core.Services.CheckAlive;
+using BeautifulFundamental.Server;
 using BeautifulFundamental.Server.Core;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Context;
-using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Contracts.Context;
 using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Scope;
-using BeautifulFundamental.Server.Session.Contracts.Services;
 using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
-using BeautifulFundamental.Server.Session.Core;
-using BeautifulFundamental.Server.Session.Scope;
-using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
-using BeautifulFundamental.Server.UserManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -141,43 +132,13 @@ namespace BeautifulServerApplication
 #endif
 		}
 
+
 		private static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
+				.UseBeautifulFundamentalServer()
 				.ConfigureServices((hostContext, services) =>
 				{
-					// --- GENERAL ---
-					services.AddMemoryCache();
-
-					services.AddHostedService<SessionManager>();
-
-					// Server wide
-					services.AddTransient<INetworkMessage, CheckAliveRequest>();
-					services.AddTransient<INetworkMessage, CheckAliveReply>();
-					services.AddTransient<INetworkMessage, LoginReply>();
-					services.AddTransient<INetworkMessage, LoginRequest>();
-					services.AddTransient<INetworkMessage, RandomDataRequest>();
-					services.AddTransient<INetworkMessage, RandomDataReply>();
-					services.AddTransient<INetworkMessage, DeviceIdentRequest>();
-					services.AddTransient<INetworkMessage, DeviceIdentReply>();
-
-					services.AddSingleton<UsersDbContext>();
-					services.AddSingleton<SessionsDbContext>();
-					services.AddSingleton<ISessionDataProvider, SessionsDbContext>();
-
-					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<UsersDbContext>());
-					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<SessionsDbContext>());
-
-					services.AddSingleton<IScopeManager, ScopeManager>();
-					services.AddSingleton<IAsyncServer, AsyncServer>();
-					services.AddSingleton<ITransformerService, TransformerService>();
-					services.AddSingleton<IDbManager, DbManager>();
-					services.AddSingleton<IDbContextResolver, DbContextResolver>();
-					services.AddSingleton<IAuthenticationService, AuthenticationService>();
-					services.AddSingleton<IUsersService, UsersService>();
-					services.AddSingleton<ISessionsService, SessionsService>();
-
-					services.AddSingleton<ISessionContextManager, SessionContextManager>();
-
+					// --- CONFIGURATION ---
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
 					services.Configure<AsyncClientSettings>(
@@ -215,24 +176,6 @@ namespace BeautifulServerApplication
 						provider.GetRequiredService<IOptions<IdentificationKeySettings>>().Value);
 					services.AddSingleton<ITlsSettings>(provider =>
 						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
-
-					// Session wide
-					services.AddScoped<ISession, BeautifulFundamental.Server.Session.Core.Session>();
-					services.AddScoped<IConnectionService, ConnectionService>();
-					services.AddScoped<ICommunicationService, CommunicationService>();
-					services.AddScoped<IIdentificationKey, IdentificationKey>();
-					services.AddScoped<ICheckAliveService, CheckAliveService>();
-					services.AddScoped<IAsyncClientFactory, AsyncClientFactory>();
-					services.AddScoped(provider =>
-						provider.GetRequiredService<IAsyncClientFactory>().Create());
-
-					services.AddScoped<ISessionContext, SessionContext>();
-					services.AddScoped<ISessionDetailsManager, SessionDetailsManager>();
-
-					// Make it lazy, because the details needed to be initialized. This happens, will
-					// build and start the session. If the session is ready, then the loop will be needed.
-					services.AddTransient<Lazy<ISessionLoop>>(provider =>
-						new Lazy<ISessionLoop>(provider.GetRequiredService<ISessionLoop>));
 
 					// --- SPECIALIZED (EXAMPLE) ---
 					// Add own SessionLoop which extends from SessionLoopBase
