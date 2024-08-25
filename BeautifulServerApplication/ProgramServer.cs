@@ -152,6 +152,7 @@ namespace BeautifulServerApplication
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
+					// --- GENERAL ---
 					services.AddMemoryCache();
 
 					services.AddHostedService<SessionManager>();
@@ -169,21 +170,9 @@ namespace BeautifulServerApplication
 					services.AddSingleton<UsersDbContext>();
 					services.AddSingleton<SessionsDbContext>();
 					services.AddSingleton<ISessionDataProvider, SessionsDbContext>();
-					services.AddSingleton<TurnContextCollection>();
-					services.AddSingleton<RoundContextCollection>();
-					services.AddSingleton<CurrentPlayerContextCollection>();
 
 					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<UsersDbContext>());
 					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<SessionsDbContext>());
-
-					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<TurnContextCollection>());
-					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<RoundContextCollection>());
-					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<CurrentPlayerContextCollection>());
-
-					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<TurnContextCollection>());
-					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<RoundContextCollection>());
-					services.AddSingleton<IContextCollection>(sp =>
-						sp.GetRequiredService<CurrentPlayerContextCollection>());
 
 					services.AddSingleton<IScopeManager, ScopeManager>();
 					services.AddSingleton<IAsyncServer, AsyncServer>();
@@ -195,7 +184,6 @@ namespace BeautifulServerApplication
 					services.AddSingleton<ISessionsService, SessionsService>();
 
 					services.AddSingleton<ISessionContextManager, SessionContextManager>();
-
 
 					services.Configure<AsyncServerSettings>(
 						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
@@ -253,6 +241,7 @@ namespace BeautifulServerApplication
 					services.AddTransient<Lazy<ISessionLoop>>(provider =>
 						new Lazy<ISessionLoop>(provider.GetRequiredService<ISessionLoop>));
 
+					// --- SPECIALIZED (EXAMPLE) ---
 					// Add own SessionLoop which extends from SessionLoopBase
 					services.AddScoped<ISessionLoop, TestSessionLoop>();
 
@@ -260,6 +249,18 @@ namespace BeautifulServerApplication
 					// EntryDto: The entry of the context collection, which should be saved inside db. Must provide
 					//			 a convert and update method. Convert to ISessionDetail and update from ISessionDetail
 					// SessionDetail: The object to work with. Must provide a convert method as well to create the Entity correctly
+					services.AddSingleton<TurnContextCollection>();
+					services.AddSingleton<RoundContextCollection>();
+					services.AddSingleton<CurrentPlayerContextCollection>();
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<TurnContextCollection>());
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<RoundContextCollection>());
+					services.AddSingleton<IDbContext>(sp => sp.GetRequiredService<CurrentPlayerContextCollection>());
+
+					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<TurnContextCollection>());
+					services.AddSingleton<IContextCollection>(sp => sp.GetRequiredService<RoundContextCollection>());
+					services.AddSingleton<IContextCollection>(sp =>
+						sp.GetRequiredService<CurrentPlayerContextCollection>());
+
 					services.AddScoped(GetTurnDetails);
 					services.AddScoped(GetRoundDetails);
 					services.AddScoped(GetCurrentPlayerDetails);

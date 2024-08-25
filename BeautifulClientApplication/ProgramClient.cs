@@ -78,6 +78,7 @@ namespace BeautifulClientApplication
 			Host.CreateDefaultBuilder(args)
 				.ConfigureServices((hostContext, services) =>
 				{
+					// --- GENERAL ---
 					services.AddHostedService<ClientManager>();
 
 					services.AddTransient<INetworkMessage, CheckAliveRequest>();
