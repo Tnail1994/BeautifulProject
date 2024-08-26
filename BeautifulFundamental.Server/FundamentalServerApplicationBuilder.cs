@@ -14,6 +14,7 @@ using BeautifulFundamental.Server.Session.Scope;
 using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
 using BeautifulFundamental.Server.UserManagement;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -61,6 +62,26 @@ namespace BeautifulFundamental.Server
 			// build and start the session. If the session is ready, then the loop will be needed.
 			services.AddTransient<Lazy<ISessionLoop>>(provider =>
 				new Lazy<ISessionLoop>(provider.GetRequiredService<ISessionLoop>));
+		}
+
+		public static IConfigurationRoot? CreateAndSetupConfig(IServiceCollection services)
+		{
+			var config = FundamentalApplicationBuilder.CreateAndSetupConfig(services);
+
+			services.AddSingleton<IAsyncServerSettings>(_ =>
+				config?.GetSection(nameof(AsyncServerSettings)).Get<AsyncServerSettings>() ??
+				AsyncServerSettings.Default);
+			services.AddSingleton<IDbSettings>(_ =>
+				config?.GetSection(nameof(DbSettings)).Get<DbSettings>() ??
+				DbSettings.Default);
+			services.AddSingleton<IDbContextSettings>(_ =>
+				config?.GetSection(nameof(DbContextSettings)).Get<DbContextSettings>() ??
+				DbContextSettings.Default);
+			services.AddSingleton<IAuthenticationSettings>(_ =>
+				config?.GetSection(nameof(AuthenticationSettings)).Get<AuthenticationSettings>() ??
+				AuthenticationSettings.Default);
+
+			return config;
 		}
 	}
 }

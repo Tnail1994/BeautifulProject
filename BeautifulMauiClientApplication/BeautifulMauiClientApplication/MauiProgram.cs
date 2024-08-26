@@ -39,17 +39,8 @@ namespace BeautifulMauiClientApplication
 			builder.Logging.AddDebug();
 #endif
 
-			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
-
-			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
-
-			// Set up configuration
-			var config = new ConfigurationBuilder()
-				.AddJsonFile("appsettings.json")
-				.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
-				.AddEnvironmentVariables()
-				.Build();
-
+			// Configurations
+			var config = FundamentalApplicationBuilder.CreateAndSetupConfig(builder.Services);
 			builder.Configuration.AddConfiguration(config);
 
 			FundamentalApplicationBuilder.RegisterBeautifulFundamentalCore(builder.Services);
@@ -62,22 +53,6 @@ namespace BeautifulMauiClientApplication
 			builder.Services.AddSingleton<ILoginService, LoginService>();
 			builder.Services.AddSingleton<IAutoStartService>(sp => sp.GetRequiredService<ILoginService>());
 
-			// Configurations
-			builder.Services.AddSingleton<IAsyncClientSettings>(_ =>
-				config.GetSection(nameof(AsyncClientSettings)).Get<AsyncClientSettings>() ??
-				AsyncClientSettings.Default);
-			builder.Services.AddSingleton<ICheckAliveSettings>(_ =>
-				config.GetSection(nameof(CheckAliveSettings)).Get<CheckAliveSettings>() ??
-				CheckAliveSettings.Default);
-			builder.Services.AddSingleton<IConnectionSettings>(_ =>
-				config.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
-				ConnectionSettings.Default);
-			builder.Services.AddSingleton<IIdentificationKeySettings>(_ =>
-				config.GetSection(nameof(IdentificationKeySettings)).Get<IdentificationKeySettings>() ??
-				IdentificationKeySettings.Default);
-			builder.Services.AddSingleton<ITlsSettings>(_ =>
-				config.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
-				TlsSettings.Default);
 
 			// Pages
 			builder.Services.AddTransient<MainView>();

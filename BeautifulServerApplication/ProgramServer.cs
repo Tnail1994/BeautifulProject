@@ -13,6 +13,7 @@ using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 using BeautifulFundamental.Server.Session.Contracts.Core;
 using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
 using BeautifulFundamental.Server.Session.Services.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -29,6 +30,7 @@ namespace BeautifulServerApplication
 		private static IServiceProvider? _serviceProvider;
 		private static ISessionManager? _sessionManager;
 		private static IHost? _host;
+		private static IConfigurationRoot? _config;
 #endif
 
 		static async Task Main(string[] args)
@@ -139,43 +141,7 @@ namespace BeautifulServerApplication
 				.ConfigureServices((hostContext, services) =>
 				{
 					// --- CONFIGURATION ---
-					services.Configure<AsyncServerSettings>(
-						hostContext.Configuration.GetSection(nameof(AsyncServerSettings)));
-					services.Configure<AsyncClientSettings>(
-						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
-					services.Configure<CheckAliveSettings>(
-						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
-					services.Configure<ConnectionSettings>(
-						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
-					services.Configure<DbSettings>(
-						hostContext.Configuration.GetSection(nameof(DbSettings)));
-					services.Configure<DbContextSettings>(
-						hostContext.Configuration.GetSection(nameof(DbContextSettings)));
-					services.Configure<AuthenticationSettings>(
-						hostContext.Configuration.GetSection(nameof(AuthenticationSettings)));
-					services.Configure<IdentificationKeySettings>(
-						hostContext.Configuration.GetSection(nameof(IdentificationKeySettings)));
-					services.Configure<TlsSettings>(
-						hostContext.Configuration.GetSection(nameof(TlsSettings)));
-
-					services.AddSingleton<IAsyncServerSettings>(provider =>
-						provider.GetRequiredService<IOptions<AsyncServerSettings>>().Value);
-					services.AddSingleton<IAsyncClientSettings>(provider =>
-						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
-					services.AddSingleton<ICheckAliveSettings>(provider =>
-						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
-					services.AddSingleton<IConnectionSettings>(provider =>
-						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
-					services.AddSingleton<IDbSettings>(provider =>
-						provider.GetRequiredService<IOptions<DbSettings>>().Value);
-					services.AddSingleton<IDbContextSettings>(provider =>
-						provider.GetRequiredService<IOptions<DbContextSettings>>().Value);
-					services.AddSingleton<IAuthenticationSettings>(provider =>
-						provider.GetRequiredService<IOptions<AuthenticationSettings>>().Value);
-					services.AddSingleton<IIdentificationKeySettings>(provider =>
-						provider.GetRequiredService<IOptions<IdentificationKeySettings>>().Value);
-					services.AddSingleton<ITlsSettings>(provider =>
-						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
+					_config = FundamentalServerApplicationBuilder.CreateAndSetupConfig(services);
 
 					// --- SPECIALIZED (EXAMPLE) ---
 					// Add own SessionLoop which extends from SessionLoopBase

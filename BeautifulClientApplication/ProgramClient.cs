@@ -8,6 +8,7 @@ using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Core.Messages.RandomTestData;
 using BeautifulFundamental.Core.Services.CheckAlive;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -18,6 +19,7 @@ namespace BeautifulClientApplication
 	{
 		private static readonly CancellationTokenSource ClientProgramCancellationTokenSource = new();
 		private static IHost? _host;
+		private static IConfigurationRoot? _config;
 
 		static async Task Main(string[] args)
 		{
@@ -79,29 +81,8 @@ namespace BeautifulClientApplication
 					// --- GENERAL ---
 					services.AddHostedService<ClientManager>();
 
-
 					// --- CONFIGURATION ---
-					services.Configure<AsyncClientSettings>(
-						hostContext.Configuration.GetSection(nameof(AsyncClientSettings)));
-					services.Configure<CheckAliveSettings>(
-						hostContext.Configuration.GetSection(nameof(CheckAliveSettings)));
-					services.Configure<ConnectionSettings>(
-						hostContext.Configuration.GetSection(nameof(ConnectionSettings)));
-					services.Configure<IdentificationKeySettings>(
-						hostContext.Configuration.GetSection(nameof(IdentificationKeySettings)));
-					services.Configure<TlsSettings>(
-						hostContext.Configuration.GetSection(nameof(TlsSettings)));
-
-					services.AddSingleton<IAsyncClientSettings>(provider =>
-						provider.GetRequiredService<IOptions<AsyncClientSettings>>().Value);
-					services.AddSingleton<ICheckAliveSettings>(provider =>
-						provider.GetRequiredService<IOptions<CheckAliveSettings>>().Value);
-					services.AddSingleton<IConnectionSettings>(provider =>
-						provider.GetRequiredService<IOptions<ConnectionSettings>>().Value);
-					services.AddSingleton<IIdentificationKeySettings>(provider =>
-						provider.GetRequiredService<IOptions<IdentificationKeySettings>>().Value);
-					services.AddSingleton<ITlsSettings>(provider =>
-						provider.GetRequiredService<IOptions<TlsSettings>>().Value);
+					_config = FundamentalApplicationBuilder.CreateAndSetupConfig(services);
 				});
 	}
 }

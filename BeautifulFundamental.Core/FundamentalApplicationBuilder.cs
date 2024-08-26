@@ -7,6 +7,7 @@ using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Core.Messages.RandomTestData;
 using BeautifulFundamental.Core.Services.CheckAlive;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -67,6 +68,33 @@ namespace BeautifulFundamental.Core
 			}
 
 			services.AddSingleton<ITransformerService, TransformerService>();
+		}
+
+		public static IConfigurationRoot CreateAndSetupConfig(IServiceCollection services)
+		{
+			Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", "Development");
+			var environment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+			var config = new ConfigurationBuilder()
+				.AddJsonFile("appsettings.json")
+				.AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+				.AddEnvironmentVariables()
+				.Build();
+			services.AddSingleton<IAsyncClientSettings>(_ =>
+				config?.GetSection(nameof(AsyncClientSettings)).Get<AsyncClientSettings>() ??
+				AsyncClientSettings.Default);
+			services.AddSingleton<ICheckAliveSettings>(_ =>
+				config?.GetSection(nameof(CheckAliveSettings)).Get<CheckAliveSettings>() ??
+				CheckAliveSettings.Default);
+			services.AddSingleton<IConnectionSettings>(_ =>
+				config?.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
+				ConnectionSettings.Default);
+			services.AddSingleton<IIdentificationKeySettings>(_ =>
+				config?.GetSection(nameof(IdentificationKeySettings)).Get<IdentificationKeySettings>() ??
+				IdentificationKeySettings.Default);
+			services.AddSingleton<ITlsSettings>(_ =>
+				config?.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
+				TlsSettings.Default);
+			return config;
 		}
 	}
 }
