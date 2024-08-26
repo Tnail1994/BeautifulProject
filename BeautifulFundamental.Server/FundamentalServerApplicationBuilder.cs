@@ -26,7 +26,7 @@ namespace BeautifulFundamental.Server
 		{
 			hostBuilder
 				.UseBeautifulFundamentalCore(true)
-				.ConfigureServices((hostContext, services) => { RegisterBeautifulFundamentalServer(services); });
+				.ConfigureServices((_, services) => { RegisterBeautifulFundamentalServer(services); });
 
 			return hostBuilder;
 		}
@@ -64,24 +64,22 @@ namespace BeautifulFundamental.Server
 				new Lazy<ISessionLoop>(provider.GetRequiredService<ISessionLoop>));
 		}
 
-		public static IConfigurationRoot? CreateAndSetupConfig(IServiceCollection services)
+		public static void CreateAndSetupConfig(IServiceCollection services)
 		{
 			var config = FundamentalApplicationBuilder.CreateAndSetupConfig(services);
 
 			services.AddSingleton<IAsyncServerSettings>(_ =>
-				config?.GetSection(nameof(AsyncServerSettings)).Get<AsyncServerSettings>() ??
+				config.GetSection(nameof(AsyncServerSettings)).Get<AsyncServerSettings>() ??
 				AsyncServerSettings.Default);
 			services.AddSingleton<IDbSettings>(_ =>
-				config?.GetSection(nameof(DbSettings)).Get<DbSettings>() ??
+				config.GetSection(nameof(DbSettings)).Get<DbSettings>() ??
 				DbSettings.Default);
 			services.AddSingleton<IDbContextSettings>(_ =>
-				config?.GetSection(nameof(DbContextSettings)).Get<DbContextSettings>() ??
+				config.GetSection(nameof(DbContextSettings)).Get<DbContextSettings>() ??
 				DbContextSettings.Default);
 			services.AddSingleton<IAuthenticationSettings>(_ =>
-				config?.GetSection(nameof(AuthenticationSettings)).Get<AuthenticationSettings>() ??
+				config.GetSection(nameof(AuthenticationSettings)).Get<AuthenticationSettings>() ??
 				AuthenticationSettings.Default);
-
-			return config;
 		}
 	}
 }

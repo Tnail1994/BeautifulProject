@@ -1,22 +1,13 @@
-﻿using BeautifulFundamental.Core;
-using BeautifulFundamental.Core.Communication;
-using BeautifulFundamental.Core.Communication.Client;
-using BeautifulFundamental.Core.Identification;
+﻿using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Core.Messages.RandomTestData;
-using BeautifulFundamental.Core.Services.CheckAlive;
 using BeautifulFundamental.Server;
-using BeautifulFundamental.Server.Core;
 using BeautifulFundamental.Server.Db;
 using BeautifulFundamental.Server.Session.Contracts.Context;
 using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
-using BeautifulFundamental.Server.Session.Services.Authorization;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Serilog;
 using Session.Example;
 
@@ -30,7 +21,6 @@ namespace BeautifulServerApplication
 		private static IServiceProvider? _serviceProvider;
 		private static ISessionManager? _sessionManager;
 		private static IHost? _host;
-		private static IConfigurationRoot? _config;
 #endif
 
 		static async Task Main(string[] args)
@@ -138,10 +128,10 @@ namespace BeautifulServerApplication
 		private static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
 				.UseBeautifulFundamentalServer()
-				.ConfigureServices((hostContext, services) =>
+				.ConfigureServices((_, services) =>
 				{
 					// --- CONFIGURATION ---
-					_config = FundamentalServerApplicationBuilder.CreateAndSetupConfig(services);
+					FundamentalServerApplicationBuilder.CreateAndSetupConfig(services);
 
 					// --- SPECIALIZED (EXAMPLE) ---
 					// Add own SessionLoop which extends from SessionLoopBase

@@ -1,17 +1,8 @@
 ﻿using BeautifulFundamental.Core;
 using BeautifulFundamental.Core.Communication;
-using BeautifulFundamental.Core.Communication.Client;
-using BeautifulFundamental.Core.Communication.Implementations;
-using BeautifulFundamental.Core.Communication.Transformation;
-using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Core.Messages.CheckAlive;
-using BeautifulFundamental.Core.Messages.RandomTestData;
-using BeautifulFundamental.Core.Services.CheckAlive;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace BeautifulClientApplication
 {
@@ -19,7 +10,6 @@ namespace BeautifulClientApplication
 	{
 		private static readonly CancellationTokenSource ClientProgramCancellationTokenSource = new();
 		private static IHost? _host;
-		private static IConfigurationRoot? _config;
 
 		static async Task Main(string[] args)
 		{
@@ -76,13 +66,13 @@ namespace BeautifulClientApplication
 		private static IHostBuilder CreateHostBuilder(string[] args) =>
 			Host.CreateDefaultBuilder(args)
 				.UseBeautifulFundamentalCore()
-				.ConfigureServices((hostContext, services) =>
+				.ConfigureServices((_, services) =>
 				{
 					// --- GENERAL ---
 					services.AddHostedService<ClientManager>();
 
 					// --- CONFIGURATION ---
-					_config = FundamentalApplicationBuilder.CreateAndSetupConfig(services);
+					FundamentalApplicationBuilder.CreateAndSetupConfig(services);
 				});
 	}
 }

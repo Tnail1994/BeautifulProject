@@ -17,10 +17,7 @@ namespace BeautifulFundamental.Core
 	{
 		public static IHostBuilder UseBeautifulFundamentalCore(this IHostBuilder hostBuilder, bool scoped = false)
 		{
-			hostBuilder.ConfigureServices((hostContext, services) =>
-			{
-				RegisterBeautifulFundamentalCore(services, scoped);
-			});
+			hostBuilder.ConfigureServices((_, services) => { RegisterBeautifulFundamentalCore(services, scoped); });
 
 			return hostBuilder;
 		}
@@ -80,19 +77,19 @@ namespace BeautifulFundamental.Core
 				.AddEnvironmentVariables()
 				.Build();
 			services.AddSingleton<IAsyncClientSettings>(_ =>
-				config?.GetSection(nameof(AsyncClientSettings)).Get<AsyncClientSettings>() ??
+				config.GetSection(nameof(AsyncClientSettings)).Get<AsyncClientSettings>() ??
 				AsyncClientSettings.Default);
 			services.AddSingleton<ICheckAliveSettings>(_ =>
-				config?.GetSection(nameof(CheckAliveSettings)).Get<CheckAliveSettings>() ??
+				config.GetSection(nameof(CheckAliveSettings)).Get<CheckAliveSettings>() ??
 				CheckAliveSettings.Default);
 			services.AddSingleton<IConnectionSettings>(_ =>
-				config?.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
+				config.GetSection(nameof(ConnectionSettings)).Get<ConnectionSettings>() ??
 				ConnectionSettings.Default);
 			services.AddSingleton<IIdentificationKeySettings>(_ =>
-				config?.GetSection(nameof(IdentificationKeySettings)).Get<IdentificationKeySettings>() ??
+				config.GetSection(nameof(IdentificationKeySettings)).Get<IdentificationKeySettings>() ??
 				IdentificationKeySettings.Default);
 			services.AddSingleton<ITlsSettings>(_ =>
-				config?.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
+				config.GetSection(nameof(TlsSettings)).Get<TlsSettings>() ??
 				TlsSettings.Default);
 			return config;
 		}
