@@ -37,7 +37,6 @@ namespace BeautifulMauiClientApplication
 			FundamentalApplicationBuilder.RegisterBeautifulFundamentalCore(builder.Services);
 
 			builder.Services.AddSingleton<IDataService, DataService>();
-			builder.Services.AddSingleton<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
 			builder.Services.AddSingleton<IStartupService, StartupService>();
 
 			// Auto start services

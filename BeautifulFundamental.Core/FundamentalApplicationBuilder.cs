@@ -3,6 +3,7 @@ using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Communication.Transformation;
 using BeautifulFundamental.Core.Identification;
+using BeautifulFundamental.Core.MessageHandling;
 using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Core.Messages.RandomTestData;
@@ -51,6 +52,7 @@ namespace BeautifulFundamental.Core
 				services.AddScoped<ICommunicationService, CommunicationService>();
 				services.AddScoped<IConnectionService, ConnectionService>();
 				services.AddScoped<ICheckAliveService, CheckAliveService>();
+				services.AddScoped<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
 			}
 			else
 			{
@@ -62,6 +64,7 @@ namespace BeautifulFundamental.Core
 				services.AddSingleton<ICommunicationService, CommunicationService>();
 				services.AddSingleton<IConnectionService, ConnectionService>();
 				services.AddSingleton<ICheckAliveService, CheckAliveService>();
+				services.AddSingleton<IAutoSynchronizedMessageHandler, AutoSynchronizedMessageHandler>();
 			}
 
 			services.AddSingleton<ITransformerService, TransformerService>();
