@@ -29,6 +29,11 @@ namespace BeautifulClientApplication
 		private async void OnConnectionEstablished()
 		{
 			await Login();
+
+			// Test registration
+			var registrationReply = await _communicationService.SendAndReceiveAsync<RegistrationReply>(
+				RegistrationRequest.Create("registrationName"));
+			this.LogInfo($"Registration was successful: {registrationReply.RegistrationReplyValue?.Success}");
 		}
 
 
