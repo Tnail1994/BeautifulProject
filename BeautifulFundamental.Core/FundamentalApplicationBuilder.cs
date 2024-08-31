@@ -41,6 +41,8 @@ namespace BeautifulFundamental.Core
 			services.AddTransient<INetworkMessage, DeviceIdentReply>();
 			services.AddTransient<INetworkMessage, LogoutRequest>();
 			services.AddTransient<INetworkMessage, LogoutReply>();
+			services.AddTransient<INetworkMessage, RegistrationRequest>();
+			services.AddTransient<INetworkMessage, RegistrationReply>();
 
 			if (scoped)
 			{
