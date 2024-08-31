@@ -30,7 +30,7 @@ namespace BeautifulFundamental.Server.Session.Services.UserRegistration
 		protected IIdentificationKey IdentificationKey { get; }
 		protected string SessionId => IdentificationKey.SessionId;
 
-		protected virtual INetworkMessage OnRegistrationRequestReceived(INetworkMessage message)
+		protected INetworkMessage OnRegistrationRequestReceived(INetworkMessage message)
 		{
 			if (message is RegistrationRequest { RegistrationRequestValue: not null } registrationRequest)
 			{
@@ -46,7 +46,7 @@ namespace BeautifulFundamental.Server.Session.Services.UserRegistration
 		}
 
 
-		public virtual void Dispose()
+		public void Dispose()
 		{
 			if (_subscribeId != null)
 				_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
