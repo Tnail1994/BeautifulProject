@@ -1,13 +1,13 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
-using BeautifulFundamental.Core.Communication.Client;
+﻿using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Communication.Transformation;
 using BeautifulFundamental.Core.Communication.Transformation.Implementations;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Identification;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 #if DEBUG
+using System.Diagnostics;
 #endif
 
 namespace BeautifulFundamental.Core.Communication

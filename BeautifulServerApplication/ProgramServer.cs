@@ -1,6 +1,4 @@
 ﻿using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Core.Messages.CheckAlive;
-using BeautifulFundamental.Core.Messages.RandomTestData;
 using BeautifulFundamental.Server;
 using BeautifulFundamental.Server.Db;
 using BeautifulFundamental.Server.Session.Contracts.Context;
@@ -11,6 +9,11 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Session.Example;
 
+#if DEBUG
+using BeautifulFundamental.Core.Messages.CheckAlive;
+using BeautifulFundamental.Core.Messages.RandomTestData;
+#endif
+
 namespace BeautifulServerApplication
 {
 	internal class ProgramServer
@@ -20,8 +23,8 @@ namespace BeautifulServerApplication
 #if DEBUG
 		private static IServiceProvider? _serviceProvider;
 		private static ISessionManager? _sessionManager;
-		private static IHost? _host;
 #endif
+		private static IHost? _host;
 
 		static async Task Main(string[] args)
 		{

@@ -1,16 +1,17 @@
-﻿using System.Collections.Concurrent;
-using System.Net.Security;
-using System.Net.Sockets;
-using BeautifulFundamental.Core.Communication.Client;
+﻿using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Extensions;
-using BeautifulFundamental.Core.Helpers;
 using BeautifulFundamental.Server.Core;
 using BeautifulFundamental.Server.Session.Contracts.Core;
 using BeautifulFundamental.Server.Session.Contracts.Scope;
 using BeautifulFundamental.Server.Session.Contracts.Services;
 using BeautifulFundamental.Server.Session.Implementations;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Concurrent;
+using System.Net.Security;
+using System.Net.Sockets;
 #if DEBUG
+using BeautifulFundamental.Core.Helpers;
+
 #endif
 
 namespace BeautifulFundamental.Server.Session.Core
