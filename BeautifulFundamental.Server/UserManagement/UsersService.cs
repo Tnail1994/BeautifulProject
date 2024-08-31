@@ -9,6 +9,7 @@ namespace BeautifulFundamental.Server.UserManagement
 		bool TryGetUserByUsername(string username, out User? user);
 		void SetUser(User user);
 		void SetUsersActiveState(string username, bool isActive);
+		void AddNewUser(User newUser);
 	}
 
 	public class UsersService : IUsersService, IDisposable
@@ -32,14 +33,14 @@ namespace BeautifulFundamental.Server.UserManagement
 
 		private UserDto? FindUserByName(string username)
 		{
-			var entities = _dbManager.GetEntities<UserDto>();
+			var entities = GetEntities();
 			var foundUser = entities?.FirstOrDefault(user => user.Name == username);
 			return foundUser;
 		}
 
 		private UserDto? FindUserByDeviceIdent(string deviceIdent)
 		{
-			var entities = _dbManager.GetEntities<UserDto>();
+			var entities = GetEntities();
 			var foundUser = entities?.FirstOrDefault(user => user.LastLoggedInDeviceIdent == deviceIdent);
 			return foundUser;
 		}
@@ -56,6 +57,27 @@ namespace BeautifulFundamental.Server.UserManagement
 
 			foundUser.IsActive = isActive;
 			_dbManager.SaveChanges(foundUser);
+		}
+
+		public void AddNewUser(User newUser)
+		{
+			var entities = GetEntities()?.ToList();
+
+			if (entities == null)
+			{
+				this.LogError($"Cannot add new user, because entities null!");
+				return;
+			}
+
+			var newUserDto = Map(newUser);
+
+			if (entities.Any(user => user.Equals(newUserDto)))
+			{
+				this.LogError($"Cannot add new user, because already existing!");
+				return;
+			}
+
+			_dbManager.SaveChanges(newUserDto);
 		}
 
 		public bool TryGetUserByDeviceIdent(string deviceIdent, out User? user)
@@ -93,10 +115,10 @@ namespace BeautifulFundamental.Server.UserManagement
 			return user != null;
 		}
 
-		//private UserDto Map(User user)
-		//{
-		//	return new UserDto(user.Name);
-		//}
+		private UserDto Map(User user)
+		{
+			return new UserDto(user.Name);
+		}
 
 		private User Map(UserDto userDto)
 		{

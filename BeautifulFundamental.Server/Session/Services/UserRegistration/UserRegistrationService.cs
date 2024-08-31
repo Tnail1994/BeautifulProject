@@ -34,10 +34,12 @@ namespace BeautifulFundamental.Server.Session.Services.UserRegistration
 		{
 			if (message is RegistrationRequest { RegistrationRequestValue: not null } registrationRequest)
 			{
+				var username = registrationRequest.RegistrationRequestValue.Name;
 				var userExists =
-					_usersService.TryGetUserByUsername(registrationRequest.RegistrationRequestValue.Name, out _);
+					_usersService.TryGetUserByUsername(username, out _);
 
 				// todo if user not exists, then we can create and add new user
+				_usersService.AddNewUser(User.Create(username, false, false, null, 0));
 
 				return RegistrationReply.Create(!userExists);
 			}
