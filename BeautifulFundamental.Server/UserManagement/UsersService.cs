@@ -25,27 +25,9 @@ namespace BeautifulFundamental.Server.UserManagement
 			return FindUserByName(username) != null;
 		}
 
-		//private IEnumerable<User>? GetUsers()
-		//{
-		//	return GetEntities()?.Select(Map);
-		//}
-
 		private IEnumerable<UserDto>? GetEntities()
 		{
 			return _dbManager.GetEntities<UserDto>();
-		}
-
-		public bool IsUsernameActive(string username)
-		{
-			var foundUser = FindUserByName(username);
-
-			if (foundUser == null)
-				return false;
-
-			if (foundUser.IsActive)
-				this.LogDebug($"Username {username} is already active");
-
-			return foundUser.IsActive;
 		}
 
 		private UserDto? FindUserByName(string username)
