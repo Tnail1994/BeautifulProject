@@ -30,7 +30,6 @@
 		}
 
 		return null; // Means that nothing should send as an awnser to this message
-        // If you want to send a message, then you should create it here and then return it.
 	}
     ```
 
