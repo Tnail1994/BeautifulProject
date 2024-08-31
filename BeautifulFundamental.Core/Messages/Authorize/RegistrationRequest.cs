@@ -15,6 +15,15 @@ namespace BeautifulFundamental.Core.Messages.Authorize
 
 	public class RegistrationRequest : NetworkMessage<RegistrationRequestValue>
 	{
+		public static RegistrationRequest Create(string name)
+		{
+			var registrationRequest = new RegistrationRequestValue(name);
+			return new RegistrationRequest
+			{
+				RegistrationRequestValue = registrationRequest
+			};
+		}
+
 		[JsonIgnore]
 		public RegistrationRequestValue? RegistrationRequestValue
 		{

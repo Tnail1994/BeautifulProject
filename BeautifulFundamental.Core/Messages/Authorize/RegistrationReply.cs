@@ -11,11 +11,17 @@ namespace BeautifulFundamental.Core.Messages.Authorize
 
 	public class RegistrationReply : NetworkMessage<RegistrationReplyValue>
 	{
-		public RegistrationReply(bool success, string? infoText = null)
+		public static RegistrationReply Create(bool success, string? infoText = null)
 		{
-			RegistrationReplyValue ??= new RegistrationReplyValue();
-			RegistrationReplyValue.Success = success;
-			RegistrationReplyValue.InfoText = infoText;
+			var registrationReply = new RegistrationReplyValue
+			{
+				Success = success,
+				InfoText = infoText
+			};
+			return new RegistrationReply
+			{
+				RegistrationReplyValue = registrationReply
+			};
 		}
 
 
