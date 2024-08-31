@@ -7,7 +7,8 @@ using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Net.Sockets;
 using BeautifulFundamental.Server.Session.Scope;
-using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.Session.Services.Session;
+
 #if DEBUG
 using BeautifulFundamental.Core.Helpers;
 

@@ -3,8 +3,9 @@ using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Services.CheckAlive;
 using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Implementations;
-using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
+using BeautifulFundamental.Server.Session.Services.Session;
+using BeautifulFundamental.Server.Session.Services.UserRegistration;
 
 namespace BeautifulFundamental.Server.Session.Core
 {
@@ -30,6 +31,7 @@ namespace BeautifulFundamental.Server.Session.Core
 
 		private readonly ICommunicationService _communicationService;
 		private readonly ISessionsService _sessionsService;
+		private readonly IUserRegistrationService _userRegistrationService;
 
 		private SessionInfo _sessionInfo;
 
@@ -37,7 +39,7 @@ namespace BeautifulFundamental.Server.Session.Core
 			ISessionContextManager sessionContextManager,
 			IConnectionService connectionService,
 			IAuthenticationService authenticationService, ICommunicationService communicationService,
-			ISessionsService sessionsService)
+			ISessionsService sessionsService, IUserRegistrationService userRegistrationService)
 		{
 			_sessionLoop = sessionLoop;
 			_sessionContext = sessionContext;
@@ -46,6 +48,7 @@ namespace BeautifulFundamental.Server.Session.Core
 			_authenticationService = authenticationService;
 			_communicationService = communicationService;
 			_sessionsService = sessionsService;
+			_userRegistrationService = userRegistrationService;
 
 			_sessionInfo = SessionInfo.Create(Id, string.Empty);
 		}
@@ -83,6 +86,8 @@ namespace BeautifulFundamental.Server.Session.Core
 		{
 			try
 			{
+				_userRegistrationService.Start();
+
 				SetState(SessionState.Authorizing);
 
 				var authorizationInfo = await _authenticationService.Authorize(_communicationService);

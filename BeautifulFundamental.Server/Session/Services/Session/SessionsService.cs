@@ -5,7 +5,7 @@ using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Implementations;
 
-namespace BeautifulFundamental.Server.Session.Services
+namespace BeautifulFundamental.Server.Session.Services.Session
 {
 	public interface ISessionsService
 	{

@@ -6,7 +6,7 @@ using BeautifulFundamental.Server.Core;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Implementations;
 using BeautifulFundamental.Server.Session.Scope;
-using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.Session.Services.Session;
 
 namespace Tests.Session.Core
 {

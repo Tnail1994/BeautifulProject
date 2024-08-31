@@ -1,11 +1,9 @@
 ﻿using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Core.MessageHandling;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Core;
-using BeautifulFundamental.Server.UserManagement;
 
 namespace Session.Example
 {
@@ -19,9 +17,7 @@ namespace Session.Example
 		public TestSessionLoop(IIdentificationKey identificationKey, ITurnDetails turnDetails,
 			IRoundDetails roundDetails,
 			ICurrentPlayerDetails currentPlayerDetails,
-			ICommunicationService communicationService,
-			IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler,
-			IUsersService usersService) : base(identificationKey, autoSynchronizedMessageHandler, usersService)
+			ICommunicationService communicationService) : base(identificationKey)
 		{
 			_turnDetails = turnDetails;
 			_roundDetails = roundDetails;

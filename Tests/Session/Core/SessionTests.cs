@@ -1,8 +1,9 @@
 ﻿using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Core;
-using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
+using BeautifulFundamental.Server.Session.Services.Session;
+using BeautifulFundamental.Server.Session.Services.UserRegistration;
 using NSubstitute;
 
 namespace Tests.Session.Core
@@ -25,11 +26,12 @@ namespace Tests.Session.Core
 			var sessionContextManagerMock = Substitute.For<ISessionContextManager>();
 
 			var sessionLoop = Substitute.For<Lazy<ISessionLoop>>();
-
+			var userRegistrationServiceMock = Substitute.For<IUserRegistrationService>();
 			_session = new global::BeautifulFundamental.Server.Session.Core.Session(sessionLoop, sessionContextMock,
 				sessionContextManagerMock,
 				_connectionServiceMock,
-				_authenticationServiceMock, _communicationServiceMock, _sessionsServiceMock);
+				_authenticationServiceMock, _communicationServiceMock, _sessionsServiceMock,
+				userRegistrationServiceMock);
 		}
 
 		[Fact]

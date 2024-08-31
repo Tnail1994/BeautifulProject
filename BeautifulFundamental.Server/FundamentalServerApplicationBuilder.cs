@@ -5,8 +5,9 @@ using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Scope;
-using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
+using BeautifulFundamental.Server.Session.Services.Session;
+using BeautifulFundamental.Server.Session.Services.UserRegistration;
 using BeautifulFundamental.Server.UserManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,6 +52,8 @@ namespace BeautifulFundamental.Server
 
 			services.AddScoped<ISessionContext, SessionContext>();
 			services.AddScoped<ISessionDetailsManager, SessionDetailsManager>();
+
+			services.AddScoped<IUserRegistrationService, UserRegistrationService>();
 
 			// Make it lazy, because the details needed to be initialized. This happens, will
 			// build and start the session. If the session is ready, then the loop will be needed.

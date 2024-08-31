@@ -1,7 +1,7 @@
 ﻿using BeautifulFundamental.Server.Db;
 using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Core;
-using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.Session.Services.Session;
 using BeautifulFundamental.Server.UserManagement;
 using NSubstitute;
 

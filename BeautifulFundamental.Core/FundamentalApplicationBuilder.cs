@@ -31,18 +31,23 @@ namespace BeautifulFundamental.Core
 		/// <param name="scoped"></param>
 		public static void RegisterBeautifulFundamentalCore(IServiceCollection services, bool scoped = false)
 		{
-			services.AddTransient<INetworkMessage, CheckAliveRequest>();
-			services.AddTransient<INetworkMessage, CheckAliveReply>();
-			services.AddTransient<INetworkMessage, LoginReply>();
-			services.AddTransient<INetworkMessage, LoginRequest>();
-			services.AddTransient<INetworkMessage, RandomDataRequest>();
-			services.AddTransient<INetworkMessage, RandomDataReply>();
+			// Authentication
 			services.AddTransient<INetworkMessage, DeviceIdentRequest>();
 			services.AddTransient<INetworkMessage, DeviceIdentReply>();
+			services.AddTransient<INetworkMessage, LoginReply>();
+			services.AddTransient<INetworkMessage, LoginRequest>();
 			services.AddTransient<INetworkMessage, LogoutRequest>();
 			services.AddTransient<INetworkMessage, LogoutReply>();
+
+			// Services
+			services.AddTransient<INetworkMessage, CheckAliveRequest>();
+			services.AddTransient<INetworkMessage, CheckAliveReply>();
 			services.AddTransient<INetworkMessage, RegistrationRequest>();
 			services.AddTransient<INetworkMessage, RegistrationReply>();
+
+			// Testing
+			services.AddTransient<INetworkMessage, RandomDataRequest>();
+			services.AddTransient<INetworkMessage, RandomDataReply>();
 
 			if (scoped)
 			{
