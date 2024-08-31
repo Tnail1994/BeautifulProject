@@ -10,7 +10,7 @@
                 var messageMockValue = new MessageMockValue();
                 return new RegistrationReply(messageMockValue);
             }
-
+        }
     ```
 
     **_Hint:_** Do not create a constructor, which constructor arguments are not registered the container.
