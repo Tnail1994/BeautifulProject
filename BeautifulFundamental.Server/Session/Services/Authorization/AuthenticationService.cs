@@ -1,6 +1,7 @@
 ﻿using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Extensions;
+using BeautifulFundamental.Core.MessageHandling;
 using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Server.UserManagement;
 
@@ -15,13 +16,34 @@ namespace BeautifulFundamental.Server.Session.Services.Authorization
 	public class AuthenticationService : IAuthenticationService
 	{
 		private readonly IUsersService _usersService;
+		private readonly IAutoSynchronizedMessageHandler _autoSynchronizedMessageHandler;
 		private readonly IAuthenticationSettings _settings;
 		private static LoginReply? _loginReplyObj;
+		private readonly string _subscribeId;
 
-		public AuthenticationService(IUsersService usersService, IAuthenticationSettings settings)
+		public AuthenticationService(IUsersService usersService,
+			IAutoSynchronizedMessageHandler autoSynchronizedMessageHandler, IAuthenticationSettings settings)
 		{
 			_usersService = usersService;
+			_autoSynchronizedMessageHandler = autoSynchronizedMessageHandler;
+			_subscribeId =
+				_autoSynchronizedMessageHandler.Subscribe<RegistrationRequest>(OnRegistrationRequestReceived);
 			_settings = settings;
+		}
+
+		private INetworkMessage OnRegistrationRequestReceived(INetworkMessage message)
+		{
+			if (message is RegistrationRequest { RegistrationRequestValue: not null } registrationRequest)
+			{
+				var userExists =
+					_usersService.TryGetUserByUsername(registrationRequest.RegistrationRequestValue.Name, out _);
+
+				// todo if user not exists, then we can create and add new user
+
+				return new RegistrationReply(userExists);
+			}
+
+			return new RegistrationReply(false, "Unexpected Error occured. Please try again later.");
 		}
 
 		public async Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService)
@@ -113,6 +135,8 @@ namespace BeautifulFundamental.Server.Session.Services.Authorization
 		{
 			try
 			{
+				_autoSynchronizedMessageHandler.Unsubscribe(_subscribeId);
+
 				var logoutReply = await communicationService.SendAndReceiveAsync<LogoutReply>(new LogoutRequest());
 
 				if (!logoutReply.IsOk)

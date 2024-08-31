@@ -1,4 +1,5 @@
 ﻿using BeautifulFundamental.Core.Communication;
+using BeautifulFundamental.Core.MessageHandling;
 using BeautifulFundamental.Core.Messages.Authorize;
 using BeautifulFundamental.Server.Session.Services.Authorization;
 using BeautifulFundamental.Server.UserManagement;
@@ -14,6 +15,7 @@ namespace Tests.Session.Services
 		public AuthenticationServiceTests()
 		{
 			_userServiceMock = Substitute.For<IUsersService>();
+			var autoSynchronizedMessageHandlerMock = Substitute.For<IAutoSynchronizedMessageHandler>();
 			var authenticationSettingsMock = new AuthenticationSettings
 			{
 				AuthTimeoutInMinutes = 0,
@@ -21,7 +23,9 @@ namespace Tests.Session.Services
 				MaxReactivateAuthenticationCounter = 1
 			};
 
-			_authenticationService = new AuthenticationService(_userServiceMock, authenticationSettingsMock);
+			_authenticationService =
+				new AuthenticationService(_userServiceMock, autoSynchronizedMessageHandlerMock,
+					authenticationSettingsMock);
 		}
 
 		[Fact]
