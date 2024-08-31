@@ -1,14 +1,13 @@
 ﻿using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Server.Core;
-using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Scope;
-using BeautifulFundamental.Server.Session.Contracts.Services;
 using BeautifulFundamental.Server.Session.Implementations;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Net.Sockets;
+using BeautifulFundamental.Server.Session.Scope;
+using BeautifulFundamental.Server.Session.Services;
 #if DEBUG
 using BeautifulFundamental.Core.Helpers;
 
@@ -16,6 +15,14 @@ using BeautifulFundamental.Core.Helpers;
 
 namespace BeautifulFundamental.Server.Session.Core
 {
+	public interface ISessionManager
+	{
+#if DEBUG
+		void SendMessageToRandomClient(object messageObject);
+		void SendMessageToAllClients(object messageObject);
+#endif
+	}
+
 	public class SessionManager : ISessionManager, IHostedService
 	{
 		private readonly IAsyncServer _asyncSocketServer;

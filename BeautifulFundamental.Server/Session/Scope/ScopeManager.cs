@@ -1,11 +1,16 @@
 ﻿using System.Collections.Concurrent;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Scope;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeautifulFundamental.Server.Session.Scope
 {
+	public interface IScopeManager
+	{
+		IScope Create();
+		void Destroy(IIdentificationKey identificationKey);
+	}
+
 	public class ScopeManager : IScopeManager, IDisposable
 	{
 		private readonly IServiceProvider _serviceProvider;

@@ -1,5 +1,10 @@
 ﻿namespace BeautifulFundamental.Server.Db
 {
+	public interface IDbSettings
+	{
+		int CachingTimeInSeconds { get; init; }
+	}
+
 	public class DbSettings : IDbSettings
 	{
 		private const int DefaultCachingTimeInSeconds = 60;

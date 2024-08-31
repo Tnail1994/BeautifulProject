@@ -4,6 +4,8 @@ using BeautifulFundamental.Server.Db;
 
 namespace BeautifulFundamental.Server.UserManagement
 {
+	public interface IUsersDbContext;
+
 	public class UsersDbContext : BaseDbContext<UserDto>, IUsersDbContext
 	{
 		public UsersDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)

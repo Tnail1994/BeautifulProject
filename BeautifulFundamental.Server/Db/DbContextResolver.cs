@@ -2,6 +2,11 @@
 
 namespace BeautifulFundamental.Server.Db
 {
+	public interface IDbContextResolver
+	{
+		IEnumerable<IDbContext> Get();
+	}
+
 	public class DbContextResolver : IDbContextResolver
 	{
 		private readonly IEnumerable<IDbContext> _dbContexts;

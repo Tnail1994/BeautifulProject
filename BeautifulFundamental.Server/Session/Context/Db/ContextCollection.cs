@@ -1,9 +1,14 @@
 ﻿using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 using BeautifulFundamental.Server.Session.Implementations;
 
 namespace BeautifulFundamental.Server.Session.Context.Db
 {
+	public interface IContextCollection
+	{
+		string TypeNameOfCollectionEntries { get; }
+		IEntryDto? GetEntry(string sessionId);
+	}
+
 	public abstract class ContextCollection<TEntryDto> : BaseDbContext<TEntryDto>, IContextCollection
 		where TEntryDto : EntryDto
 	{

@@ -2,13 +2,23 @@
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Server.Db;
 using BeautifulFundamental.Server.Session.Context.Db;
-using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Services;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Implementations;
 
 namespace BeautifulFundamental.Server.Session.Services
 {
+	public interface ISessionsService
+	{
+		void TryAdd(ISession session, ISessionInfo sessionInfo);
+		bool TryRemove(string sessionId);
+#if DEBUG
+		IEnumerable<ISession> GetSessions();
+#endif
+		void SaveSessionInfo(ISessionInfo sessionInfo);
+		bool TryGetPendingSessionInfo(string username, out ISessionInfo sessionInfo);
+		void UpdateSession(ISession session, ISessionInfo sessionInfo);
+	}
+
 	public class SessionsService : ISessionsService
 	{
 		private class SessionBundle

@@ -1,11 +1,18 @@
 ﻿using System.Collections.Concurrent;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace BeautifulFundamental.Server.Db
 {
+	public interface IDbManager
+	{
+		IEnumerable<T>? GetEntities<T>(IIdentificationKey? sessionKey = null) where T : EntityDto;
+		void SaveChanges<T>(T dto, IIdentificationKey? sessionKey = null) where T : EntityDto;
+		IContextCollection? GetContextCollection(string requestedTypeName);
+	}
+
 	public class DbManager : IDbManager, IDisposable
 	{
 		private const string CacheKey = "DbManager_MasterCacheKey";

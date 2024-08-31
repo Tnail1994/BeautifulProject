@@ -1,11 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 using BeautifulFundamental.Server.Session.Implementations;
 
 namespace BeautifulFundamental.Server.Session.Context.Db
 {
+	public interface ISessionsDbContext;
+
+	public interface ISessionDataProvider
+	{
+		bool TryGetSessionState(string sessionId, out SessionState sessionState);
+	}
+
 	public class SessionsDbContext : BaseDbContext<SessionInfoDto>, ISessionsDbContext, ISessionDataProvider
 	{
 		public SessionsDbContext(IDbContextSettings dbContextSettings) : base(dbContextSettings)

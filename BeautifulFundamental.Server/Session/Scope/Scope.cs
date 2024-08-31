@@ -1,9 +1,15 @@
 ﻿using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Scope;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeautifulFundamental.Server.Session.Scope
 {
+	public interface IScope
+	{
+		string Id { get; }
+		IServiceScope ServiceScope { get; }
+		T GetService<T>() where T : class;
+	}
+
 	public class Scope : IScope
 	{
 		private readonly IIdentificationKey _identificationKey;

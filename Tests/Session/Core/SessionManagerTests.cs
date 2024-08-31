@@ -3,11 +3,10 @@ using NSubstitute;
 using System.Net.Sockets;
 using BeautifulFundamental.Core.Communication.Client;
 using BeautifulFundamental.Server.Core;
-using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Scope;
-using BeautifulFundamental.Server.Session.Contracts.Services;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Implementations;
+using BeautifulFundamental.Server.Session.Scope;
+using BeautifulFundamental.Server.Session.Services;
 
 namespace Tests.Session.Core
 {

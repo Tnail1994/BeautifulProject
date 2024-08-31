@@ -21,11 +21,4 @@ namespace BeautifulFundamental.Server.Core
 			return new ConnectionOccurObject(clientId, client, sslStream);
 		}
 	}
-
-	public interface IAsyncServer
-	{
-		event Action<ConnectionOccurObject> NewConnectionOccured;
-		Task StartAsync();
-		void Remove(string clientId);
-	}
 }

@@ -7,6 +7,11 @@ using Newtonsoft.Json.Linq;
 
 namespace BeautifulFundamental.Core.Communication.Transformation
 {
+	public interface ITransformerService : IDisposable
+	{
+		TransformedObject Transform(string jsonString);
+	}
+
 	public class TransformerService : ITransformerService
 	{
 		private readonly Dictionary<string, MethodInfo> _methodCache = new Dictionary<string, MethodInfo>();

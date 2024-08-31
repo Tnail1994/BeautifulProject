@@ -5,6 +5,13 @@ using BeautifulFundamental.Core.Messages.CheckAlive;
 
 namespace BeautifulFundamental.Core.Services.CheckAlive
 {
+	public interface ICheckAliveService
+	{
+		event Action ConnectionLost;
+		void Start();
+		void Stop(bool force = false);
+	}
+
 	public class CheckAliveService : ICheckAliveService, IDisposable
 	{
 		private const int MinFrequencyInSeconds = 20;

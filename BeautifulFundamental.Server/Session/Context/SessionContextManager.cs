@@ -1,11 +1,15 @@
 ﻿using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BeautifulFundamental.Server.Session.Context
 {
+	public interface ISessionContextManager
+	{
+		bool TryFillSessionContext(ISessionContext sessionContext);
+	}
+
 	public class SessionContextManager : ISessionContextManager
 	{
 		private readonly IDbManager _dbManager;

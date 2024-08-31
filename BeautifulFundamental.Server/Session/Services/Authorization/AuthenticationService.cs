@@ -2,11 +2,16 @@
 using BeautifulFundamental.Core.Communication.Implementations;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Messages.Authorize;
-using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
 using BeautifulFundamental.Server.UserManagement;
 
 namespace BeautifulFundamental.Server.Session.Services.Authorization
 {
+	public interface IAuthenticationService
+	{
+		Task<IAuthorizationInfo> Authorize(ICommunicationService communicationService);
+		Task UnAuthorize(ICommunicationService communicationServicestring, string anyIdentifier);
+	}
+
 	public class AuthenticationService : IAuthenticationService
 	{
 		private readonly IUsersService _usersService;

@@ -1,10 +1,18 @@
 ﻿using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 
 namespace BeautifulFundamental.Server.Session.Context
 {
+	public interface ISessionDetailsManager
+	{
+		TSessionDetail? GetSessionDetail<TSessionEntryDto, TSessionDetail>()
+			where TSessionEntryDto : class, IEntryDto
+			where TSessionDetail : class, ISessionDetail;
+
+		void Observe(ISessionDetail sessionDetail);
+	}
+
 	public class SessionDetailsManager : ISessionDetailsManager, IDisposable
 	{
 		private class SessionDataMap

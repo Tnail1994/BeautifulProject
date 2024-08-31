@@ -1,5 +1,4 @@
 ﻿using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Core;
 
 namespace BeautifulFundamental.Server.Session.Core
 {

@@ -1,7 +1,11 @@
-﻿using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
-
-namespace BeautifulFundamental.Server.Session.Services.Authorization
+﻿namespace BeautifulFundamental.Server.Session.Services.Authorization
 {
+	public interface IAuthorizationInfo
+	{
+		bool IsAuthorized { get; }
+		string Username { get; }
+	}
+
 	internal class AuthorizationInfo : IAuthorizationInfo
 	{
 		private AuthorizationInfo(string username)

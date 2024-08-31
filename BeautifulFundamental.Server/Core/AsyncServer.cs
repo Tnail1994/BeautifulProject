@@ -10,6 +10,13 @@ using BeautifulFundamental.Core.Helpers;
 
 namespace BeautifulFundamental.Server.Core
 {
+	public interface IAsyncServer
+	{
+		event Action<ConnectionOccurObject> NewConnectionOccured;
+		Task StartAsync();
+		void Remove(string clientId);
+	}
+
 	public class AsyncServer : IAsyncServer, IDisposable
 	{
 		private readonly ITlsSettings _tlsSettings;

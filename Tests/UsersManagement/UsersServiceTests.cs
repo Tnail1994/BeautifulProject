@@ -1,6 +1,5 @@
 ﻿using BeautifulFundamental.Server.Db;
 using BeautifulFundamental.Server.Session.Context.Db;
-using BeautifulFundamental.Server.Session.Contracts.Core;
 using BeautifulFundamental.Server.Session.Core;
 using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.UserManagement;

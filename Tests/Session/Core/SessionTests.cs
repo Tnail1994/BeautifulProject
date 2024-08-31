@@ -1,9 +1,7 @@
 ﻿using BeautifulFundamental.Core.Communication;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Services;
-using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
+using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Core;
+using BeautifulFundamental.Server.Session.Services;
 using BeautifulFundamental.Server.Session.Services.Authorization;
 using NSubstitute;
 

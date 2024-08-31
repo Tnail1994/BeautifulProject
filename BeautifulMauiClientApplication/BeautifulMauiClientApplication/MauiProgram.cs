@@ -1,14 +1,5 @@
 ﻿using BeautifulFundamental.Core;
-using BeautifulFundamental.Core.Communication;
-using BeautifulFundamental.Core.Communication.Client;
-using BeautifulFundamental.Core.Communication.Implementations;
-using BeautifulFundamental.Core.Communication.Transformation;
-using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Core.MessageHandling;
-using BeautifulFundamental.Core.Messages.Authorize;
-using BeautifulFundamental.Core.Messages.CheckAlive;
-using BeautifulFundamental.Core.Messages.RandomTestData;
-using BeautifulFundamental.Core.Services.CheckAlive;
 using BeautifulMauiClientApplication.Example;
 using BeautifulMauiClientApplication.Login;
 using BeautifulMauiClientApplication.Startup;

@@ -2,7 +2,7 @@
 using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Core.Messages.CheckAlive;
 using BeautifulFundamental.Server.Session.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 using BeautifulFundamental.Server.Session.Core;
 
 namespace Session.Example

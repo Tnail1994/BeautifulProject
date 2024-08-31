@@ -1,9 +1,16 @@
 ﻿using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 
 namespace BeautifulFundamental.Server.Session.Context
 {
+	public interface ISessionDetail
+	{
+		event EventHandler<DetailsChangedArgs> DetailsChanged;
+		string SessionId { get; }
+		string TypeName { get; }
+		IEntryDto Convert();
+	}
+
 	public abstract class SessionDetail : ISessionDetail
 	{
 		public SessionDetail(IIdentificationKey identificationKey)

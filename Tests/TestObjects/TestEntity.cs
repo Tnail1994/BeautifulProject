@@ -1,8 +1,6 @@
-﻿using BeautifulFundamental.Core;
-
-namespace Tests.TestObjects
+﻿namespace Tests.TestObjects
 {
-	public class TestEntity : IEntity
+	public class TestEntity
 	{
 		// ReSharper disable once EmptyConstructor
 		public TestEntity()

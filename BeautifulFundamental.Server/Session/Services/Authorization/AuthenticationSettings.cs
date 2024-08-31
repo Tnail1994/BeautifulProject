@@ -1,7 +1,12 @@
-﻿using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
-
-namespace BeautifulFundamental.Server.Session.Services.Authorization
+﻿namespace BeautifulFundamental.Server.Session.Services.Authorization
 {
+	public interface IAuthenticationSettings
+	{
+		int MaxAuthAttempts { get; }
+		int AuthTimeoutInMinutes { get; }
+		int MaxReactivateAuthenticationCounter { get; }
+	}
+
 	public class AuthenticationSettings : IAuthenticationSettings
 	{
 		private const int DefaultMaxAuthAttempts = 3;

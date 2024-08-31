@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Server.Db;
+using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Context.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context;
 
 namespace Session.Example
 {

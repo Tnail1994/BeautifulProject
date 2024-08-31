@@ -1,14 +1,25 @@
 ﻿using BeautifulFundamental.Core.Communication;
 using BeautifulFundamental.Core.Extensions;
 using BeautifulFundamental.Core.Services.CheckAlive;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Core;
-using BeautifulFundamental.Server.Session.Contracts.Services;
-using BeautifulFundamental.Server.Session.Contracts.Services.Authorization;
+using BeautifulFundamental.Server.Session.Context;
 using BeautifulFundamental.Server.Session.Implementations;
+using BeautifulFundamental.Server.Session.Services;
+using BeautifulFundamental.Server.Session.Services.Authorization;
 
 namespace BeautifulFundamental.Server.Session.Core
 {
+	public interface ISession
+	{
+		event EventHandler<SessionStoppedEventArgs>? SessionStopped;
+		string Id { get; }
+
+		void Start();
+
+#if DEBUG
+		void SendMessageToClient(object message);
+#endif
+	}
+
 	public class Session : ISession, IDisposable
 	{
 		private readonly Lazy<ISessionLoop> _sessionLoop;

@@ -2,11 +2,16 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
 
 namespace BeautifulFundamental.Server.Session.Context.Db
 {
+	public interface IEntryDto
+	{
+		string TypeName { get; }
+		ISessionDetail Convert(IIdentificationKey identificationKey);
+		void Update(ISessionDetail sessionDetail);
+	}
+
 	public abstract class EntryDto : EntityDto, IEntryDto
 	{
 		public EntryDto(string sessionId)

@@ -1,9 +1,9 @@
 ﻿using BeautifulFundamental.Core.Identification;
 using BeautifulFundamental.Server;
 using BeautifulFundamental.Server.Db;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
-using BeautifulFundamental.Server.Session.Contracts.Core;
+using BeautifulFundamental.Server.Session.Context;
+using BeautifulFundamental.Server.Session.Context.Db;
+using BeautifulFundamental.Server.Session.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;

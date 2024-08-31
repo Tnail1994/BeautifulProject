@@ -1,9 +1,16 @@
 ﻿using BeautifulFundamental.Core.Identification;
-using BeautifulFundamental.Server.Session.Contracts.Context;
-using BeautifulFundamental.Server.Session.Contracts.Context.Db;
+using BeautifulFundamental.Server.Session.Context.Db;
 
 namespace BeautifulFundamental.Server.Session.Context
 {
+	public interface ISessionContext
+	{
+		string SessionId { get; }
+		IIdentificationKey IdentificationKey { get; }
+		void AddEntry(IEntryDto entry);
+		bool TryGetEntry<TEntryDto>(out TEntryDto? entryDto) where TEntryDto : IEntryDto;
+	}
+
 	public class SessionContext : ISessionContext
 	{
 		/// <summary>

@@ -1,8 +1,6 @@
-﻿using BeautifulFundamental.Core;
-
-namespace BeautifulFundamental.Server.UserManagement
+﻿namespace BeautifulFundamental.Server.UserManagement
 {
-	public class User : IEntity
+	public class User
 	{
 		private User(string username, bool isActive, bool stayActive, string? lastLoggedInDeviceIdent,
 			int reactivateCounter)
