@@ -4,13 +4,13 @@
 
     ``` C#
     public class MessageMock : NetworkMessage<MessageMockValue>
+    {
+        public static MessageMock Create()
         {
-            public static MessageMock Create()
-            {
-                var messageMockValue = new MessageMockValue();
-                return new RegistrationReply(messageMockValue);
-            }
+            var messageMockValue = new MessageMockValue();
+            return new RegistrationReply(messageMockValue);
         }
+    }
     ```
 
     **_Hint:_** Do not create a constructor, which constructor arguments are not registered the container.
